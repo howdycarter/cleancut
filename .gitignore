@@ -1,0 +1,9 @@
+# Secrets
+Secrets.swift
+
+# Xcode user data and derived data
+*.xcuserdatad/
+DerivedData/
+build/
+.DS_Store
+

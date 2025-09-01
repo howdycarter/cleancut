@@ -1,0 +1,38 @@
+/* Localizable strings */
+"home.title" = "Home";
+"home.tab" = "Home";
+"home.item.access" = "Item";
+"settings.tab" = "Settings";
+"settings.title" = "Settings";
+"settings.appearance" = "Appearance";
+"settings.darkmode" = "Dark Mode";
+"settings.legal" = "Legal";
+"settings.privacy" = "Privacy Policy";
+"settings.terms" = "Terms of Service";
+"detail.title" = "Detail";
+
+/* Onboarding */
+"onb.welcome.title" = "Welcome to __APP_NAME__";
+"onb.welcome.subtitle" = "Generate SwiftUI apps in minutes.";
+"onb.build.title" = "Build Faster";
+"onb.build.subtitle" = "Skip boilerplate with ready modules.";
+"onb.launch.title" = "Launch Confidently";
+"onb.launch.subtitle" = "Compliance-ready defaults baked in.";
+"onb.next" = "Next";
+"onb.getstarted" = "Get Started";
+"onb.next.access" = "Advance onboarding";
+"onb.highlights.title" = "Why you’ll love it";
+"onb.highlights.subtitle" = "Three quick highlights to get going";
+"onb.minimal.title" = "Ready when you are";
+"onb.minimal.subtitle" = "Let’s create your starter app.";
+/* Showcase */
+"home.showcase" = "Showcase";
+"showcase.title" = "Showcase";
+"showcase.subtitle" = "Preview core navigation, theme, and onboarding.";
+"showcase.overview" = "Overview";
+"showcase.actions" = "Actions";
+"showcase.theme" = "Theme";
+"showcase.pushdetail" = "Push Detail";
+"showcase.showonboarding" = "Show Onboarding";
+"showcase.opensettings" = "Open Settings";
+"showcase.colors" = "Primary & Accent";

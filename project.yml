@@ -1,0 +1,40 @@
+name: TheSwiftKit
+options:
+  deploymentTarget:
+    iOS: '16.0'
+  createIntermediateGroups: true
+settings:
+  base:
+    SWIFT_VERSION: 5.9
+    IPHONEOS_DEPLOYMENT_TARGET: 16.0
+targets:
+  TheSwiftKit:
+    type: application
+    platform: iOS
+    sources:
+      - path: Config
+      - path: Core
+      - path: Modules
+      - path: Backend
+      - path: Resources
+        excludes:
+          - Info.plist # handled via info block below
+    info:
+      path: Resources/Info.plist
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.theswiftkit.app
+        CURRENT_PROJECT_VERSION: 1
+        MARKETING_VERSION: 1.0
+    scheme:
+      testTargets:
+        - name: TheSwiftKitTests
+
+  TheSwiftKitTests:
+    type: bundle.unit-test
+    platform: iOS
+    sources:
+      - path: Tests
+    dependencies:
+      - target: TheSwiftKit
+
