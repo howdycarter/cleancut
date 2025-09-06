@@ -38,7 +38,7 @@ struct PaywallView: View {
 
                 Text("Pick your plan")
                     .font(.system(.title, design: .rounded).weight(.bold))
-                    .foregroundStyle(.white)
+                    .foregroundStyle(titleColor)
                     .padding(.bottom, DesignTokens.Spacing.md)
 
                 VStack(alignment: .leading, spacing: DesignTokens.Spacing.sm) {
@@ -122,6 +122,9 @@ struct PaywallView: View {
         return "Continue"
     }
 
+    @Environment(\.colorScheme) private var colorScheme
+    private var titleColor: Color { colorScheme == .dark ? .white : .primary }
+
     private func load() async {
         let opts = await container.purchasesService.loadOfferings(includeAll: showAllPlans)
         await MainActor.run {
@@ -168,9 +171,11 @@ private struct FeatureRow: View {
             Image(systemName: "checkmark.circle.fill")
                 .foregroundStyle(DesignTokens.accentColor)
             Text(text)
-                .foregroundColor(.white)
+                .foregroundColor(featureTextColor)
         }
     }
+    @Environment(\.colorScheme) private var colorScheme
+    private var featureTextColor: Color { colorScheme == .dark ? .white : .primary }
 }
 
 private struct PlanOptionRow: View {

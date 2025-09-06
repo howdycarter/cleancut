@@ -69,20 +69,26 @@ struct RootView: View {
                 style: container.config.onboardingStyle,
                 pages: .defaultPages,
                 done: {
-                    hasSeenOnboarding = true
-                    forceOnboardingOnce = false
+                    withAnimation(.easeInOut(duration: 0.35)) {
+                        hasSeenOnboarding = true
+                        forceOnboardingOnce = false
+                    }
                 }
             )
+            .transition(.move(edge: .trailing).combined(with: .opacity))
         }
         .animation(.easeInOut(duration: 0.3), value: shouldShowOnboarding)
         .fullScreenCover(isPresented: shouldShowAuthBinding) {
             AuthCoordinator { user in
-                isAuthenticated = true
+                withAnimation(.easeInOut(duration: 0.35)) {
+                    isAuthenticated = true
+                }
                 Task {
                     await container.purchasesService.logIn(user.id)
                     await container.purchasesService.refreshSubscriptionStatus()
                 }
             }
+            .transition(.move(edge: .trailing).combined(with: .opacity))
         }
         .animation(.easeInOut(duration: 0.3), value: shouldShowAuth)
         .task {

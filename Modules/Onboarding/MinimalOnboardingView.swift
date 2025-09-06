@@ -18,7 +18,7 @@ struct MinimalOnboardingView: View {
                     .foregroundColor(.secondary)
                     .multilineTextAlignment(.center)
                     .padding(.horizontal, DesignTokens.Spacing.xl)
-                Button(action: done) {
+                Button(action: { withAnimation(.easeInOut(duration: 0.35)) { done() } }) {
                     Text("onb.getstarted")
                         .frame(maxWidth: .infinity)
                         .padding()

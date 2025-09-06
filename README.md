@@ -90,6 +90,11 @@ Phase 4 — Paywall & StoreKit 2
 - Subscription paywall with product fetch, purchase, restore.
 - Restore button mandatory, sandbox-friendly.
 
+RevenueCat restore behavior (recommended)
+- To prevent restoring a subscription to a different Supabase user across devices, disable transfer of purchases between App User IDs in the RevenueCat dashboard.
+- Path: RevenueCat Dashboard → Project/App Settings → Restore behavior (or Customer settings) → set “Transfer purchases to new App User ID” to Off.
+- With this setting Off, restore from a different logged-in user will return a RevenueCat ownership error. The app maps this to a friendly alert instructing the user to sign in with the original account.
+
 Phase 5 — Backend Data
 - Implement UserRepository, ItemRepository.
 - Supabase + Local adapters.

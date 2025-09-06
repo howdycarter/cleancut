@@ -7,7 +7,9 @@ import SwiftUI
 struct SettingsView: View {
     @Environment(\.container) private var container
     @EnvironmentObject private var router: AppRouter
-    @StateObject private var vm = SettingsViewModel()
+    @Environment(\.colorScheme) private var scheme
+    @AppStorage("appearanceDark") private var appearanceDark: Bool = false
+    @AppStorage("appearanceLocked") private var appearanceLocked: Bool = false
     @State private var currentUser: User?
     @State private var profile: Profile?
     @State private var subscription: SubscriptionStatus?
@@ -17,7 +19,7 @@ struct SettingsView: View {
     @State private var willRenew: Bool? = nil
     @State private var showDeleteAlert: Bool = false
     @State private var purchaseErrorMessage: String? = nil
-    @AppStorage("appThemeStyle") private var themeStyleRaw: String = AppThemeStyle.standard.rawValue
+    // Theme style picker removed from settings UI per request
 
     var body: some View {
         NavigationStack {
@@ -103,12 +105,14 @@ struct SettingsView: View {
                     }
                 }
                 Section("settings.appearance") {
-                    Toggle(isOn: $vm.appearanceDark) {
+                    Toggle(isOn: Binding(
+                        get: { appearanceLocked ? appearanceDark : (scheme == .dark) },
+                        set: { newValue in
+                            appearanceDark = newValue
+                            appearanceLocked = true
+                        }
+                    )) {
                         Label("settings.darkmode", systemImage: "moon.fill")
-                    }
-                    Picker("settings.theme", selection: $themeStyleRaw) {
-                        Text("settings.theme.standard").tag(AppThemeStyle.standard.rawValue)
-                        Text("settings.theme.glass").tag(AppThemeStyle.glass.rawValue)
                     }
                 }
 
@@ -151,7 +155,7 @@ struct SettingsView: View {
                 }
             }
             .navigationTitle(Text("settings.title"))
-            .preferredColorScheme(vm.colorScheme)
+            // Global preferredColorScheme is applied at app root
             .task {
                 if container.config.featureFlags.auth {
                     currentUser = await container.authRepository.currentUser()
@@ -223,6 +227,7 @@ struct SettingsView: View {
                 Text("account.delete.message")
             }
         }
+        // No local color scheme override here; persistence handled via AppStorage
         .alert("Subscription", isPresented: .constant(purchaseErrorMessage != nil)) {
             Button("OK") { purchaseErrorMessage = nil }
         } message: {

@@ -41,7 +41,7 @@ struct HighlightsOnboardingView: View {
                 .padding(DesignTokens.Spacing.lg)
                 .if(theme.isGlass) { view in view.glassCard(cornerRadius: DesignTokens.Radius.lg) }
 
-                Button(action: done) {
+                Button(action: { withAnimation(.easeInOut(duration: 0.35)) { done() } }) {
                     Text("onb.getstarted")
                         .frame(maxWidth: .infinity)
                         .padding()

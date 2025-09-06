@@ -53,7 +53,11 @@ struct CarouselOnboardingView: View {
                 .indexViewStyle(.page(backgroundDisplayMode: .interactive))
 
                 Button(action: {
-                    if index < pages.count - 1 { index += 1 } else { done() }
+                    if index < pages.count - 1 {
+                        withAnimation(.easeInOut(duration: 0.35)) { index += 1 }
+                    } else {
+                        withAnimation(.easeInOut(duration: 0.35)) { done() }
+                    }
                 }) {
                     Text(index < pages.count - 1 ? LocalizedStringKey("onb.next") : LocalizedStringKey("onb.getstarted"))
                         .frame(maxWidth: 320)

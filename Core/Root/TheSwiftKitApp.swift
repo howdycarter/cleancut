@@ -15,6 +15,8 @@ struct TheSwiftKitApp: App {
 
     @UIApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
     @AppStorage("appThemeStyle") private var themeStyleRaw: String = AppThemeStyle.standard.rawValue
+    @AppStorage("appearanceDark") private var appearanceDark: Bool = false
+    @AppStorage("appearanceLocked") private var appearanceLocked: Bool = false
 
     init() {
         // Initialize analytics as early as possible
@@ -46,6 +48,7 @@ struct TheSwiftKitApp: App {
             .inject(container)
             .environmentObject(router)
             .appTheme(AppTheme(style: AppThemeStyle(rawValue: themeStyleRaw) ?? .standard))
+            .preferredColorScheme(appearanceLocked ? (appearanceDark ? .dark : .light) : nil)
             .task {
                 // Configure RevenueCat early and refresh entitlements on launch
                 container.purchasesService.configure()
@@ -56,6 +59,7 @@ struct TheSwiftKitApp: App {
                 .inject(container)
                 .environmentObject(router)
                 .appTheme(AppTheme(style: AppThemeStyle(rawValue: themeStyleRaw) ?? .standard))
+                .preferredColorScheme(appearanceLocked ? (appearanceDark ? .dark : .light) : nil)
                 .task {
                     // Configure RevenueCat early and refresh entitlements on launch
                     container.purchasesService.configure()

@@ -9,7 +9,6 @@ import RevenueCat
 
 struct RevenueCatPurchasesService: PurchasesService {
     private let apiKey: String
-    private let purchaseOwnerKey = "purchases.owner.app_user_id"
 
     init(apiKey: String) { self.apiKey = apiKey }
 
@@ -30,16 +29,11 @@ struct RevenueCatPurchasesService: PurchasesService {
     func logIn(_ appUserId: String) async {
         guard !appUserId.isEmpty, !apiKey.isEmpty else { return }
         _ = try? await Purchases.shared.logIn(appUserId)
+        // Attach Supabase user id for debugging / support visibility in RevenueCat
+        Purchases.shared.attribution.setAttributes(["supabase_user_id": appUserId])
     }
 
     func restorePurchases() async throws {
-        // Guard: ensure restore is attempted only by the original Supabase user on this device
-        let currentAppUserId = Purchases.shared.appUserID
-        if let recordedOwner = UserDefaults.standard.string(forKey: purchaseOwnerKey),
-           !recordedOwner.isEmpty,
-           recordedOwner != currentAppUserId {
-            throw PurchaseFriendlyError.ownershipConflict
-        }
         do {
             _ = try await Purchases.shared.restorePurchases()
             await broadcastSubscriptionChange(source: "restore")
@@ -176,8 +170,6 @@ struct RevenueCatPurchasesService: PurchasesService {
         }
         do {
             _ = try await Purchases.shared.purchase(package: pkg)
-            // Record the current app user as the owner of purchases on this device
-            UserDefaults.standard.set(Purchases.shared.appUserID, forKey: purchaseOwnerKey)
             await broadcastSubscriptionChange(source: "purchase")
         }
         catch { throw map(error) }
