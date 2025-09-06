@@ -69,14 +69,14 @@ public extension AppConfig {
         AppConfig(
             appName: "__APP_NAME__",
             bundleId: "__BUNDLE_ID__",
-            backend: BackendProvider(rawValue: "__BACKEND__") ?? .local,
+            backend: .supabase,
             layout: .list,
             onboardingStyle: .carousel,
             branding: Branding(
                 primaryColorHex: "__PRIMARY_COLOR__",
                 accentColorHex: "__ACCENT_COLOR__"
             ),
-            featureFlags: .default,
+            featureFlags: FeatureFlags(auth: true),
             legal: LegalLinks(
                 privacyPolicyURL: URL(string: "__PRIVACY_URL__") ?? URL(string: "https://example.com/privacy")!,
                 termsURL: URL(string: "__TERMS_URL__") ?? URL(string: "https://example.com/terms")!

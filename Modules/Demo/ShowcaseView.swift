@@ -28,12 +28,17 @@ struct ShowcaseView: View {
                     } label: { Label("showcase.pushdetail", systemImage: "arrow.right.square") }
 
                     Button {
+                        UserDefaults.standard.set(true, forKey: "forceOnboardingOnce")
                         hasSeenOnboarding = false
                     } label: { Label("showcase.showonboarding", systemImage: "sparkles") }
 
                     Button {
                         router.push(.settings)
                     } label: { Label("showcase.opensettings", systemImage: "gearshape.fill") }
+
+                    NavigationLink {
+                        LocalDataDemoView()
+                    } label: { Label("Local DB Demo", systemImage: "internaldrive") }
                 }
 
                 Section("showcase.theme") {

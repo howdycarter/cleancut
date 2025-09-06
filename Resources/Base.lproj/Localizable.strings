@@ -6,6 +6,9 @@
 "settings.title" = "Settings";
 "settings.appearance" = "Appearance";
 "settings.darkmode" = "Dark Mode";
+"settings.theme" = "Theme";
+"settings.theme.standard" = "Standard";
+"settings.theme.glass" = "Glass";
 "settings.legal" = "Legal";
 "settings.privacy" = "Privacy Policy";
 "settings.terms" = "Terms of Service";
@@ -36,3 +39,77 @@
 "showcase.showonboarding" = "Show Onboarding";
 "showcase.opensettings" = "Open Settings";
 "showcase.colors" = "Primary & Accent";
+
+/* Test Drive */
+"tester.title" = "Test Drive";
+"tester.overview" = "Overview";
+"tester.subtitle" = "Launch the app, preview onboarding and auth, and jump to screens.";
+"tester.section.flow" = "App Flow";
+"tester.section.shortcuts" = "Shortcuts";
+"tester.launchapp" = "Continue to App";
+"tester.resetonboarding" = "Reset Onboarding Seen";
+"tester.showonboarding" = "Show Onboarding (next)";
+"tester.showauth" = "Show Auth";
+"tester.openhome" = "Open Home";
+"tester.opensettings" = "Open Settings";
+"tester.opennotifs" = "Open Notifications Tester";
+
+/* Notifications */
+"notif.debug.title" = "Notifications";
+"notif.status" = "Status";
+"notif.status.authorized" = "Authorized";
+"notif.status.denied" = "Denied";
+"notif.status.provisional" = "Provisional";
+"notif.status.ephemeral" = "Ephemeral";
+"notif.status.undetermined" = "Not Determined";
+"notif.scheduled.count" = "Pending:";
+"notif.permissions" = "Permissions";
+"notif.request" = "Request Authorization";
+"notif.open.settings" = "Open System Settings";
+"notif.local" = "Local Notifications";
+"notif.schedule.5s" = "Schedule in 5 seconds";
+"notif.schedule.actions" = "Schedule with Actions (5s)";
+"notif.clear.pending" = "Clear Pending";
+"notif.remote" = "Remote (APNs)";
+"notif.register.apns" = "Register for Remote Notifications";
+"notif.sample.title" = "Hello";
+"notif.sample.body" = "This is a sample notification.";
+"notif.sample.actions.title" = "Quick Actions";
+"notif.sample.actions.body" = "Try Like or Reply.";
+
+/* Auth */
+"auth.nav" = "Sign In";
+"auth.title" = "Welcome back";
+"auth.subtitle" = "Sign in to continue";
+"auth.email" = "Email";
+"auth.password" = "Password";
+"auth.password.confirm" = "Confirm Password";
+"auth.signin" = "Sign In";
+"auth.signout" = "Sign Out";
+"auth.or" = "or";
+"auth.apple" = "Sign in with Apple";
+"auth.apple.note" = "Apple sign-in is wired when using Supabase.";
+"auth.error" = "Could not sign in. Check your details and try again.";
+"auth.signin.access" = "Sign in";
+"auth.apple.access" = "Sign in with Apple";
+"auth.error.access" = "Sign in error";
+"auth.createaccount" = "Create Account";
+"auth.signup" = "Sign Up";
+"auth.signup.access" = "Sign up";
+"auth.create.nav" = "Create Account";
+"auth.create.title" = "Create your account";
+"auth.create.subtitle" = "Enter your details to get started";
+"auth.error.signup" = "Could not sign up. Check your details and try again.";
+"auth.confirm.email" = "Check your email to confirm your account.";
+
+/* Onboarding polish */
+"onb.skip" = "Skip";
+"onb.skip.access" = "Skip onboarding";
+
+/* Account */
+"account.section" = "Account";
+"account.delete" = "Delete Account…";
+"account.delete.confirm" = "Delete Account";
+"account.delete.action" = "Delete";
+"account.delete.message" = "This removes your account data. In local mode, this signs you out.";
+"generic.cancel" = "Cancel";

@@ -9,8 +9,9 @@ public enum DesignTokens {
     public static let primaryHex: String = "__PRIMARY_COLOR__"
     public static let accentHex: String = "__ACCENT_COLOR__"
 
-    public static var primaryColor: Color { Color(hex: primaryHex) ?? .blue }
-    public static var accentColor: Color { Color(hex: accentHex) ?? .teal }
+    // Fallbacks tuned to the provided logo (purple + orange)
+    public static var primaryColor: Color { Color(hex: primaryHex) ?? Color(hex: "#8A2BE2") ?? .purple }
+    public static var accentColor: Color { Color(hex: accentHex) ?? Color(hex: "#FF8A00") ?? .orange }
 
     public enum Spacing {
         public static let xs: CGFloat = 4
@@ -52,4 +53,3 @@ extension Color {
         self = Color(.sRGB, red: r, green: g, blue: b, opacity: a)
     }
 }
-
