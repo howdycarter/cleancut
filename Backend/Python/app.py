@@ -14,7 +14,7 @@ except Exception:  # pragma: no cover
     OpenAI = None
 
 # OpenAI configuration
-OPENAI_API_KEY = "REDACTED_OPENAI_KEY"
+OPENAI_API_KEY = os.environ.get("OPENAI_API_KEY", "")
 OPENAI_BASE_URL = os.environ.get("OPENAI_BASE_URL", "")  # optional override
 
 # Default OpenAI models (override via env if desired)

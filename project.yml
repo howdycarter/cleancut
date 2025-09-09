@@ -34,7 +34,7 @@ targets:
       path: Resources/Info.plist
     settings:
       base:
-        PRODUCT_BUNDLE_IDENTIFIER: com.theswiftkit.app
+        PRODUCT_BUNDLE_IDENTIFIER: com.agaganorg.theswiftkit
         CURRENT_PROJECT_VERSION: 1
         MARKETING_VERSION: 1.0
     scheme:

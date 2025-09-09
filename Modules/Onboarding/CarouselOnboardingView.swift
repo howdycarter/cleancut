@@ -9,6 +9,7 @@ struct CarouselOnboardingView: View {
     var done: () -> Void
     @State private var index: Int = 0
     @Environment(\.appTheme) private var theme
+    @Environment(\.container) private var container
 
     var body: some View {
         ZStack {
@@ -29,10 +30,10 @@ struct CarouselOnboardingView: View {
                                 .scaleEffect(index == i ? 1.0 : 0.85)
                                 .opacity(index == i ? 1.0 : 0.6)
                                 .animation(.spring(response: 0.6, dampingFraction: 0.8, blendDuration: 0.2), value: index)
-                            Text(LocalizedStringKey(page.titleKey))
+                            Text(localizedReplacingAppName(page.titleKey, appName: container.config.appName))
                                 .font(.title2.bold())
                                 .transition(.move(edge: .bottom).combined(with: .opacity))
-                            Text(LocalizedStringKey(page.subtitleKey))
+                            Text(localizedReplacingAppName(page.subtitleKey, appName: container.config.appName))
                                 .font(.body)
                                 .multilineTextAlignment(.center)
                                 .foregroundColor(.secondary)

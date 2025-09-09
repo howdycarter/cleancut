@@ -52,7 +52,7 @@ struct RootView: View {
             SettingsView()
                 .tabItem { Label("settings.tab", systemImage: "gearshape.fill") }
         }
-        .tint(container.config.branding.accentColorHex.isEmpty ? DesignTokens.accentColor : (Color(hex: container.config.branding.accentColorHex) ?? DesignTokens.accentColor))
+        .tint(DesignTokens.accentColor)
         .sheet(isPresented: $isShowingPaywall) {
             Group {
                 if #available(iOS 16.4, *) {

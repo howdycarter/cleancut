@@ -10,12 +10,28 @@ import Foundation
 // your target's Swift Compiler - Custom Flags (Other Swift Flags): `-D USE_SAMPLE_SECRETS`.
 #if USE_SAMPLE_SECRETS
 public enum Secrets {
-    // Supabase
-    public static let supabaseURL: URL = URL(string: "https://awlurlliijipymvjkswv.supabase.co")!
-    public static let supabaseAnonKey: String = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImF3bHVybGxpaWppcHltdmprc3d2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTY4MzAyMzAsImV4cCI6MjA3MjQwNjIzMH0.rAApXP7E6NRlmMZIum20TPN-ysgveidw5qS-9aAZUqw"
+    // Supabase (required for Supabase backend)
+    public static let supabaseURL: URL = URL(string: "https://YOUR-PROJECT.supabase.co")!
+    public static let supabaseAnonKey: String = "YOUR_SUPABASE_ANON_KEY"
+
+    // Sign in with Apple (for future use; optional)
+    public static let appleServiceId: String = "" // e.g., com.example.web
+    public static let appleTeamId: String = ""
+    public static let appleKeyId: String = ""
+    public static let applePrivateKeyPEM: String = "" // multiline PKCS8
+
+    // Optional: Account deletion HTTPS endpoint
+    public static let accountDeletionURLString: String = ""
+    public static var accountDeletionURL: URL? { URL(string: accountDeletionURLString) }
 
     // TelemetryDeck (analytics)
-    // Use a test app ID here if desired
     public static let telemetryDeckAppID: String = ""
+
+    // RevenueCat (public API key to enable paywall)
+    public static let revenueCatAPIKey: String = ""
+
+    // AI Backend base URL (Flask). For local dev: http://127.0.0.1:5001
+    public static let aiBackendBaseURLString: String = "http://127.0.0.1:5001"
+    public static var aiBackendBaseURL: URL { URL(string: aiBackendBaseURLString)! }
 }
 #endif

@@ -24,7 +24,7 @@ struct SignInView: View {
             VStack(spacing: 12) {
                 // Keep logo static; circle still breathes
                 LogoView(size: 120, animateLogo: false)
-                Text("__APP_NAME__")
+                Text(container.config.appName)
                     .font(.system(size: 32, weight: .bold, design: .rounded))
                     .frame(maxWidth: .infinity)
                 Text("auth.subtitle")
@@ -95,6 +95,7 @@ struct SignInView: View {
             .frame(height: 44)
             .clipShape(RoundedRectangle(cornerRadius: DesignTokens.Radius.md, style: .continuous))
             .accessibilityLabel(Text("auth.apple.access"))
+            .disabled(true)
             .overlay(alignment: .bottomLeading) {
                 if container.config.backend == .local {
                     Text("auth.apple.note")

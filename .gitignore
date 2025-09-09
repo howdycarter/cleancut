@@ -1,9 +1,12 @@
 # Secrets
 Secrets.swift
 
+# Environment variables
+.env
+Backend/Python/.env
+
 # Xcode user data and derived data
 *.xcuserdatad/
 DerivedData/
 build/
 .DS_Store
-

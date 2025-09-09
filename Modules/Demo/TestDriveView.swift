@@ -19,7 +19,7 @@ struct TestDriveView: View {
             List {
                 Section("tester.overview") {
                     VStack(alignment: .leading, spacing: DesignTokens.Spacing.sm) {
-                        Text("__APP_NAME__")
+                        Text(container.config.appName)
                             .font(.title2.bold())
                         Text("tester.subtitle")
                             .foregroundColor(.secondary)

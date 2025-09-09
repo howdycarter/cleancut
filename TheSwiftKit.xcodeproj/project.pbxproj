@@ -60,14 +60,12 @@
 		B8338F5D35A2BE82474CC1EE /* ProfileRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = EED20E2F5BF377EC827FFFEA /* ProfileRepository.swift */; };
 		BE32DB57DB91BF5B62EEA824 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = E4D6ABEF6B5C272FBE4C469F /* Assets.xcassets */; };
 		C55B9381F98A54009A49B357 /* user_subscriptions_webhook.ts in Resources */ = {isa = PBXBuildFile; fileRef = 49637C80DC2D7BC32EBB28AE /* user_subscriptions_webhook.ts */; };
-		C9F41DBD44C21FECDA5CEADA /* PayWallLocal.storekit in Resources */ = {isa = PBXBuildFile; fileRef = DDC1C91D5928B1B7A37223DE /* PayWallLocal.storekit */; };
 		D5CD2C873FCFE92767194D9D /* UserRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7701116BE4D431BE51F3CC9B /* UserRepository.swift */; };
 		D62DE885D288B56707EAC2A9 /* CreateAccountView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B4BE04E13D4CD6E9A80541D /* CreateAccountView.swift */; };
 		DD8BA04B98FB83EC18F4C263 /* OnboardingModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9580CE7C9DF2368F91F116E8 /* OnboardingModels.swift */; };
 		E071538416B407785AE39626 /* AnimatedBackground.swift in Sources */ = {isa = PBXBuildFile; fileRef = FEBEA4930759F5E43A3B7419 /* AnimatedBackground.swift */; };
 		F3D2341F4C80840A1151B88B /* 001_user_subscriptions.sql in Resources */ = {isa = PBXBuildFile; fileRef = 1818A0CB4AE32F3060E8AC92 /* 001_user_subscriptions.sql */; };
 		F4AD48471A97E9C422D5C81C /* DIContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90B6F7B73CE653C9A2251EC5 /* DIContainer.swift */; };
-		F533C8F6109B8B2C49316F9E /* ShowcaseView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9B81E7D9BE3A4F4F4EF4D554 /* ShowcaseView.swift */; };
 		FB548C4F312BD23A0A03ADB2 /* SupabaseProfileRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = B55CEEAC8B0BAFFBC12C85A3 /* SupabaseProfileRepository.swift */; };
 		FD77729B7FC4B6144FFA2619 /* TheSwiftKitApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = EDF42203D567066C34EC47F1 /* TheSwiftKitApp.swift */; };
 /* End PBXBuildFile section */
@@ -119,7 +117,7 @@
 		9580CE7C9DF2368F91F116E8 /* OnboardingModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingModels.swift; sourceTree = "<group>"; };
 		98B5D5209FA7A198CC89FB3F /* LocalCoreDataRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalCoreDataRepository.swift; sourceTree = "<group>"; };
 		9A4FDE4029FC01E08FEE615C /* AppRouter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppRouter.swift; sourceTree = "<group>"; };
-		9B81E7D9BE3A4F4F4EF4D554 /* ShowcaseView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShowcaseView.swift; sourceTree = "<group>"; };
+		/* 9B81E7D9BE3A4F4F4EF4D554 ShowcaseView.swift removed */
 		A3D01DD07D0C87D60576C89A /* SupabaseSubscriptionRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SupabaseSubscriptionRepository.swift; sourceTree = "<group>"; };
 		B55CEEAC8B0BAFFBC12C85A3 /* SupabaseProfileRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SupabaseProfileRepository.swift; sourceTree = "<group>"; };
 		BBA2623150A170851A694C15 /* HomeViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeViewModel.swift; sourceTree = "<group>"; };
@@ -132,7 +130,7 @@
 		D5A51C209C36AAFFA564AAC6 /* RatingService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RatingService.swift; sourceTree = "<group>"; };
 		D824F18B4621C75F85B1F9D6 /* HomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
 		D8FF8C9561B3C3E105793E3F /* Logger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Logger.swift; sourceTree = "<group>"; };
-		DDC1C91D5928B1B7A37223DE /* PayWallLocal.storekit */ = {isa = PBXFileReference; lastKnownFileType = text; path = PayWallLocal.storekit; sourceTree = "<group>"; };
+		/* DDC1C91D5928B1B7A37223DE PayWallLocal.storekit removed */
 		DEF903876C936506FECE646E /* SettingsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsViewModel.swift; sourceTree = "<group>"; };
 		DFC50F55568383ED3BFC7FDE /* RootView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootView.swift; sourceTree = "<group>"; };
 		E4D6ABEF6B5C272FBE4C469F /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -164,7 +162,7 @@
 		04AA198CC3B95BCE124BCE24 /* StoreKit */ = {
 			isa = PBXGroup;
 			children = (
-				DDC1C91D5928B1B7A37223DE /* PayWallLocal.storekit */,
+				/* PayWallLocal.storekit removed */
 			);
 			path = StoreKit;
 			sourceTree = "<group>";
@@ -196,7 +194,7 @@
 				98B5D5209FA7A198CC89FB3F /* LocalCoreDataRepository.swift */,
 				6035B49F217B915AADAE84BB /* LocalDataDemoView.swift */,
 				5300D70DC882C5860FC84799 /* RatingPromptView.swift */,
-				9B81E7D9BE3A4F4F4EF4D554 /* ShowcaseView.swift */,
+				/* ShowcaseView.swift removed */
 				618196BF568C30BEA8431BA0 /* TestDriveView.swift */,
 			);
 			path = Demo;
@@ -561,7 +559,6 @@
 				BE32DB57DB91BF5B62EEA824 /* Assets.xcassets in Resources */,
 				69692D63153177EAC279C243 /* LaunchScreen.storyboard in Resources */,
 				78AC7C12CC3C70519749DE90 /* Localizable.strings in Resources */,
-				C9F41DBD44C21FECDA5CEADA /* PayWallLocal.storekit in Resources */,
 				C55B9381F98A54009A49B357 /* user_subscriptions_webhook.ts in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -623,8 +620,7 @@
 				0D01A1CCE78118A967E89CF6 /* RootView.swift in Sources */,
 				4D194885D6525C729B1CC5BB /* Secrets.swift in Sources */,
 				0F5F6329C1B62C89C5D499B7 /* SettingsView.swift in Sources */,
-				B3C7765DBCCF3EBB478F7AAB /* SettingsViewModel.swift in Sources */,
-				F533C8F6109B8B2C49316F9E /* ShowcaseView.swift in Sources */,
+		B3C7765DBCCF3EBB478F7AAB /* SettingsViewModel.swift in Sources */,
 				00FC7C4C3CBC23D9402BB51E /* SignInView.swift in Sources */,
 				50B54D3ABC347A56E4A8F64A /* SubscriptionRepository.swift in Sources */,
 				35FA66879A8A3613B0867E9B /* SupabaseAuthRepository.swift in Sources */,
@@ -783,7 +779,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.theswiftkit.app;
+				PRODUCT_BUNDLE_IDENTIFIER = com.agaganorg.theswiftkit;
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};

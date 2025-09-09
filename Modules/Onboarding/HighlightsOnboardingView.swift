@@ -8,6 +8,7 @@ struct HighlightsOnboardingView: View {
     let pages: [OnboardingPage]
     var done: () -> Void
     @Environment(\.appTheme) private var theme
+    @Environment(\.container) private var container
 
     var body: some View {
         ZStack {
@@ -31,8 +32,8 @@ struct HighlightsOnboardingView: View {
                                 .foregroundColor(DesignTokens.accentColor)
                                 .font(.title2)
                             VStack(alignment: .leading, spacing: 4) {
-                                Text(LocalizedStringKey(page.titleKey)).font(.headline)
-                                Text(LocalizedStringKey(page.subtitleKey)).foregroundColor(.secondary)
+                                Text(localizedReplacingAppName(page.titleKey, appName: container.config.appName)).font(.headline)
+                                Text(localizedReplacingAppName(page.subtitleKey, appName: container.config.appName)).foregroundColor(.secondary)
                             }
                         }
                         .frame(maxWidth: .infinity, alignment: .leading)
