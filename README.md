@@ -1,212 +1,147 @@
-AI Prompt Specification – SwiftUI App Generator (SaaS) v1.0
-Author: Ahmed Gagan · Purpose: This document tells an AI assistant everything about the product and gives step-by-step, phase-wise prompts so output is correct on the first try.
-0) Product Vision & Scope
-What we’re building
-- A SaaS that lets iOS developers generate a ready-to-run SwiftUI app codebase in one click, with configurable modules (onboarding, auth, paywalls, backend connectors, settings, etc.).
-- Output is a clean Xcode project using SwiftUI + Swift, MVVM-lite, modern concurrency, and first-class App Store compliance baked in.
-- Users pick features in a web UI, set branding, choose a backend, and download a zipped project that builds & runs immediately.
+TheSwiftKit – SwiftUI App Template
+=================================
 
-Target users
-- Indie iOS devs and small teams using SwiftUI who want to skip boilerplate.
-- Agencies that need consistent, compliant starting points.
+Overview
+--------
+- TheSwiftKit is a production‑ready SwiftUI app template with modular features: onboarding, authentication, paywall/subscriptions, analytics, notifications, AI wrappers, settings, and local persistence.
+- Goal: clone → paste keys → set app name/colors → run. No code rewrites required for the typical setup.
 
-Non-goals (for initial versions)
-- No custom server provisioning. We integrate with third-party backends (Supabase) or local storage only.
-- No UIKit-only code (SwiftUI-first; UIKit only when unavoidable).
-- No code obfuscation or DRM.
+Requirements
+------------
+- Xcode 15+ and Swift 5.9+
+- iOS 16+ target
+- Optional provider accounts as needed:
+  - Supabase (Auth, Database, Storage)
+  - RevenueCat (IAP/Subscriptions)
+  - TelemetryDeck (Analytics)
+  - OpenAI (optional, for the AI backend)
+- Optional tooling: Supabase CLI (Edge Functions), Python 3.10+ (local AI server)
 
-Success criteria
-- A new user can generate, open, and run a project in ≤ 5 minutes.
-- Project passes a baseline App Store review checklist (restore purchases, Sign in with Apple rules, permission strings).
-- Modules are add/remove without breaking the build.
+Quick Start
+-----------
+1) Clone the repo and open `TheSwiftKit.xcodeproj`.
+2) Duplicate `Config/Secrets.sample.swift` → `Config/Secrets.swift`, then fill your keys and URLs.
+3) Set your branding and identity:
+   - App name: `Config/AppConfig.swift` (`appName`)
+   - Theme colors: `Core/Theme/DesignTokens.swift` (`primaryHex`, `accentHex`)
+   - Bundle ID: `project.yml` (`PRODUCT_BUNDLE_IDENTIFIER`)
+4) Add your app icons to `Resources/Assets.xcassets/AppIcon.appiconset`.
+5) Optionally add an `AppLogo` image to `Resources/Assets.xcassets` for the in‑app logo.
+6) Build and run. If keys are missing, the app falls back to safe no‑op services.
 
-Supported targets
-- iOS 16+ (minimum), Xcode 15+, Swift 5.9+.
-1) Architecture Overview
-- Project structure is modular with Config, Core, Modules, Backend, Resources, and Tests directories.
-- Uses MVVM-lite: Views for layout, ViewModels for state and logic, Repositories for backend abstraction.
-- Dependency injection handled by a lightweight DIContainer.
-- Navigation via AppRouter with NavigationStack.
-- Design tokens for colors, fonts, spacing.
-- Secrets handled via Secrets.swift populated from web UI configs.
-2) App Store Compliance (baked in)
-- Restore Purchases button on paywall.
-- Sign in with Apple required if other sign-ins exist.
-- Privacy Policy & Terms screens included with configurable links.
-- Permission usage strings prefilled in Info.plist.
-- Account deletion path provided if accounts exist.
-- Legal placeholders included, developer must replace with actual links.
-3) Database / Backend Support Plan
-Abstraction approach
-- Define repository protocols (AuthRepository, UserRepository, etc.).
-- Concrete adapters for each backend, switched via AppConfig.backend.
+Configuration
+-------------
+- App config: `Config/AppConfig.swift`
+  - `appName`: Display name used throughout the UI; localized strings containing `__APP_NAME__` are replaced at runtime.
+  - `backend`: `.supabase` or `.local` (controls repository implementations selected by DI).
+  - `layout`: `.list` or `.grid` (example option used by HomeView model).
+  - `onboardingStyle`: `.carousel`, `.highlights`, `.minimal`.
+  - `featureFlags`: Toggle modules (onboarding, auth, paywall, notifications).
+  - `legal`: Privacy Policy and Terms URLs.
+- Theme colors: `Core/Theme/DesignTokens.swift`
+  - Set `primaryHex` and `accentHex` once to theme the entire app.
+- Secrets: `Config/Secrets.swift` (created from the sample)
+  - `supabaseURL`, `supabaseAnonKey`
+  - `telemetryDeckAppID`
+  - `revenueCatAPIKey`
+  - `aiBackendBaseURLString` (default `http://127.0.0.1:5001`)
+  - `accountDeletionURLString` (optional HTTPS endpoint)
+  - Sign in with Apple placeholders (optional for future wiring)
+- Bundle identifier
+  - Central in `project.yml` → `PRODUCT_BUNDLE_IDENTIFIER` (also editable via Xcode Signing).
+- Assets
+  - App Icon: `Resources/Assets.xcassets/AppIcon.appiconset`
+  - App Logo (optional): Add `AppLogo` image used by `LogoView`.
+- Localization
+  - Strings: `Resources/Base.lproj/Localizable.strings`.
+  - Tokens containing `__APP_NAME__` are replaced with `AppConfig.appName` at runtime.
 
-Backends supported (MVP)
-1. Supabase: Postgres, REST & Realtime, Auth, Storage, Swift client.
-2. Local (Core Data): offline persistence, no setup required.
+Feature Reference
+-----------------
+- Onboarding
+  - Three styles controlled by `AppConfig.onboardingStyle` (carousel, highlights, minimal).
+  - Uses `OnboardingPage` models and `.defaultPages` in `Modules/Onboarding/OnboardingModels.swift`.
+- Authentication & Profile
+  - Email/password via `AuthRepository` adapters selected by DI:
+    - Supabase: `Backend/Supabase/SupabaseAuthRepository.swift`
+    - Local fallback: `Backend/Protocols/AuthRepository.swift` (`LocalAuthRepository`)
+  - If the user’s profile is missing, the app presents `ProfileSetupView` to capture name/gender/contact/avatar (Supabase or in‑memory local).
+  - Sign in with Apple button is visible but disabled by default; enable once your Apple config is ready.
+- Paywall & Subscriptions
+  - UI: `Modules/Paywall/PaywallView.swift`
+  - Service: `Core/Services/PurchasesService.swift`
+    - RevenueCat implementation when the SDK is linked and `Secrets.revenueCatAPIKey` is set.
+    - Noop implementation otherwise (UI stays functional with placeholder offerings).
+  - Root integrates entitlement status via notifications posted by the purchases service.
+- Analytics
+  - `Core/Analytics/AnalyticsService.swift` selects TelemetryDeck v2 or TelemetryClient v1 when available and configured; otherwise Noop.
+- Notifications (Debug)
+  - `Modules/Notifications/NotificationsDebugView.swift` for permission requests, scheduling local notifications, APNs registration, and token display.
+  - Service: `Core/Notifications/NotificationService.swift`.
+- AI Wrappers (optional)
+  - Home tabs for Text Generation (Chat), Image Generation, and Vision.
+  - Client: `Core/Services/AIApiClient.swift` → your Flask backend (`Secrets.aiBackendBaseURL`).
+- Local Data Demo
+  - `Modules/Demo/LocalDataDemoView.swift` with `LocalCoreDataRepository` and `CoreDataStack` demonstrates a small programmatic Core Data model and CRUD.
+- Theming
+  - Set colors once in `DesignTokens`; `AppTheme` injected at root with an optional glass style used by components.
+- Routing & DI
+  - `Core/Routing/AppRouter.swift` (typed enum routes) and `Core/DI/DIContainer.swift` (selects adapters based on config and available SDKs).
+- Logging
+  - `Core/Logging/Logger.swift` for lightweight debug logging.
+- Localization details
+  - `Core/Utils/Localization.swift` includes a helper that replaces `__APP_NAME__` in localized strings with your configured app name.
 
-Deferred: Firebase, Realm, Hasura, Appwrite, PocketBase.
+Backend Setup
+-------------
+- Supabase (Auth, Profiles, Avatars)
+  - Profiles table and RLS: Create `public.profiles` and allow users to read/update their own row.
+  - Storage: Create an `avatars` bucket and add select/insert/update policies for authenticated users (public read if desired).
+  - iOS: `SupabaseProfileRepository` reads/writes profiles and uploads avatars.
+- Subscriptions mirror (optional but recommended)
+  - SQL: Run `Backend/Supabase/sql/001_user_subscriptions.sql` and `002_user_subscriptions_enhancements.sql`.
+  - Edge Function: Deploy `Backend/Supabase/edge/user_subscriptions_webhook.ts` to upsert rows from RevenueCat webhook events.
+- RevenueCat
+  - Configure products and offerings in the dashboard; paste the public API key in `Secrets.revenueCatAPIKey`.
+  - Recommended: consider disabling automatic transfer of purchases to new App User IDs to avoid cross‑account restore issues.
+- AI Backend (Flask)
+  - Install dependencies: `pip install -r Backend/Python/requirements.txt`
+  - Add your `.env` (ignored by git) with `OPENAI_API_KEY=sk-...` (and optional `OPENAI_BASE_URL`, model overrides).
+  - Start: `python Backend/Python/app.py` (default port 5001). Health: `GET /health` → `{ "ok": true }`.
+  - iOS: set `Secrets.aiBackendBaseURLString` to your server origin; `Info.plist` includes ATS exceptions for localhost during development.
 
-Recommendation for v1: Ship Supabase + Local only.
+Development Tips
+----------------
+- TestDrive (DEBUG only): `Modules/Demo/TestDriveView.swift` provides shortcuts to force onboarding, open settings, present paywall, view rating prompt, etc.
+- Force onboarding once: set `forceOnboardingOnce` to true via TestDrive.
+- SIWA: The Sign in with Apple button is present but `.disabled(true)` by default; enable after wiring your Apple credentials.
 
-Config shape:
-enum BackendProvider: String { case supabase, local }
-AppConfig.backend = .supabase // or .local
+Troubleshooting
+---------------
+- Packages fail to resolve: ensure Xcode 15+; clean DerivedData and retry.
+- Supabase errors: verify URL/key; confirm RLS policies; test queries in the SQL editor.
+- RevenueCat entitlements: verify offerings and sandbox account; check the RC dashboard; relaunch app to refresh cache.
+- AI backend: confirm `OPENAI_API_KEY` in `.env`; verify `/health`; inspect Flask logs.
+- ATS/network: for dev on 127.0.0.1 and localhost, Info.plist contains the required exceptions.
 
-Secrets
-- Secrets.sample.swift with placeholders → user duplicates to Secrets.swift.
-- All keys/configs collected in web UI step; generated project wired automatically.
-4) Conventions & Guardrails for AI Outputs
-- SwiftUI only, UIKit only if unavoidable.
-- Modern Swift: async/await, @MainActor.
-- No TODOs or stubs; must compile clean.
-- Tests included: minimal but working.
-- Strings in Localizable.strings.
-- Design tokens for colors/fonts, no inline literals.
-- One major type per file, proper folder structure.
-- Each file includes header comments.
-5) Phase Plan
-Phase 0 — Foundations & Scaffolding
-- Create AppConfig.swift, FeatureFlags.swift, Secrets.sample.swift.
-- Add Theme + DesignTokens, AppRouter, RootView, DIContainer, Logger.
-- Provide empty tabbed app with placeholders for Home, Settings.
+Production Checklist
+--------------------
+- Replace legal URLs with your actual Privacy Policy and Terms.
+- Provide final app icons and optional `AppLogo` image.
+- Hide or remove debug/testing screens from release builds.
+- Tighten storage and database policies (consider signed URLs, least‑privilege RLS).
+- Keep real secrets out of git; manage per‑environment secrets via CI/CD.
 
-Phase 1 — Core UI Shell (Home + Detail + Navigation)
-- Add HomeView and DetailView with mock data.
-- Support list or grid via AppConfig.
-- NavigationStack pushes to DetailView.
+File Map – Edit Points
+----------------------
+- Secrets: `Config/Secrets.swift` (copied from `Secrets.sample.swift`)
+- App config: `Config/AppConfig.swift`
+- Theme colors: `Core/Theme/DesignTokens.swift`
+- Bundle ID: `project.yml` or Xcode Signing
+- Assets: `Resources/Assets.xcassets/*`
+- Localized copy: `Resources/Base.lproj/Localizable.strings`
 
-Phase 2 — Onboarding Module Library
-- Include pre-coded onboarding templates (carousel, highlights, minimal).
-- Controlled via AppConfig.onboardingStyle enum.
-- Uses AppStorage("hasSeenOnboarding").
+License
+-------
+Add your license of choice.
 
-Phase 3 — Authentication
-- Support Email/Password + Sign in with Apple.
-- Supabase backend only in v1.
-- Provide AuthRepository + Supabase adapter.
-
-Phase 4 — Paywall & StoreKit 2
-- Subscription paywall with product fetch, purchase, restore.
-- Restore button mandatory, sandbox-friendly.
-
-RevenueCat restore behavior (recommended)
-- To prevent restoring a subscription to a different Supabase user across devices, disable transfer of purchases between App User IDs in the RevenueCat dashboard.
-- Path: RevenueCat Dashboard → Project/App Settings → Restore behavior (or Customer settings) → set “Transfer purchases to new App User ID” to Off.
-- With this setting Off, restore from a different logged-in user will return a RevenueCat ownership error. The app maps this to a friendly alert instructing the user to sign in with the original account.
-
-Phase 5 — Backend Data
-- Implement UserRepository, ItemRepository.
-- Supabase + Local adapters.
-
-Phase 6 — Settings, Legal, Account Deletion
-- SettingsView with theme toggle, account deletion, legal links.
-
-Phase 7 — Notifications
-- APNs integration, user consent prompt, DebugView logs.
-- No Firebase FCM in v1.
-
-Phase 8 — Packaging & Code Generation (CLI)
-- CLI tool assembles modules, injects secrets/configs, outputs Xcode project.
-
-Phase 9 — SaaS Web UI & Orchestrator
-- React/Next.js frontend to collect configs + features.
-- Backend orchestrator generates and returns zipped project.
-
-Phase 10 — QA & Sample Apps
-- Compliance checklist and sample presets (Notes app, Catalog app).
-6) Detailed Specs for Key Files
-- AppConfig.swift: appName, backend, branding, layout, feature flags.
-- Secrets.swift: Supabase keys.
-- DesignTokens.swift: central theme constants.
-- AppRouter.swift: navigation enum + router logic.
-- Repositories/: Supabase + Local implementations only.
-7) Localization & Accessibility Rules
-- All strings in Localizable.strings.
-- VoiceOver labels for tappable elements.
-- Dynamic Type support for accessibility.
-- Respect reduced motion settings.
-8) Testing Strategy
-- Unit tests for repositories and view models.
-- UI tests for onboarding, auth, paywall.
-- No external network calls in tests.
-9) Deliverables & Definition of Done
-- Compiles on iOS 16+ with Xcode 15+.
-- Pre-configured with secrets from web UI.
-- Test target included.
-- README with setup instructions.
-10) Ready-Made Variable Tokens
-- __APP_NAME__, __BUNDLE_ID__, __PRIMARY_COLOR__, __ACCENT_COLOR__.
-- __PRIVACY_URL__, __TERMS_URL__, __BACKEND__ (supabase|local).
-- __FEATURE_ONBOARDING__, __FEATURE_AUTH__, __FEATURE_PAYWALL__, etc.
-11) Developer Experience (DX) Notes
-- Secrets provided once via web UI, auto-injected in codebase.
-- Generated project runs immediately.
-- Local backend used if Supabase not configured.
-12) Future Extensions (post-MVP)
-- Add Firebase, Realm, Hasura, Appwrite.
-- Add more screen templates (chat, maps, camera, ARKit).
-- Add analytics providers and theme packs.
-- Marketplace for templates and plugins.
-13) How to Use This Document (for AI)
-- Treat each Phase section’s Prompt as exact instruction.
-- Always respect conventions and guardrails.
-- Never skip acceptance criteria.
-- Generate clean, compilable SwiftUI code with required mocks if needed.
-
-============================================================
-Current Progress (Dev Log)
-============================================================
-
-Summary
-- Sign-in UX fixed and instrumented; added profile onboarding backed by Supabase with avatar upload. iOS 16-compatible navigation and required plist strings added.
-
-Auth and UX changes
-- Sign-in button: Enabled when email and password are non-empty (was 6+ chars). File: Modules/Auth/SignInView.swift:90
-- Sign-in result: Presents alert on success/failure for quick validation. File: Modules/Auth/SignInView.swift:26
-- Startup log: Prints "Auth status: Logged In/Logged Out" on launch in Debug. File: Core/Root/RootView.swift:56
-
-Profile system (reusable template)
-- Domain + protocol: Profile model, Gender enum, and ProfileRepository protocol. File: Backend/Protocols/ProfileRepository.swift:1
-- Supabase adapter: Reads/writes `public.profiles`, uploads avatar to `avatars` bucket, returns public URL. File: Backend/Supabase/SupabaseProfileRepository.swift:1
-- DI wiring: `DIContainer` now exposes `profileRepository` and selects Local or Supabase by `AppConfig.backend`. File: Core/DI/DIContainer.swift:7
-- UI flow: After first sign-in without a profile, present a profile form (name, gender, contact, avatar picker) and save. File: Modules/Profile/ProfileSetupView.swift:1
-- Routing: iOS 16-friendly `.sheet(item:)` presents profile setup after sign-in. File: Modules/Auth/AuthCoordinator.swift:1
-- Photos permission: Added `NSPhotoLibraryUsageDescription`. File: Resources/Info.plist:15
-
-Xcode project updates
-- Registered new files in app target so they compile:
-  - Backend/Protocols/ProfileRepository.swift
-  - Backend/Supabase/SupabaseProfileRepository.swift
-  - Modules/Profile/ProfileSetupView.swift
-
-Supabase prerequisites (run once)
-- Profiles table and policies:
-  - create table if not exists public.profiles (
-    id uuid primary key references auth.users(id) on delete cascade,
-    name text, gender text, contact text, avatar_url text,
-    updated_at timestamptz default now()
-  );
-  - alter table public.profiles enable row level security;
-  - create policy "profiles_select_own" on public.profiles for select using (auth.uid() = id);
-  - create policy "profiles_insert_own" on public.profiles for insert with check (auth.uid() = id);
-  - create policy "profiles_update_own" on public.profiles for update using (auth.uid() = id) with check (auth.uid() = id);
-- Storage bucket and policies (simple public read):
-  - insert into storage.buckets (id, name, public) values ('avatars','avatars', true) on conflict do nothing;
-  - create policy "avatars_public_read" on storage.objects for select using (bucket_id = 'avatars');
-  - create policy "avatars_user_insert" on storage.objects for insert to authenticated with check (bucket_id = 'avatars');
-  - create policy "avatars_user_update" on storage.objects for update to authenticated using (bucket_id = 'avatars');
-- Secrets: `Config/Secrets.swift` must point to your Supabase project (URL + anon key).
-
-How to test quickly
-- Sign in with Supabase backend (Config/AppConfig.swift:72 is `.supabase`).
-- If profile is missing, a sheet opens to capture name/contact/avatar. Tap Save.
-- On success, sheet dismisses and app proceeds. On failure, you see the Supabase error message.
-- For offline UI testing, switch to `.local` backend; profiles are in-memory and uploads return a fake URL.
-
-Known considerations / next steps
-- Display profile and avatar in Settings and Home.
-- Use signed URLs instead of public for avatars if bucket is private.
-- Add lightweight client-side validation to the profile form.
-- Persist local-auth sessions (Keychain) when using `.local` backend.
-- Provide SQL migrations in a `/Supabase` folder for one-click setup.
