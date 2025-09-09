@@ -38,6 +38,12 @@ struct RootView: View {
                                     // Remove the placeholder route to keep stack clean
                                     router.path.removeLast()
                                 }
+                        case .aiChat:
+                            AIChatView()
+                        case .aiImages:
+                            AIImageGenView()
+                        case .aiVision:
+                            AIVisionView()
                         }
                     }
             }

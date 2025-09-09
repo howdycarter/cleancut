@@ -10,6 +10,10 @@ public enum AppRoute: Hashable {
     case detail(id: String)
     case notifications
     case paywall
+    // AI features
+    case aiChat
+    case aiImages
+    case aiVision
 }
 
 @MainActor
