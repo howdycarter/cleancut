@@ -1,0 +1,713 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>TheSwiftKit Documentation</title>
+    <style>
+        :root {
+            color-scheme: light dark;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+            margin: 0;
+            padding: 0;
+            background: #f5f5f7;
+            color: #1d1d1f;
+        }
+
+        header {
+            background: linear-gradient(120deg, #6f4ef2, #ff8a00);
+            color: #ffffff;
+            padding: 48px 24px;
+            text-align: center;
+        }
+
+        header h1 {
+            margin: 0;
+            font-size: 2.8rem;
+        }
+
+        main {
+            max-width: 960px;
+            margin: 0 auto;
+            padding: 32px 24px 80px;
+            background: #ffffff;
+        }
+
+        h2 {
+            margin-top: 48px;
+            border-bottom: 2px solid #eee;
+            padding-bottom: 8px;
+        }
+
+        h3 {
+            margin-top: 32px;
+        }
+
+        pre,
+        code {
+            font-family: "SFMono-Regular", "Menlo", "Monaco", monospace;
+            background: #f1f3f5;
+            padding: 2px 4px;
+            border-radius: 4px;
+        }
+
+        pre {
+            padding: 12px;
+            overflow-x: auto;
+        }
+
+        a {
+            color: #6f4ef2;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 16px 0;
+        }
+
+        th,
+        td {
+            border: 1px solid #dee2e6;
+            padding: 8px 12px;
+            text-align: left;
+        }
+
+        nav ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        nav li {
+            margin: 8px 0;
+        }
+
+        nav li a {
+            text-decoration: none;
+        }
+
+        .callout {
+            border-left: 4px solid #6f4ef2;
+            background: #f5f0ff;
+            padding: 12px 16px;
+            margin: 16px 0;
+        }
+
+        .warning {
+            border-left-color: #ff8a00;
+            background: #fff4e6;
+        }
+
+        footer {
+            max-width: 960px;
+            margin: 0 auto 32px;
+            padding: 0 24px;
+            color: #86868b;
+            font-size: 0.9rem;
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <h1>TheSwiftKit – Product Documentation</h1>
+        <p>A complete guide to configuring, customizing, and shipping your SwiftUI app.</p>
+    </header>
+    <main>
+        <section id="introduction">
+            <h2>1. Introduction</h2>
+            <p>TheSwiftKit is a production-ready SwiftUI template that bundles onboarding, authentication, paywalls,
+                analytics, notifications, AI assistants, settings, and local persistence into a modular, configurable
+                project. This documentation walks you through setup, provider integrations, customization, and
+                maintenance so you can launch rapidly with confidence.</p>
+            <div class="callout">
+                <strong>Scope:</strong> This HTML bundle is designed for offline delivery. All links reference
+                in-project files or external services you will configure separately.
+            </div>
+        </section>
+
+        <section id="contents">
+            <h2>2. Table of Contents</h2>
+            <nav>
+                <ul>
+                    <li><a href="#features">Feature Overview</a></li>
+                    <li><a href="#requirements">Requirements</a></li>
+                    <li><a href="#project-structure">Project Structure Overview</a></li>
+                    <li><a href="#installation">Setup &amp; Installation</a></li>
+                    <li><a href="#configuration">Configuration &amp; Secrets</a></li>
+                    <li><a href="#supabase">Supabase (Auth &amp; Database)</a></li>
+                    <li><a href="#authentication">Authentication Flow</a></li>
+                    <li><a href="#paywall">RevenueCat Paywall</a></li>
+                    <li><a href="#analytics">TelemetryDeck Analytics</a></li>
+                    <li><a href="#notifications">Notifications</a></li>
+                    <li><a href="#ai">AI Wrappers &amp; OpenAI Backend</a></li>
+                    <li><a href="#persistence">Local Persistence &amp; Core Data</a></li>
+                    <li><a href="#onboarding">Onboarding Experience</a></li>
+                    <li><a href="#customization">Branding &amp; UI Customization</a></li>
+                    <li><a href="#navigation">Navigation &amp; Flow Control</a></li>
+                    <li><a href="#assets">Assets, Localization, &amp; Legal</a></li>
+                    <li><a href="#testing">Debugging &amp; Testing Utilities</a></li>
+                    <li><a href="#deployment">Build &amp; Deployment Checklist</a></li>
+                    <li><a href="#support">Support &amp; Contact</a></li>
+                </ul>
+            </nav>
+        </section>
+
+        <section id="features">
+            <h2>3. Feature Overview</h2>
+            <p>The template ships with modular, opt-in features that work independently. You can remove or extend them
+                without affecting the rest of the project.</p>
+            <ul>
+                <li><strong>Onboarding:</strong> Carousel-style introduction with multiple layout presets.</li>
+                <li><strong>Authentication:</strong> Email/password via Supabase with profile capture and local
+                    fallback.</li>
+                <li><strong>Paywall &amp; Subscriptions:</strong> RevenueCat-powered offerings with StoreKit previews.
+                </li>
+                <li><strong>Analytics:</strong> TelemetryDeck signals with no-op fallback when keys are missing.</li>
+                <li><strong>Notifications:</strong> Unified service for local scheduling and APNs token management.</li>
+                <li><strong>AI Wrappers:</strong> Chat, image, and vision endpoints backed by a Flask OpenAI proxy.</li>
+                <li><strong>Settings Module:</strong> Appearance toggles, account actions, and debug utilities.</li>
+                <li><strong>Local Persistence Demo:</strong> Core Data stack showcasing CRUD patterns.</li>
+            </ul>
+        </section>
+
+        <section id="requirements">
+            <h2>4. Requirements</h2>
+            <ul>
+                <li>Xcode 15 or newer with Swift 5.9+.</li>
+                <li>iOS 16.0 minimum deployment target.</li>
+                <li>Service accounts as needed: Supabase, RevenueCat, TelemetryDeck, OpenAI (optional for AI), Apple
+                    Developer Program.</li>
+                <li>Optional tooling: Supabase CLI for Edge Functions, Python 3.10+ for the AI backend.</li>
+            </ul>
+        </section>
+
+        <section id="project-structure">
+            <h2>5. Project Structure Overview</h2>
+            <p>Key directories:</p>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Path</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><code>Core/</code></td>
+                        <td>Foundation modules: theme, routing, DI, analytics, notifications, persistence.</td>
+                    </tr>
+                    <tr>
+                        <td><code>Modules/</code></td>
+                        <td>Feature-specific SwiftUI modules (Auth, Onboarding, Paywall, Demo, Settings).</td>
+                    </tr>
+                    <tr>
+                        <td><code>Config/</code></td>
+                        <td>App configuration, feature flags, secrets templates.</td>
+                    </tr>
+                    <tr>
+                        <td><code>Backend/Supabase/</code></td>
+                        <td>SQL migrations and Edge Functions for Supabase integration.</td>
+                    </tr>
+                    <tr>
+                        <td><code>Backend/Python/</code></td>
+                        <td>Flask AI backend wrapping OpenAI.</td>
+                    </tr>
+                    <tr>
+                        <td><code>Resources/</code></td>
+                        <td>Assets, localization, StoreKit paywall configuration, Info.plist.</td>
+                    </tr>
+                    <tr>
+                        <td><code>documentation/</code></td>
+                        <td>Full documentation bundle (this file).</td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+
+        <section id="installation">
+            <h2>6. Setup &amp; Installation</h2>
+            <h3>6.1 Clone &amp; Open</h3>
+            <ol>
+                <li>Clone or download the repository to your Mac.</li>
+                <li>Open <code>TheSwiftKit.xcodeproj</code> in Xcode 15+.</li>
+            </ol>
+            <h3>6.2 Create Secrets File</h3>
+            <ol>
+                <li>Duplicate <code>Config/Secrets.sample.swift</code> to <code>Config/Secrets.swift</code>.</li>
+                <li>Fill in your API keys and URLs (details in <a href="#configuration">Configuration &amp;
+                        Secrets</a>).</li>
+            </ol>
+            <h3>6.3 Configure App Identity</h3>
+            <ul>
+                <li>App name: update <code>appName</code> in <code>Config/AppConfig.swift</code>.</li>
+                <li>Bundle ID: edit <code>PRODUCT_BUNDLE_IDENTIFIER</code> inside <code>project.yml</code> (or via Xcode
+                    &rarr; Targets &rarr; Signing).</li>
+                <li>Brand colors: update <code>primaryColorHex</code> and <code>accentColorHex</code> in
+                    <code>Core/Theme/DesignTokens.swift</code> or via <code>AppConfig.Branding</code>.
+                </li>
+            </ul>
+            <h3>6.4 Assets &amp; Icons</h3>
+            <ul>
+                <li>Replace app icon images in <code>Resources/Assets.xcassets/AppIcon.appiconset</code>.</li>
+                <li>Optionally add an <code>AppLogo</code> image set used across onboarding and paywall screens.</li>
+            </ul>
+            <h3>6.5 Build &amp; Run</h3>
+            <p>With secrets configured, build and run the project on the iOS Simulator or a device. Missing keys fall
+                back to safe no-op implementations so the UI remains interactive.</p>
+        </section>
+
+        <section id="configuration">
+            <h2>7. Configuration &amp; Secrets</h2>
+            <h3>7.1 App Configuration (<code>Config/AppConfig.swift</code>)</h3>
+            <ul>
+                <li><code>appName</code>: Replaces <code>__APP_NAME__</code> tokens in UI copy.</li>
+                <li><code>bundleId</code>: Displayed for reference; actual identifier controlled in build settings.</li>
+                <li><code>backend</code>: <code>.supabase</code> or <code>.local</code>, toggles repository
+                    implementations.</li>
+                <li><code>layout</code>: Example layout toggle (<code>.list</code> or <code>.grid</code>) consumed by
+                    demo views.</li>
+                <li><code>onboardingStyle</code>: Choose <code>.carousel</code>, <code>.highlights</code>, or
+                    <code>.minimal</code>.
+                </li>
+                <li><code>branding</code>: Set primary/accent colors once for global theming.</li>
+                <li><code>featureFlags</code>: Enable/disable modules (onboarding, auth, paywall, notifications).</li>
+                <li><code>legal</code>: Provide live URLs for Privacy Policy and Terms.</li>
+            </ul>
+            <h3>7.2 Secrets (<code>Config/Secrets.swift</code>)</h3>
+            <p>Populate the following constants (they are read at runtime by dependency injection).</p>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Key</th>
+                        <th>Where to obtain</th>
+                        <th>Used by</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><code>supabaseURL</code></td>
+                        <td>Supabase Project Settings &rarr; API &rarr; Project URL</td>
+                        <td>Supabase Auth/Profile/Subscriptions repositories</td>
+                    </tr>
+                    <tr>
+                        <td><code>supabaseAnonKey</code></td>
+                        <td>Supabase Project Settings &rarr; API &rarr; anon public key</td>
+                        <td>Supabase client initialization</td>
+                    </tr>
+                    <tr>
+                        <td><code>telemetryDeckAppID</code></td>
+                        <td>TelemetryDeck Dashboard &rarr; Destination App ID</td>
+                        <td>Analytics service</td>
+                    </tr>
+                    <tr>
+                        <td><code>revenueCatAPIKey</code></td>
+                        <td>RevenueCat Dashboard &rarr; Project &rarr; API Keys &rarr; Public SDK Key (iOS)</td>
+                        <td>Purchases service (RevenueCat)</td>
+                    </tr>
+                    <tr>
+                        <td><code>aiBackendBaseURLString</code></td>
+                        <td>Your AI backend origin (local Flask: <code>http://127.0.0.1:5001</code>)</td>
+                        <td>AI chat/image/vision views</td>
+                    </tr>
+                    <tr>
+                        <td><code>accountDeletionURLString</code></td>
+                        <td>Your hosted account deletion request endpoint (optional)</td>
+                        <td>Settings &rarr; Account deletion</td>
+                    </tr>
+                    <tr>
+                        <td>Sign in with Apple fields</td>
+                        <td>Apple Developer &rarr; Identifiers &rarr; Services IDs &amp; Keys</td>
+                        <td>Future Sign in with Apple integration (disabled by default)</td>
+                    </tr>
+                </tbody>
+            </table>
+            <div class="warning">
+                <strong>Never</strong> commit real credentials. Use encrypted secrets in CI/CD or environment-specific
+                <code>Secrets.swift</code> files ignored by version control.
+            </div>
+            <h3>7.3 Feature Flags (<code>Config/FeatureFlags.swift</code>)</h3>
+            <p>Toggle entire modules on/off (e.g., disable onboarding once users are live). The DI container reads these
+                flags to decide which flows to present.</p>
+        </section>
+
+        <section id="supabase">
+            <h2>8. Supabase (Authentication &amp; Database)</h2>
+            <h3>8.1 Create a Supabase Project</h3>
+            <ol>
+                <li>Sign in at <a href="https://supabase.com/">supabase.com</a> and create a new project.</li>
+                <li>Copy the <strong>Project URL</strong> and <strong>anon key</strong> into <code>Secrets.swift</code>.
+                </li>
+            </ol>
+            <h3>8.2 Enable Email Authentication</h3>
+            <ol>
+                <li>Supabase Dashboard &rarr; Authentication &rarr; Providers.</li>
+                <li>Enable Email/Password and configure SMTP if you plan to send confirmation emails (for development,
+                    disable confirmations).</li>
+            </ol>
+            <h3>8.3 Profiles Table</h3>
+            <p>The Swift app expects a <code>profiles</code> table to store user metadata (name, handle, avatar URL).
+                Create via SQL:</p>
+            <pre><code>create table public.profiles (
+  id uuid references auth.users primary key,
+  full_name text,
+  bio text,
+  avatar_url text,
+  updated_at timestamptz default now()
+);
+alter table public.profiles enable row level security;
+create policy "Profiles are viewable by owners" on public.profiles
+  for select using (auth.uid() = id);
+create policy "Profiles are updatable by owners" on public.profiles
+  for update using (auth.uid() = id);
+</code></pre>
+            <p>Update columns to match your desired profile schema. The default repository writes
+                <code>full_name</code>, <code>bio</code>, and <code>avatar_url</code>.
+            </p>
+            <h3>8.4 Storage for Avatars</h3>
+            <ol>
+                <li>Storage &rarr; Create bucket <code>avatars</code>.</li>
+                <li>Policies: allow authenticated users to <code>SELECT</code> and <code>INSERT</code>. Optionally allow
+                    public read for avatars.</li>
+            </ol>
+            <h3>8.5 Subscriptions Mirror</h3>
+            <ol>
+                <li>Run the SQL migrations in <code>Backend/Supabase/sql</code> in order:</li>
+            </ol>
+            <pre><code>psql &lt; Backend/Supabase/sql/001_user_subscriptions.sql
+psql &lt; Backend/Supabase/sql/002_user_subscriptions_enhancements.sql
+</code></pre>
+            <p>These scripts create <code>public.user_subscriptions</code>, enable RLS, and add helpful indexes.</p>
+            <h3>8.6 Deploy RevenueCat Webhook Function</h3>
+            <ol>
+                <li>Install the Supabase CLI and log in.</li>
+                <li>Deploy <code>Backend/Supabase/edge/user_subscriptions_webhook.ts</code> as an Edge Function:</li>
+            </ol>
+            <pre><code>supabase functions deploy user-subscriptions-webhook \
+  --project-ref YOUR_PROJECT_REF \
+  --no-verify-jwt</code></pre>
+            <p>Set the following environment variables for the function:</p>
+            <ul>
+                <li><code>SUPABASE_URL</code> – Your project URL.</li>
+                <li><code>SUPABASE_SERVICE_ROLE_KEY</code> – Service role key (keep secret, set via dashboard).</li>
+                <li><code>REVENUECAT_API_KEY</code> – Optional; enables email lookup for webhook payloads.</li>
+            </ul>
+            <p>In RevenueCat, add a webhook pointing to
+                <code>https://&lt;PROJECT_REF&gt;.functions.supabase.co/user-subscriptions-webhook</code>.
+            </p>
+            <h3>8.7 Local Development without Supabase</h3>
+            <p>Set <code>backend = .local</code> in <code>AppConfig.default</code> or override via dependency injection
+                to use mock repositories that keep data in-memory for rapid prototyping.</p>
+        </section>
+
+        <section id="authentication">
+            <h2>9. Authentication Flow</h2>
+            <p>Authentication is orchestrated by <code>AuthCoordinator</code> and repositories resolved via
+                <code>DIContainer</code>. Key files:
+            </p>
+            <ul>
+                <li><code>Modules/Auth/AuthCoordinator.swift</code>: Presents sign-in and profile setup flows.</li>
+                <li><code>Backend/Supabase/SupabaseAuthRepository.swift</code>: Wraps Supabase Auth API.</li>
+                <li><code>Modules/Auth/CreateAccountView.swift</code> &amp; <code>SignInView.swift</code>: SwiftUI
+                    screens.</li>
+            </ul>
+            <h3>9.1 Email Sign-Up &amp; Login</h3>
+            <ol>
+                <li>User enters email/password; Supabase handles credential storage.</li>
+                <li>After authentication, <code>ProfileSetupView</code> collects optional profile data.</li>
+                <li>Profile repository saves metadata to Supabase or local storage depending on the backend.</li>
+            </ol>
+            <h3>9.2 Sign in with Apple</h3>
+            <p>The button is present but disabled. To enable:</p>
+            <ul>
+                <li>Fill Apple keys inside <code>Secrets.swift</code>.</li>
+                <li>Add Sign in with Apple capability to the Xcode target.</li>
+                <li>Implement the ASAuthorization flow inside <code>AuthCoordinator</code>.</li>
+            </ul>
+            <h3>9.3 Handling Auth State</h3>
+            <p><code>RootView</code> observes auth status with <code>@AppStorage</code> and
+                <code>NotificationCenter</code> updates. When the user logs in, the app:
+            </p>
+            <ol>
+                <li>Calls <code>purchasesService.logIn(userID)</code> to link RevenueCat.</li>
+                <li>Refreshes entitlements to unlock premium content.</li>
+            </ol>
+            <h3>9.4 Removing the Test Drive Screen</h3>
+            <p>The debug-only Test Drive overlay defined in <code>Core/Root/TheSwiftKitApp.swift</code> helps QA preview
+                flows. To remove it:</p>
+            <ul>
+                <li>Delete the <code>#if DEBUG</code> block that wraps <code>TestDriveView</code>, or set
+                    <code>@State private var showTester = false</code> and remove references.
+                </li>
+                <li>Alternatively, exclude <code>Modules/Demo/TestDriveView.swift</code> from the build target.</li>
+                <li>Ensure release builds do not compile the demo module (remove from target membership).</li>
+            </ul>
+        </section>
+
+        <section id="paywall">
+            <h2>10. RevenueCat Paywall &amp; Subscriptions</h2>
+            <p>The paywall is powered by <code>Modules/Paywall/PaywallView.swift</code> with offerings sourced from
+                RevenueCat when configured.</p>
+            <h3>10.1 Connect RevenueCat</h3>
+            <ol>
+                <li>Create products in App Store Connect that match your entitlement strategy.</li>
+                <li>In RevenueCat, create a project and sync the App Store products.</li>
+                <li>Configure an offering with packages (e.g., monthly, yearly).</li>
+                <li>Copy the iOS public API key into <code>Secrets.revenueCatAPIKey</code>.</li>
+                <li>Link the webhook (see Supabase section) if you mirror subscriptions in your backend.</li>
+            </ol>
+            <h3>10.2 Local Paywall Preview</h3>
+            <p>If the SDK or API key is missing, the app uses <code>NoopPurchasesService</code> and fake offerings
+                defined in code so the UI is still testable.</p>
+            <h3>10.3 Customizing Paywall Content</h3>
+            <ul>
+                <li>Modify copy and layout in <code>Modules/Paywall/PaywallView.swift</code>.</li>
+                <li>Update the StoreKit configuration (<code>Resources/StoreKit/Paywall.storekit</code>) to simulate
+                    StoreKit purchases in Xcode previews.</li>
+                <li>Badges and call-to-actions adapt based on introductory offers automatically.</li>
+            </ul>
+            <h3>10.4 Entitlement Handling</h3>
+            <p><code>Notification.Name.subscriptionDidChange</code> informs <code>RootView</code> about entitlement
+                changes. Hook into this notification to unlock premium content in your modules.</p>
+        </section>
+
+        <section id="analytics">
+            <h2>11. TelemetryDeck Analytics</h2>
+            <h3>11.1 Setup</h3>
+            <ol>
+                <li>Create an app in the TelemetryDeck dashboard.</li>
+                <li>Copy the App ID into <code>Secrets.telemetryDeckAppID</code>.</li>
+            </ol>
+            <p>The DI container chooses between <code>TelemetryDeck</code> v2, <code>TelemetryClient</code> v1, or a
+                no-op implementation depending on your package dependencies.</p>
+            <h3>11.2 Tracking Signals</h3>
+            <ul>
+                <li>Use <code>container.analytics.track("Event.Name", properties: [:])</code> from anywhere in the app.
+                </li>
+                <li>Identify users via <code>analytics.identify(userID:)</code> (implement if required by your analytics
+                    provider).</li>
+            </ul>
+            <h3>11.3 Debugging</h3>
+            <p>In DEBUG builds, the analytics service logs when it is configured and when signals are sent.</p>
+        </section>
+
+        <section id="notifications">
+            <h2>12. Notifications</h2>
+            <p>Notification handling lives in <code>Core/Notifications/NotificationService.swift</code>. The debug UI is
+                <code>Modules/Notifications/NotificationsDebugView.swift</code>.
+            </p>
+            <h3>12.1 Request Permissions</h3>
+            <p>Call <code>await NotificationService.shared.requestAuthorization()</code> or use the debug screen to
+                prompt the system alert.</p>
+            <h3>12.2 Scheduling Local Notifications</h3>
+            <p>Use <code>scheduleLocal(title:body:secondsFromNow:categoryIdentifier:userInfo:)</code> to fire a banner
+                after a delay. Customize title/body for marketing or retention flows.</p>
+            <h3>12.3 Calendar &amp; Repeat Notifications</h3>
+            <p><code>scheduleCalendar</code> accepts <code>DateComponents</code> for precise scheduling (e.g., every
+                Monday at 8am). Enable repeats via the <code>repeats</code> flag.</p>
+            <h3>12.4 Custom Categories &amp; Actions</h3>
+            <p>Define interactive notifications through <code>registerDefaultCategories()</code>. Replace actions and
+                identifiers to match your business logic.</p>
+            <h3>12.5 Remote (APNs) Setup</h3>
+            <ol>
+                <li>In Xcode, enable Push Notifications and Background Modes (Remote notifications).</li>
+                <li>Upload your APNs key/certificate to your server or messaging provider.</li>
+                <li>Call <code>NotificationService.shared.registerForRemoteNotifications()</code> once permissions are
+                    granted.</li>
+                <li>The device token is logged and exposed via <code>lastDeviceTokenHex</code>.</li>
+            </ol>
+            <h3>12.6 Theming &amp; Assets in Notifications</h3>
+            <p>For rich notifications (images, buttons), add payload attachments on the server side. Customize
+                notification titles and bodies either in the scheduling methods or from your push provider.</p>
+            <h3>12.7 Removing the Debug Screen</h3>
+            <p>To hide <code>NotificationsDebugView</code> in production, remove the route in <code>AppRouter</code> or
+                hide the tab item via feature flags.</p>
+        </section>
+
+        <section id="ai">
+            <h2>13. AI Wrappers &amp; OpenAI Backend</h2>
+            <p>The app communicates with a lightweight Flask server that wraps OpenAI's Chat Completions, Image
+                Generation, and Vision APIs.</p>
+            <h3>13.1 Python Backend Setup</h3>
+            <ol>
+                <li>Install dependencies: <code>pip install -r Backend/Python/requirements.txt</code>.</li>
+                <li>Create <code>Backend/Python/.env</code> with:</li>
+            </ol>
+            <pre><code>OPENAI_API_KEY=sk-...
+# Optional overrides
+OPENAI_BASE_URL=https://api.openai.com/v1
+OPENAI_CHAT_MODEL=gpt-4o-mini
+OPENAI_IMAGE_MODEL=gpt-image-1
+OPENAI_VISION_MODEL=gpt-4o-mini
+</code></pre>
+            <ol start="3">
+                <li>Run locally: <code>python Backend/Python/app.py</code>.</li>
+                <li>Set <code>Secrets.aiBackendBaseURLString</code> to your backend origin (e.g.,
+                    <code>http://127.0.0.1:5001</code>).
+                </li>
+            </ol>
+            <h3>13.2 Changing Prompts &amp; Commands</h3>
+            <ul>
+                <li>AI chat prompts live inside the respective SwiftUI view models (e.g., <code>Modules/AI/</code> if
+                    you add custom logic). Update default system messages or conversation starters there.</li>
+                <li>Modify the Flask endpoints to inject guardrails, tool calling, or alternative models.</li>
+            </ul>
+            <h3>13.3 Deploying the Backend</h3>
+            <p>Host the Flask server on Render, Railway, Fly.io, or any provider that supports Python &amp; HTTPS.
+                Ensure CORS is configured (already enabled via <code>flask_cors.CORS</code>).</p>
+            <h3>13.4 ATS Exceptions</h3>
+            <p><code>Info.plist</code> includes exceptions for localhost during development. For production, host the
+                backend on HTTPS and remove temporary ATS exemptions.</p>
+        </section>
+
+        <section id="persistence">
+            <h2>14. Local Persistence &amp; Core Data</h2>
+            <ul>
+                <li><code>Core/Persistence/CoreDataStack.swift</code> defines an in-memory Core Data stack for demos.
+                </li>
+                <li><code>Modules/Demo/LocalCoreDataRepository.swift</code> offers CRUD examples.</li>
+                <li><code>Modules/Demo/LocalDataDemoView.swift</code> renders sample lists using
+                    <code>@FetchRequest</code> equivalents.
+                </li>
+            </ul>
+            <p>Replace the model entities or add your own <code>.xcdatamodeld</code> file for real persistence. Update
+                the repository implementation to map your entities.</p>
+        </section>
+
+        <section id="onboarding">
+            <h2>15. Onboarding Experience</h2>
+            <p>The onboarding coordinator is driven by <code>AppConfig.onboardingStyle</code> and page data in
+                <code>Modules/Onboarding/OnboardingModels.swift</code>.
+            </p>
+            <h3>15.1 Editing Pages</h3>
+            <p>Modify <code>OnboardingPage</code> objects (title, subtitle, system image, background) to match your
+                content. You can load data from JSON or remote config by extending the repository.</p>
+            <h3>15.2 Skipping Onboarding</h3>
+            <p>Disable via <code>featureFlags.onboarding = false</code> or set
+                <code>@AppStorage("hasSeenOnboarding")</code> to true after first launch.
+            </p>
+            <h3>15.3 Custom Entry Points</h3>
+            <p>Wrap onboarding screens inside <code>OnboardingCoordinator</code> or present custom flows by editing
+                <code>RootView</code>.
+            </p>
+        </section>
+
+        <section id="customization">
+            <h2>16. Branding &amp; UI Customization</h2>
+            <h3>16.1 Theme Colors</h3>
+            <p>Edit <code>DesignTokens.primaryHex</code> and <code>accentHex</code> (or the <code>Branding</code>
+                struct) to globally change button, gradient, and accent colors.</p>
+            <h3>16.2 App Theme Styles</h3>
+            <p><code>Core/Theme/Theme.swift</code> defines <code>AppTheme</code> and glass effects. Customize to adjust
+                typography, corner radii, or background treatments.</p>
+            <h3>16.3 Fonts &amp; Typography</h3>
+            <p>Add custom fonts to <code>Resources/</code>, register in <code>Info.plist</code>, and update theme
+                modifiers to apply them.</p>
+            <h3>16.4 Layout Adjustments</h3>
+            <p>Views respond to <code>AppConfig.layout</code>. Extend the enum for list/grid variations or add new
+                layout strategies consumed by feature modules.</p>
+            <h3>16.5 App Name &amp; Bundle ID</h3>
+            <ul>
+                <li>Display name: update <code>AppConfig.appName</code> and the scheme name in Xcode.</li>
+                <li>Bundle ID: change inside <code>project.yml</code> and re-run <code>tuist generate</code> if you use
+                    Tuist (or edit build settings directly).</li>
+            </ul>
+            <h3>16.6 Icons &amp; Logo</h3>
+            <p>Replace assets in <code>Resources/Assets.xcassets</code>. Paywall and onboarding look for
+                <code>AppLogo</code>; fallback UI uses app initials if unavailable.
+            </p>
+        </section>
+
+        <section id="navigation">
+            <h2>17. Navigation &amp; Flow Control</h2>
+            <p>Navigation is coordinated by <code>AppRouter</code> and <code>RootView</code>.</p>
+            <h3>17.1 Adding Routes</h3>
+            <ol>
+                <li>Add a case to <code>AppRoute</code>.</li>
+                <li>Handle the new case in <code>NavigationStack.navigationDestination</code>.</li>
+                <li>Push routes using <code>router.push(.yourRoute)</code>.</li>
+            </ol>
+            <h3>17.2 Modifying Tabs</h3>
+            <p>Edit the <code>TabView</code> in <code>RootView</code> to add or remove tabs. Each tab can wrap its own
+                <code>NavigationStack</code>.
+            </p>
+            <h3>17.3 Conditional Flows</h3>
+            <p>Use <code>FeatureFlags</code> and <code>@AppStorage</code> toggles (e.g., <code>hasSeenOnboarding</code>)
+                to branch flows without rewriting view logic.</p>
+            <h3>17.4 Presenting Modals &amp; Sheets</h3>
+            <p>Paywall uses a <code>.sheet</code> with custom detents. Reuse this pattern for feedback prompts or
+                upsells.</p>
+            <h3>17.5 Removing Demo Screens</h3>
+            <p>Delete demo routes (<code>.aiChat</code>, <code>.notifications</code>, etc.) or guard them with feature
+                flags before shipping.</p>
+        </section>
+
+        <section id="assets">
+            <h2>18. Assets, Localization, &amp; Legal</h2>
+            <h3>18.1 Localization</h3>
+            <ul>
+                <li>Update strings in <code>Resources/Base.lproj/Localizable.strings</code>.</li>
+                <li>Tokens like <code>__APP_NAME__</code> are replaced at runtime via <code>Localization.swift</code>.
+                </li>
+                <li>Add new language folders (e.g., <code>es.lproj</code>) and duplicate the strings file.</li>
+            </ul>
+            <h3>18.2 Legal Links</h3>
+            <p>Set <code>AppConfig.legal.privacyPolicyURL</code> and <code>termsURL</code> to live documents.</p>
+            <h3>18.3 StoreKit Files</h3>
+            <p><code>Resources/StoreKit/Paywall.storekit</code> and <code>PayWallLocal.storekit</code> help you test
+                paywalls in Xcode. Keep them in sync with your RevenueCat offerings.</p>
+        </section>
+
+        <section id="testing">
+            <h2>19. Debugging &amp; Testing Utilities</h2>
+            <h3>19.1 Test Drive View</h3>
+            <p>The debug-only Test Drive interface (<code>Modules/Demo/TestDriveView.swift</code>) lets you:</p>
+            <ul>
+                <li>Force onboarding</li>
+                <li>Simulate subscription states</li>
+                <li>Open settings, paywall, or other features rapidly</li>
+            </ul>
+            <p>Remove or hide it before distributing release builds.</p>
+            <h3>19.2 Logging</h3>
+            <p><code>Core/Logging/Logger.swift</code> centralizes logs. Extend to integrate with services like Sentry.
+            </p>
+            <h3>19.3 Unit &amp; UI Tests</h3>
+            <p>Use the <code>Tests/</code> directory (currently minimal) to add regression coverage for your features.
+            </p>
+        </section>
+
+        <section id="deployment">
+            <h2>20. Build &amp; Deployment Checklist</h2>
+            <ul>
+                <li>Verify all secrets are set and build configurations exclude sample keys.</li>
+                <li>Disable or remove demo/test screens.</li>
+                <li>Provide production Privacy Policy and Terms URLs.</li>
+                <li>Upload App Store icons and marketing assets.</li>
+                <li>Run through onboarding, auth, paywall, and notification flows on device.</li>
+                <li>Ensure ATS exceptions are removed for release builds if not required.</li>
+            </ul>
+        </section>
+
+        <section id="support">
+            <h2>21. Support &amp; Contact</h2>
+            <p>Need help? Reach out to your template provider or support channel. Suggested contact email: <a
+                    href="mailto:adgan.business@gmail.com">adgan.business@gmail.com</a></p>
+            <p>For platform-specific issues:</p>
+            <ul>
+                <li><strong>Supabase:</strong> <a href="https://supabase.com/docs">supabase.com/docs</a></li>
+                <li><strong>RevenueCat:</strong> <a href="https://docs.revenuecat.com/">docs.revenuecat.com</a></li>
+                <li><strong>TelemetryDeck:</strong> <a href="https://telemetrydeck.com/">telemetrydeck.com</a></li>
+                <li><strong>OpenAI:</strong> <a href="https://platform.openai.com/docs">platform.openai.com/docs</a>
+                </li>
+            </ul>
+        </section>
+    </main>
+    <footer>
+        <p>&copy; 2024 TheSwiftKit. Customize and redistribute with your template package.</p>
+    </footer>
+</body>
+
+</html>
