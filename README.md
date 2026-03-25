@@ -140,8 +140,3 @@ File Map – Edit Points
 - Bundle ID: `project.yml` or Xcode Signing
 - Assets: `Resources/Assets.xcassets/*`
 - Localized copy: `Resources/Base.lproj/Localizable.strings`
-
-License
--------
-Add your license of choice.
-
