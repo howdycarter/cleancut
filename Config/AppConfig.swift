@@ -76,7 +76,7 @@ public extension AppConfig {
                 primaryColorHex: "__PRIMARY_COLOR__",
                 accentColorHex: "__ACCENT_COLOR__"
             ),
-            featureFlags: FeatureFlags(auth: true),
+            featureFlags: FeatureFlags(auth: true, appleSignIn: true),
             legal: LegalLinks(
                 privacyPolicyURL: URL(string: "__PRIVACY_URL__") ?? URL(string: "https://example.com/privacy")!,
                 termsURL: URL(string: "__TERMS_URL__") ?? URL(string: "https://example.com/terms")!

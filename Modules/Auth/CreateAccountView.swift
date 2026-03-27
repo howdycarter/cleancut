@@ -20,7 +20,7 @@ struct CreateAccountView: View {
         VStack(spacing: DesignTokens.Spacing.lg) {
             VStack(spacing: 8) {
                 Text("auth.create.title")
-                    .font(.largeTitle.bold())
+                    .appFont(.largeTitle)
                     .frame(maxWidth: .infinity, alignment: .leading)
                 Text("auth.create.subtitle")
                     .foregroundColor(.secondary)
@@ -29,7 +29,7 @@ struct CreateAccountView: View {
 
             if let infoMessage {
                 Text(infoMessage)
-                    .font(.footnote)
+                    .appFont(.footnote)
                     .foregroundColor(.white)
                     .padding(8)
                     .frame(maxWidth: .infinity, alignment: .leading)
@@ -39,7 +39,7 @@ struct CreateAccountView: View {
 
             if let errorMessage {
                 Text(errorMessage)
-                    .font(.footnote)
+                    .appFont(.footnote)
                     .foregroundColor(.white)
                     .padding(8)
                     .frame(maxWidth: .infinity, alignment: .leading)
@@ -54,19 +54,19 @@ struct CreateAccountView: View {
                     .textInputAutocapitalization(.never)
                     .disableAutocorrection(true)
                     .padding(12)
-                    .background(Color(.secondarySystemBackground))
+                    .background(DS.Colors.surfaceSecondary)
                     .clipShape(RoundedRectangle(cornerRadius: DesignTokens.Radius.md, style: .continuous))
 
                 SecureField(LocalizedStringKey("auth.password"), text: $password)
                     .textContentType(.newPassword)
                     .padding(12)
-                    .background(Color(.secondarySystemBackground))
+                    .background(DS.Colors.surfaceSecondary)
                     .clipShape(RoundedRectangle(cornerRadius: DesignTokens.Radius.md, style: .continuous))
 
                 SecureField(LocalizedStringKey("auth.password.confirm"), text: $confirmPassword)
                     .textContentType(.newPassword)
                     .padding(12)
-                    .background(Color(.secondarySystemBackground))
+                    .background(DS.Colors.surfaceSecondary)
                     .clipShape(RoundedRectangle(cornerRadius: DesignTokens.Radius.md, style: .continuous))
 
                 Button(action: signUp) {

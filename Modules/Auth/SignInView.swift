@@ -11,9 +11,15 @@ struct SignInView: View {
     @State private var email: String = ""
     @State private var password: String = ""
     @State private var isLoading: Bool = false
+    @State private var isAppleLoading: Bool = false
     @State private var errorMessage: String?
     @State private var pendingUser: User?
     @State private var signInAlert: SignInAlert?
+
+    /// The raw nonce for the current Apple sign-in attempt.
+    /// Generated fresh on each request; the SHA-256 hash is sent to Apple,
+    /// and the raw value is sent to Supabase for verification.
+    @State private var currentNonce: String?
 
     var onSignedIn: (User) -> Void
     @State private var showCreateAccount: Bool = false
@@ -25,7 +31,7 @@ struct SignInView: View {
                 // Keep logo static; circle still breathes
                 LogoView(size: 120, animateLogo: false)
                 Text(container.config.appName)
-                    .font(.system(size: 32, weight: .bold, design: .rounded))
+                    .font(AppTypography.custom(size: 32, weight: .bold, relativeTo: .largeTitle))
                     .frame(maxWidth: .infinity)
                 Text("auth.subtitle")
                     .foregroundColor(.secondary)
@@ -36,7 +42,7 @@ struct SignInView: View {
             // Error banner
             if let errorMessage {
                 Text(errorMessage)
-                    .font(.footnote)
+                    .appFont(.footnote)
                     .foregroundColor(.white)
                     .padding(8)
                     .frame(maxWidth: .infinity, alignment: .leading)
@@ -53,13 +59,13 @@ struct SignInView: View {
                     .textInputAutocapitalization(.never)
                     .disableAutocorrection(true)
                     .padding(12)
-                    .background(Color(.secondarySystemBackground))
+                    .background(DS.Colors.surfaceSecondary)
                     .clipShape(RoundedRectangle(cornerRadius: DesignTokens.Radius.md, style: .continuous))
 
                 SecureField(LocalizedStringKey("auth.password"), text: $password)
                     .textContentType(.password)
                     .padding(12)
-                    .background(Color(.secondarySystemBackground))
+                    .background(DS.Colors.surfaceSecondary)
                     .clipShape(RoundedRectangle(cornerRadius: DesignTokens.Radius.md, style: .continuous))
 
                 Button(action: signIn) {
@@ -74,7 +80,7 @@ struct SignInView: View {
                     .foregroundColor(.white)
                     .clipShape(RoundedRectangle(cornerRadius: DesignTokens.Radius.md, style: .continuous))
                 }
-                .disabled(!isPrimaryEnabled || isLoading)
+                .disabled(!isPrimaryEnabled || isLoading || isAppleLoading)
                 .accessibilityLabel(Text("auth.signin.access"))
             }
 
@@ -85,31 +91,67 @@ struct SignInView: View {
                 Rectangle().frame(height: 1).foregroundColor(.secondary.opacity(0.3))
             }
 
-            // Sign in with Apple (visual; backend wired when using Supabase)
-            SignInWithAppleButton(.signIn) { _ in
-                // No-op in local mode; backend wiring happens in Supabase config.
-            } onCompletion: { result in
-                // Swallow result; the generator wires the adapter.
-            }
-            .signInWithAppleButtonStyle(.black)
-            .frame(height: 44)
-            .clipShape(RoundedRectangle(cornerRadius: DesignTokens.Radius.md, style: .continuous))
-            .accessibilityLabel(Text("auth.apple.access"))
-            .disabled(true)
-            .overlay(alignment: .bottomLeading) {
-                if container.config.backend == .local {
-                    Text("auth.apple.note")
-                        .font(.caption2)
-                        .foregroundColor(.secondary)
-                        .padding(.top, 4)
-                        .padding(.leading, 4)
+            // ------------------------------------------------------------------
+            // Sign in with Apple
+            //
+            // The button is gated behind the `appleSignIn` feature flag.
+            // When enabled with a Supabase backend, the full SIWA flow runs:
+            //   onRequest  -> generate a fresh nonce, SHA-256 hash it for Apple
+            //   onComplete -> extract the identity token, exchange it with Supabase
+            //
+            // When the backend is `.local`, the mock service returns a fake user.
+            // When the flag is off, the button is shown disabled (greyed out).
+            // ------------------------------------------------------------------
+            if container.config.featureFlags.appleSignIn {
+                ZStack {
+                    SignInWithAppleButton(.signIn) { request in
+                        // Generate a fresh cryptographic nonce for this sign-in attempt.
+                        let nonce = AppleSignInService.randomNonceString()
+                        currentNonce = nonce
+                        request.requestedScopes = [.fullName, .email]
+                        request.nonce = AppleSignInService.sha256(nonce)
+                    } onCompletion: { result in
+                        handleAppleSignInCompletion(result)
+                    }
+                    .signInWithAppleButtonStyle(.black)
+                    .frame(height: 44)
+                    .clipShape(RoundedRectangle(cornerRadius: DesignTokens.Radius.md, style: .continuous))
+                    .accessibilityLabel(Text("auth.apple.access"))
+                    .disabled(isLoading || isAppleLoading)
+
+                    // Loading overlay shown while exchanging the token with Supabase.
+                    if isAppleLoading {
+                        RoundedRectangle(cornerRadius: DesignTokens.Radius.md, style: .continuous)
+                            .fill(Color.black.opacity(0.6))
+                            .frame(height: 44)
+                            .overlay(ProgressView().tint(.white))
+                            .allowsHitTesting(false)
+                    }
                 }
+                .overlay(alignment: .bottomLeading) {
+                    if container.config.backend == .local {
+                        Text("auth.apple.note")
+                            .appFont(.caption2)
+                            .foregroundColor(.secondary)
+                            .padding(.top, 4)
+                            .padding(.leading, 4)
+                    }
+                }
+            } else {
+                // Feature flag is off: show the button disabled so users see
+                // SIWA is supported but not yet configured.
+                SignInWithAppleButton(.signIn) { _ in } onCompletion: { _ in }
+                .signInWithAppleButtonStyle(.black)
+                .frame(height: 44)
+                .clipShape(RoundedRectangle(cornerRadius: DesignTokens.Radius.md, style: .continuous))
+                .accessibilityLabel(Text("auth.apple.access"))
+                .disabled(true)
             }
 
             // Create account link
             NavigationLink(destination: CreateAccountView(onSignedIn: onSignedIn)) {
                 Text("auth.createaccount")
-                    .font(.footnote)
+                    .appFont(.footnote)
                     .foregroundColor(DesignTokens.accentColor)
             }
 
@@ -144,11 +186,15 @@ struct SignInView: View {
     }
 }
 
+// MARK: - Actions
+
 private extension SignInView {
     var isPrimaryEnabled: Bool {
         // Allow any non-empty password for sign-in
         !email.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty && !password.isEmpty
     }
+
+    // MARK: Email / Password Sign In
 
     @MainActor
     func signIn() {
@@ -173,7 +219,89 @@ private extension SignInView {
             }
         }
     }
+
+    // MARK: Sign in with Apple
+
+    /// Handles the `onCompletion` callback from `SignInWithAppleButton`.
+    ///
+    /// **Success path:**
+    /// 1. Extract the `ASAuthorizationAppleIDCredential` from the authorization.
+    /// 2. Read the identity token JWT from the credential.
+    /// 3. Pass the token + raw nonce to `AuthRepository.signInWithApple()`.
+    /// 4. On success, link RevenueCat, track analytics, and navigate.
+    ///
+    /// **Edge cases handled:**
+    /// - User cancellation (`.canceled` error code) -- silently ignored.
+    /// - Missing or invalid identity token -- shows user-friendly error.
+    /// - Network / Supabase errors -- shows error banner + failure alert.
+    /// - First-time sign-in (Apple sends name + email only once) -- the name/email
+    ///   from the credential is available in the completion but Supabase stores them
+    ///   in `raw_user_meta_data` automatically on account creation.
+    @MainActor
+    func handleAppleSignInCompletion(_ result: Result<ASAuthorization, Error>) {
+        switch result {
+        case .failure(let error):
+            // Check if the user simply tapped "Cancel".
+            if let authError = error as? ASAuthorizationError, authError.code == .canceled {
+                container.analytics.track("Auth.AppleSignInCancelled")
+                return
+            }
+            errorMessage = error.localizedDescription
+            container.analytics.track("Auth.AppleSignInFailure",
+                                      properties: ["error": error.localizedDescription])
+            signInAlert = .failure
+
+        case .success(let authorization):
+            guard let credential = authorization.credential as? ASAuthorizationAppleIDCredential else {
+                errorMessage = NSLocalizedString("auth.apple.error.token", comment: "")
+                signInAlert = .failure
+                return
+            }
+            guard let tokenData = credential.identityToken,
+                  let identityToken = String(data: tokenData, encoding: .utf8) else {
+                errorMessage = NSLocalizedString("auth.apple.error.token", comment: "")
+                signInAlert = .failure
+                return
+            }
+            guard let nonce = currentNonce else {
+                // This should never happen if onRequest ran correctly.
+                errorMessage = NSLocalizedString("auth.apple.error.token", comment: "")
+                signInAlert = .failure
+                return
+            }
+
+            // Exchange the Apple token for a Supabase session asynchronously.
+            isAppleLoading = true
+            errorMessage = nil
+            Task {
+                do {
+                    let user = try await container.authRepository.signInWithApple(
+                        idToken: identityToken,
+                        nonce: nonce
+                    )
+
+                    isAppleLoading = false
+                    pendingUser = user
+
+                    // Link RevenueCat and refresh entitlements.
+                    await container.purchasesService.logIn(user.id)
+                    await container.purchasesService.refreshSubscriptionStatus()
+
+                    container.analytics.track("Auth.AppleSignInSuccess")
+                    signInAlert = .success
+                } catch {
+                    isAppleLoading = false
+                    errorMessage = error.localizedDescription
+                    container.analytics.track("Auth.AppleSignInFailure",
+                                              properties: ["error": error.localizedDescription])
+                    signInAlert = .failure
+                }
+            }
+        }
+    }
 }
+
+// MARK: - Supporting Types
 
 private enum SignInAlert: Identifiable {
     case success

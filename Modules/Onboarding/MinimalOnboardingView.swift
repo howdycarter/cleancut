@@ -10,27 +10,27 @@ struct MinimalOnboardingView: View {
     var body: some View {
         ZStack {
             AnimatedBackground().opacity(theme.isGlass ? 1 : 0.35)
-            VStack(spacing: DesignTokens.Spacing.lg) {
+            VStack(spacing: DS.Spacing.lg) {
                 LogoView(size: 120)
                 Text("onb.minimal.title")
-                    .font(.title2.bold())
+                    .appFont(.title2)
                 Text("onb.minimal.subtitle")
                     .foregroundColor(.secondary)
                     .multilineTextAlignment(.center)
-                    .padding(.horizontal, DesignTokens.Spacing.xl)
+                    .padding(.horizontal, DS.Spacing.xl)
                 Button(action: { withAnimation(.easeInOut(duration: 0.35)) { done() } }) {
                     Text("onb.getstarted")
                         .frame(maxWidth: .infinity)
                         .padding()
-                        .background(DesignTokens.primaryColor)
+                        .background(DS.primary)
                         .foregroundColor(.white)
-                        .clipShape(RoundedRectangle(cornerRadius: DesignTokens.Radius.md, style: .continuous))
-                        .shadow(color: DesignTokens.primaryColor.opacity(0.3), radius: 12, x: 0, y: 6)
+                        .clipShape(RoundedRectangle(cornerRadius: DS.Radius.md, style: .continuous))
+                        .shadow(color: DS.primary.opacity(0.3), radius: 12, x: 0, y: 6)
                 }
             }
-            .padding(.vertical, DesignTokens.Spacing.xl)
-            .padding(.horizontal, DesignTokens.Spacing.xl)
-            .if(theme.isGlass) { view in view.glassCard(cornerRadius: DesignTokens.Radius.lg) }
+            .padding(.vertical, DS.Spacing.xl)
+            .padding(.horizontal, DS.Spacing.xl)
+            .dsCard(radius: DS.Radius.lg)
         }
     }
 }

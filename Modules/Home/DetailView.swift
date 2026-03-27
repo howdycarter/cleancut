@@ -7,11 +7,11 @@ import SwiftUI
 struct DetailView: View {
     let itemID: String
     var body: some View {
-        VStack(spacing: DesignTokens.Spacing.md) {
+        VStack(spacing: DS.Spacing.md) {
             Text("detail.title")
-                .font(.title2.bold())
+                .appFont(.title2)
             Text("\(itemID)")
-                .font(.body.monospaced())
+                .appFont(.body)
         }
         .padding()
         .frame(maxWidth: .infinity, maxHeight: .infinity)

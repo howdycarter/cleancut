@@ -1,0 +1,14 @@
+{
+  "app_name": "My Amazing App",
+  "bundle_id": "com.yourcompany.myapp",
+  "primary_color": "#8A2BE2",
+  "accent_color": "#FF8A00",
+  "supabase_url": "https://YOUR-PROJECT.supabase.co",
+  "supabase_anon_key": "YOUR_SUPABASE_ANON_KEY",
+  "revenuecat_api_key": "",
+  "telemetrydeck_app_id": "",
+  "ai_backend_url": "http://localhost:5001",
+  "testflight_app_id": "000000000",
+  "privacy_url": "https://example.com/privacy",
+  "terms_url": "https://example.com/terms"
+}

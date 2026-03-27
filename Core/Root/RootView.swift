@@ -52,7 +52,7 @@ struct RootView: View {
             SettingsView()
                 .tabItem { Label("settings.tab", systemImage: "gearshape.fill") }
         }
-        .tint(DesignTokens.accentColor)
+        .tint(DS.accent)
         .sheet(isPresented: $isShowingPaywall) {
             Group {
                 if #available(iOS 16.4, *) {
@@ -126,6 +126,7 @@ struct RootView: View {
             }
         }
         .onReceive(NotificationCenter.default.publisher(for: .subscriptionDidChange)) { note in
+            guard container.config.featureFlags.paywall else { return }
             let active = note.userInfo?["hasActiveEntitlement"] as? Bool
             hasActiveEntitlement = active
             if checkedAuthOnce && isAuthenticated {

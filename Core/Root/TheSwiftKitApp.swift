@@ -14,7 +14,7 @@ struct TheSwiftKitApp: App {
     #endif
 
     @UIApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
-    @AppStorage("appThemeStyle") private var themeStyleRaw: String = AppThemeStyle.standard.rawValue
+    @AppStorage("appThemeStyle") private var themeStyleRaw: String = DS.surfaceStyle.rawValue
     @AppStorage("appearanceDark") private var appearanceDark: Bool = false
     @AppStorage("appearanceLocked") private var appearanceLocked: Bool = false
 
@@ -22,6 +22,12 @@ struct TheSwiftKitApp: App {
         // Initialize analytics as early as possible
         container.analytics.configure()
         container.analytics.track("App.Launch")
+
+        // Start cache auto-invalidation listener (clears cache on sign-out).
+        // Safe to call multiple times; only the first call registers observers.
+        if container.config.featureFlags.enableCaching {
+            CacheInvalidationObserver.shared.startListening()
+        }
     }
 
     var body: some Scene {
@@ -47,7 +53,7 @@ struct TheSwiftKitApp: App {
             }
             .inject(container)
             .environmentObject(router)
-            .appTheme(AppTheme(style: AppThemeStyle(rawValue: themeStyleRaw) ?? .standard))
+            .dsTheme(DSTheme(surfaceStyle: SurfaceStyle(rawValue: themeStyleRaw) ?? DS.surfaceStyle))
             .preferredColorScheme(appearanceLocked ? (appearanceDark ? .dark : .light) : nil)
             .task {
                 // Configure RevenueCat early and refresh entitlements on launch
@@ -58,7 +64,7 @@ struct TheSwiftKitApp: App {
             RootView()
                 .inject(container)
                 .environmentObject(router)
-                .appTheme(AppTheme(style: AppThemeStyle(rawValue: themeStyleRaw) ?? .standard))
+                .dsTheme(DSTheme(surfaceStyle: SurfaceStyle(rawValue: themeStyleRaw) ?? DS.surfaceStyle))
                 .preferredColorScheme(appearanceLocked ? (appearanceDark ? .dark : .light) : nil)
                 .task {
                     // Configure RevenueCat early and refresh entitlements on launch

@@ -88,7 +88,11 @@
 "auth.signout" = "Sign Out";
 "auth.or" = "or";
 "auth.apple" = "Sign in with Apple";
-"auth.apple.note" = "Apple sign-in is wired when using Supabase.";
+"auth.apple.note" = "Apple sign-in uses mock data in local mode.";
+"auth.apple.error.cancelled" = "Sign in was cancelled.";
+"auth.apple.error.token" = "Could not retrieve Apple identity token. Please try again.";
+"auth.apple.error.authorization" = "Apple authorization failed: %@";
+"auth.apple.error.backend" = "Could not complete sign in: %@";
 "auth.error" = "Could not sign in. Check your details and try again.";
 "auth.signin.access" = "Sign in";
 "auth.apple.access" = "Sign in with Apple";
@@ -113,3 +117,39 @@
 "account.delete.action" = "Delete";
 "account.delete.message" = "This removes your account data. In local mode, this signs you out.";
 "generic.cancel" = "Cancel";
+
+/* Home Screen */
+"home.welcome" = "Welcome";
+"home.welcome.named %@" = "Welcome, %@";
+"home.section.ai" = "AI Features";
+"home.ai.chat" = "Text Generation";
+"home.ai.images" = "Image Generation";
+"home.ai.vision" = "Vision Analysis";
+"home.getstarted.title" = "Getting Started";
+"home.getstarted.body" = "This is your app's home screen. Add feature sections by enabling flags in FeatureFlags.swift, or add your own content directly in HomeView.swift.";
+"tester.runfullflow" = "Run Full Flow";
+
+/* AI Module */
+"ai.chat.title" = "Text Generation";
+"ai.chat.placeholder" = "Type a message";
+"ai.images.title" = "Image Generation";
+"ai.images.placeholder" = "Describe an image";
+"ai.images.generate" = "Generate";
+"ai.images.empty" = "No images yet";
+"ai.vision.title" = "Vision";
+"ai.vision.choose" = "Choose Photo";
+"ai.vision.camera" = "Take Photo";
+"ai.vision.empty" = "No image selected";
+"ai.vision.analyze" = "Analyze Image";
+
+/* Paywall */
+"paywall.title" = "Pick your plan";
+"paywall.benefit.1" = "Unlimited access to all features";
+"paywall.benefit.2" = "Priority support";
+"paywall.benefit.3" = "Ad-free experience";
+"paywall.benefit.4" = "Cloud sync across devices";
+"paywall.benefit.5" = "Early access to new features";
+"paywall.allplans" = "Show all plans";
+"paywall.fewerplans" = "Show fewer plans";
+"paywall.continue" = "Continue";
+"paywall.restore" = "Restore Purchases";

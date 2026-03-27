@@ -26,7 +26,7 @@ struct SettingsView: View {
             List {
                 if let profile {
                     Section {
-                        HStack(spacing: DesignTokens.Spacing.md) {
+                        HStack(spacing: DS.Spacing.md) {
                             if let url = profile.avatarURL {
                                 AsyncImage(url: url) { phase in
                                     switch phase {
@@ -43,14 +43,14 @@ struct SettingsView: View {
                                     .frame(width: 56, height: 56)
                             }
                             VStack(alignment: .leading, spacing: 4) {
-                                Text(profile.name.isEmpty ? "" : profile.name).font(.headline)
+                                Text(profile.name.isEmpty ? "" : profile.name).appFont(.headline)
                                 if let currentUser { Text(currentUser.email).foregroundColor(.secondary) }
                             }
                         }
-                        .padding(.vertical, DesignTokens.Spacing.sm)
+                        .padding(.vertical, DS.Spacing.sm)
                     }
                 }
-                if let currentSub = subscription {
+                if container.config.featureFlags.paywall, let currentSub = subscription {
                     Section("Subscription") {
                         HStack {
                             Label(subscriptionDisplayText, systemImage: "crown.fill")
@@ -69,11 +69,11 @@ struct SettingsView: View {
                         }
                         if hasActiveEntitlement, willRenew == false {
                             Text("Subscription cancelled")
-                                .font(.footnote.weight(.semibold))
+                                .appFont(.footnoteSemibold)
                                 .foregroundColor(.red)
                             if let exp = effectiveExpiryDate {
                                 Text("\(currentSub.plan.rawValue.capitalized) plan ends on: \(exp, style: .date)")
-                                    .font(.footnote)
+                                    .appFont(.footnote)
                                     .foregroundColor(.secondary)
                             }
                         }

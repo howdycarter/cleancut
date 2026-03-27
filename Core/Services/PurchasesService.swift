@@ -19,7 +19,11 @@ public protocol PurchasesService: Sendable {
 
 public struct NoopPurchasesService: PurchasesService {
     public init() {}
-    public func configure() {}
+    public func configure() {
+        #if DEBUG
+        print("[Purchases] NoopPurchasesService active — showing demo offerings. Configure RevenueCat in Secrets.swift to enable real subscriptions.")
+        #endif
+    }
     public func logIn(_ appUserId: String) async {}
     public func restorePurchases() async throws {}
     public func logOut() async {}

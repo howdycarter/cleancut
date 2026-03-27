@@ -9,7 +9,7 @@ struct AnimatedBackground: View {
         TimelineView(.animation) { context in
             Canvas { ctx, size in
                 let t = context.date.timeIntervalSinceReferenceDate
-                let colors = [DesignTokens.primaryColor, DesignTokens.accentColor]
+                let colors = [DS.primary, DS.accent]
                 for i in 0..<6 {
                     let phase = t / 6 + Double(i) * 0.35
                     let x = cos(phase) * (size.width * 0.25) + size.width * [0.2,0.8,0.5,0.7,0.3,0.6][i % 6]

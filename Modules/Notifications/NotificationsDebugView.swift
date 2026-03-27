@@ -35,7 +35,7 @@ struct NotificationsDebugView: View {
             Section("notif.remote") {
                 Button("notif.register.apns") { svc.registerForRemoteNotifications() }
                 if let token = svc.lastDeviceTokenHex {
-                    Text(token).font(.footnote).textSelection(.enabled)
+                    Text(token).appFont(.footnote).textSelection(.enabled)
                 }
             }
         }

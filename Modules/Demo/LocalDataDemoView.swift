@@ -27,7 +27,7 @@ struct LocalDataDemoView: View {
                 } else {
                     ForEach(repo.items) { item in
                         VStack(alignment: .leading, spacing: 4) {
-                            Text(item.name).font(.headline)
+                            Text(item.name).appFont(.headline)
                             if !item.contact.isEmpty { Text(item.contact).foregroundColor(.secondary) }
                         }
                     }

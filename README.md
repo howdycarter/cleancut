@@ -1,142 +1,377 @@
-TheSwiftKit – SwiftUI App Template
-=================================
+<p align="center">
+  <img src="Resources/Assets.xcassets/AppIcon.appiconset/AppIcon.png" width="120" alt="The Swift Kit" />
+</p>
 
-Overview
---------
-- TheSwiftKit is a production‑ready SwiftUI app template with modular features: onboarding, authentication, paywall/subscriptions, analytics, notifications, AI wrappers, settings, and local persistence.
-- Goal: clone → paste keys → set app name/colors → run. No code rewrites required for the typical setup.
+<h1 align="center">The Swift Kit</h1>
 
-Requirements
-------------
-- Xcode 15+ and Swift 5.9+
-- iOS 16+ target
-- Optional provider accounts as needed:
-  - Supabase (Auth, Database, Storage)
-  - RevenueCat (IAP/Subscriptions)
-  - TelemetryDeck (Analytics)
-  - OpenAI (optional, for the AI backend)
-- Optional tooling: Supabase CLI (Edge Functions), Python 3.10+ (local AI server)
+<p align="center">
+  <strong>A production-ready SwiftUI app template for shipping iOS apps fast.</strong>
+</p>
 
-Quick Start
------------
-1) Clone the repo and open `TheSwiftKit.xcodeproj`.
-2) Duplicate `Config/Secrets.sample.swift` → `Config/Secrets.swift`, then fill your keys and URLs.
-3) Set your branding and identity:
-   - App name: `Config/AppConfig.swift` (`appName`)
-   - Theme colors: `Core/Theme/DesignTokens.swift` (`primaryHex`, `accentHex`)
-   - Bundle ID: `project.yml` (`PRODUCT_BUNDLE_IDENTIFIER`)
-4) Add your app icons to `Resources/Assets.xcassets/AppIcon.appiconset`.
-5) Optionally add an `AppLogo` image to `Resources/Assets.xcassets` for the in‑app logo.
-6) Build and run. If keys are missing, the app falls back to safe no‑op services.
+<p align="center">
+  Clone. Paste your keys. Ship.<br/>
+  Auth, payments, AI, onboarding, analytics — all wired up and ready to go.
+</p>
 
-Configuration
--------------
-- App config: `Config/AppConfig.swift`
-  - `appName`: Display name used throughout the UI; localized strings containing `__APP_NAME__` are replaced at runtime.
-  - `backend`: `.supabase` or `.local` (controls repository implementations selected by DI).
-  - `layout`: `.list` or `.grid` (example option used by HomeView model).
-  - `onboardingStyle`: `.carousel`, `.highlights`, `.minimal`.
-  - `featureFlags`: Toggle modules (onboarding, auth, paywall, notifications).
-  - `legal`: Privacy Policy and Terms URLs.
-- Theme colors: `Core/Theme/DesignTokens.swift`
-  - Set `primaryHex` and `accentHex` once to theme the entire app.
-- Secrets: `Config/Secrets.swift` (created from the sample)
-  - `supabaseURL`, `supabaseAnonKey`
-  - `telemetryDeckAppID`
-  - `revenueCatAPIKey`
-  - `aiBackendBaseURLString` (default `http://127.0.0.1:5001`)
-  - `accountDeletionURLString` (optional HTTPS endpoint)
-  - Sign in with Apple placeholders (optional for future wiring)
-- Bundle identifier
-  - Central in `project.yml` → `PRODUCT_BUNDLE_IDENTIFIER` (also editable via Xcode Signing).
-- Assets
-  - App Icon: `Resources/Assets.xcassets/AppIcon.appiconset`
-  - App Logo (optional): Add `AppLogo` image used by `LogoView`.
-- Localization
-  - Strings: `Resources/Base.lproj/Localizable.strings`.
-  - Tokens containing `__APP_NAME__` are replaced with `AppConfig.appName` at runtime.
+<p align="center">
+  <img src="https://img.shields.io/badge/Swift-5.9+-F05138?style=flat&logo=swift&logoColor=white" alt="Swift 5.9+" />
+  <img src="https://img.shields.io/badge/iOS-16+-000000?style=flat&logo=apple&logoColor=white" alt="iOS 16+" />
+  <img src="https://img.shields.io/badge/Xcode-15+-147EFB?style=flat&logo=xcode&logoColor=white" alt="Xcode 15+" />
+  <img src="https://img.shields.io/badge/SwiftUI-4+-0A84FF?style=flat" alt="SwiftUI" />
+  <img src="https://img.shields.io/badge/License-Commercial-8A2BE2?style=flat" alt="License" />
+</p>
 
-Feature Reference
------------------
-- Onboarding
-  - Three styles controlled by `AppConfig.onboardingStyle` (carousel, highlights, minimal).
-  - Uses `OnboardingPage` models and `.defaultPages` in `Modules/Onboarding/OnboardingModels.swift`.
-- Authentication & Profile
-  - Email/password via `AuthRepository` adapters selected by DI:
-    - Supabase: `Backend/Supabase/SupabaseAuthRepository.swift`
-    - Local fallback: `Backend/Protocols/AuthRepository.swift` (`LocalAuthRepository`)
-  - If the user’s profile is missing, the app presents `ProfileSetupView` to capture name/gender/contact/avatar (Supabase or in‑memory local).
-  - Sign in with Apple button is visible but disabled by default; enable once your Apple config is ready.
-- Paywall & Subscriptions
-  - UI: `Modules/Paywall/PaywallView.swift`
-  - Service: `Core/Services/PurchasesService.swift`
-    - RevenueCat implementation when the SDK is linked and `Secrets.revenueCatAPIKey` is set.
-    - Noop implementation otherwise (UI stays functional with placeholder offerings).
-  - Root integrates entitlement status via notifications posted by the purchases service.
-- Analytics
-  - `Core/Analytics/AnalyticsService.swift` selects TelemetryDeck v2 or TelemetryClient v1 when available and configured; otherwise Noop.
-- Notifications (Debug)
-  - `Modules/Notifications/NotificationsDebugView.swift` for permission requests, scheduling local notifications, APNs registration, and token display.
-  - Service: `Core/Notifications/NotificationService.swift`.
-- AI Wrappers (optional)
-  - Home tabs for Text Generation (Chat), Image Generation, and Vision.
-  - Client: `Core/Services/AIApiClient.swift` → your Flask backend (`Secrets.aiBackendBaseURL`).
-- Local Data Demo
-  - `Modules/Demo/LocalDataDemoView.swift` with `LocalCoreDataRepository` and `CoreDataStack` demonstrates a small programmatic Core Data model and CRUD.
-- Theming
-  - Set colors once in `DesignTokens`; `AppTheme` injected at root with an optional glass style used by components.
-- Routing & DI
-  - `Core/Routing/AppRouter.swift` (typed enum routes) and `Core/DI/DIContainer.swift` (selects adapters based on config and available SDKs).
-- Logging
-  - `Core/Logging/Logger.swift` for lightweight debug logging.
-- Localization details
-  - `Core/Utils/Localization.swift` includes a helper that replaces `__APP_NAME__` in localized strings with your configured app name.
+---
 
-Backend Setup
--------------
-- Supabase (Auth, Profiles, Avatars)
-  - Profiles table and RLS: Create `public.profiles` and allow users to read/update their own row.
-  - Storage: Create an `avatars` bucket and add select/insert/update policies for authenticated users (public read if desired).
-  - iOS: `SupabaseProfileRepository` reads/writes profiles and uploads avatars.
-- Subscriptions mirror (optional but recommended)
-  - SQL: Run `Backend/Supabase/sql/001_user_subscriptions.sql` and `002_user_subscriptions_enhancements.sql`.
-  - Edge Function: Deploy `Backend/Supabase/edge/user_subscriptions_webhook.ts` to upsert rows from RevenueCat webhook events.
-- RevenueCat
-  - Configure products and offerings in the dashboard; paste the public API key in `Secrets.revenueCatAPIKey`.
-  - Recommended: consider disabling automatic transfer of purchases to new App User IDs to avoid cross‑account restore issues.
-- AI Backend (Flask)
-  - Install dependencies: `pip install -r Backend/Python/requirements.txt`
-  - Add your `.env` (ignored by git) with `OPENAI_API_KEY=sk-...` (and optional `OPENAI_BASE_URL`, model overrides).
-  - Start: `python Backend/Python/app.py` (default port 5001). Health: `GET /health` → `{ "ok": true }`.
-  - iOS: set `Secrets.aiBackendBaseURLString` to your server origin; `Info.plist` includes ATS exceptions for localhost during development.
+## Quick Start
 
-Development Tips
-----------------
-- TestDrive (DEBUG only): `Modules/Demo/TestDriveView.swift` provides shortcuts to force onboarding, open settings, present paywall, view rating prompt, etc.
-- Force onboarding once: set `forceOnboardingOnce` to true via TestDrive.
-- SIWA: The Sign in with Apple button is present but `.disabled(true)` by default; enable after wiring your Apple credentials.
+The fastest way to get running — one script configures everything:
 
-Troubleshooting
----------------
-- Packages fail to resolve: ensure Xcode 15+; clean DerivedData and retry.
-- Supabase errors: verify URL/key; confirm RLS policies; test queries in the SQL editor.
-- RevenueCat entitlements: verify offerings and sandbox account; check the RC dashboard; relaunch app to refresh cache.
-- AI backend: confirm `OPENAI_API_KEY` in `.env`; verify `/health`; inspect Flask logs.
-- ATS/network: for dev on 127.0.0.1 and localhost, Info.plist contains the required exceptions.
+```bash
+chmod +x setup.sh
+./setup.sh
+```
 
-Production Checklist
---------------------
-- Replace legal URLs with your actual Privacy Policy and Terms.
-- Provide final app icons and optional `AppLogo` image.
-- Hide or remove debug/testing screens from release builds.
-- Tighten storage and database policies (consider signed URLs, least‑privilege RLS).
-- Keep real secrets out of git; manage per‑environment secrets via CI/CD.
+The interactive setup wizard walks you through app name, bundle ID, theme colors, API keys, and legal URLs. It replaces every placeholder across the project and generates `Config/Secrets.swift` automatically.
 
-File Map – Edit Points
-----------------------
-- Secrets: `Config/Secrets.swift` (copied from `Secrets.sample.swift`)
-- App config: `Config/AppConfig.swift`
-- Theme colors: `Core/Theme/DesignTokens.swift`
-- Bundle ID: `project.yml` or Xcode Signing
-- Assets: `Resources/Assets.xcassets/*`
-- Localized copy: `Resources/Base.lproj/Localizable.strings`
+For CI or non-interactive usage:
+
+```bash
+./setup.sh --config setup-config.json
+```
+
+Then open the project in Xcode, select your team under Signing, and hit Run.
+
+---
+
+## What's Included
+
+| Module | Description | Key Files |
+|--------|-------------|-----------|
+| **Authentication** | Email/password + Sign in with Apple via Supabase | `Modules/Auth/` |
+| **Onboarding** | 3 swappable styles (Carousel, Highlights, Minimal) | `Modules/Onboarding/` |
+| **Paywalls** | RevenueCat + StoreKit 2 integration with paywall UI | `Modules/Paywall/` |
+| **AI Features** | Chat, image generation, and vision via Flask backend | `Modules/Home/`, `Backend/Python/` |
+| **Analytics** | TelemetryDeck with automatic event tracking | `Core/Analytics/` |
+| **Notifications** | Local + remote push notifications with debug UI | `Core/Notifications/` |
+| **Profile Setup** | Avatar upload, user data capture, Supabase storage | `Modules/Profile/` |
+| **Settings** | Dark mode, subscription management, account deletion | `Modules/Settings/` |
+| **Caching** | Ultra-modular, actor-based caching system | `Core/Cache/` |
+| **Custom Fonts** | Drop-in font infrastructure with centralized typography | `Core/Theme/` |
+| **Theming** | Design tokens, color system, glass effects | `Core/Theme/` |
+| **Local Data** | CoreData demo with full CRUD | `Modules/Demo/` |
+
+---
+
+## Project Structure
+
+```
+the-swift-kit/
+├── Config/                         # App configuration
+│   ├── AppConfig.swift             # App name, backend, feature flags, legal URLs
+│   ├── FeatureFlags.swift          # Toggle any module on/off
+│   └── Secrets.sample.swift        # API key template (copy to Secrets.swift)
+│
+├── Core/                           # Core infrastructure
+│   ├── Cache/                      # Modular caching system (actor-based)
+│   ├── DI/                         # Dependency injection container
+│   ├── Routing/                    # Navigation router (typed enum routes)
+│   ├── Services/                   # AI client, purchases, Apple Sign-In
+│   ├── Theme/                      # Design tokens, colors, typography, fonts
+│   ├── Analytics/                  # Analytics service wrapper
+│   ├── Notifications/              # Push & local notification handling
+│   ├── Persistence/                # CoreData stack
+│   ├── Root/                       # App entry point & RootView
+│   └── Utils/                      # Localization, app events
+│
+├── Modules/                        # Feature modules (screens)
+│   ├── Auth/                       # Sign in, create account, coordinator
+│   ├── Onboarding/                 # 3 onboarding styles + coordinator
+│   ├── Home/                       # Main screen with AI feature tabs
+│   ├── Paywall/                    # Subscription UI
+│   ├── Profile/                    # Profile setup form
+│   ├── Settings/                   # Settings, subscription mgmt, dark mode
+│   ├── Notifications/              # Debug notification testing
+│   └── Demo/                       # TestDrive shortcuts, local data, rating
+│
+├── Backend/                        # Server-side code & protocols
+│   ├── Protocols/                  # Repository interfaces
+│   ├── Supabase/                   # Supabase implementations + setup.sql
+│   └── Python/                     # Flask AI backend (chat, images, vision)
+│
+├── Resources/                      # Assets, icons, fonts, localization
+├── setup.sh                        # Interactive setup wizard
+├── setup-config.json               # Non-interactive config template
+└── project.yml                     # XcodeGen configuration
+```
+
+---
+
+## Architecture
+
+The Swift Kit follows **MVVM with Dependency Injection** and a protocol-first design:
+
+```
+SwiftUI View  →  ViewModel (@MainActor)  →  DIContainer  →  Repository Protocol  →  Backend Implementation
+```
+
+**Key design principles:**
+
+- **Protocol-based repositories** — Every backend service (auth, profiles, subscriptions) has a protocol. Swap implementations by changing one line in `AppConfig`.
+- **Feature flags** — Toggle any module (onboarding, auth, paywall, notifications, caching, Apple Sign-In) without touching code.
+- **Conditional imports** — The project compiles even without Supabase, RevenueCat, or TelemetryDeck SDKs linked. Missing SDKs gracefully fall back to no-op implementations.
+- **Actor-based concurrency** — All repositories and the caching layer use Swift actors for thread safety.
+- **Centralized theming** — Change two hex values in `DesignTokens.swift` to rebrand the entire app. Swap fonts by editing `FontRegistry.swift`.
+
+---
+
+## Configuration
+
+### App Config (`Config/AppConfig.swift`)
+
+| Property | Description | Options |
+|----------|-------------|---------|
+| `appName` | Display name used throughout the UI | Any string |
+| `backend` | Backend selection | `.supabase` or `.local` |
+| `onboardingStyle` | Onboarding screen style | `.carousel`, `.highlights`, `.minimal` |
+| `featureFlags` | Toggle modules on/off | See `FeatureFlags.swift` |
+| `legal` | Privacy Policy and Terms URLs | Your production URLs |
+
+### Feature Flags (`Config/FeatureFlags.swift`)
+
+| Flag | Default | Description |
+|------|---------|-------------|
+| `enableOnboarding` | `true` | Show onboarding flow on first launch |
+| `enableAuth` | `true` | Require authentication |
+| `enablePaywall` | `true` | Show paywall after onboarding |
+| `enableNotifications` | `true` | Request notification permissions |
+| `appleSignIn` | `true` | Show Sign in with Apple button |
+| `enableCaching` | `true` | Wrap repositories in cached decorators |
+
+### Secrets (`Config/Secrets.swift`)
+
+Created automatically by `setup.sh`, or manually from `Secrets.sample.swift`:
+
+| Key | Required | Source |
+|-----|----------|--------|
+| `supabaseURL` | Yes | Supabase project settings |
+| `supabaseAnonKey` | Yes | Supabase project settings |
+| `revenueCatAPIKey` | Yes | RevenueCat dashboard |
+| `telemetryDeckAppID` | Yes | TelemetryDeck dashboard |
+| `aiBackendBaseURLString` | Optional | Your Flask server URL |
+
+### Theming
+
+- **Colors**: Set `primaryHex` and `accentHex` in `Core/Theme/DesignTokens.swift`
+- **Fonts**: Edit `Core/Theme/FontRegistry.swift` to swap to custom fonts (see `Resources/Fonts/README.md`)
+- **Typography**: All text styles go through `Core/Theme/Typography.swift` via the `.appFont()` modifier
+
+---
+
+## Backend Setup
+
+### Database (Supabase)
+
+One command sets up everything:
+
+1. Open your Supabase project's **SQL Editor**
+2. Paste the contents of `Backend/Supabase/setup.sql`
+3. Click **Run**
+
+This creates: `profiles` table, `user_subscriptions` table, Row Level Security policies, auto-create-profile-on-signup trigger, timestamp triggers, `avatars` storage bucket with policies, and indexes. Idempotent — safe to run multiple times.
+
+### Sign in with Apple
+
+See the detailed setup guide in `Core/Services/AppleSignInService.swift`. Summary:
+
+1. Enable "Sign in with Apple" capability in Xcode
+2. Configure your App ID in Apple Developer Portal
+3. Enable Apple provider in Supabase Authentication dashboard
+4. Set `featureFlags.appleSignIn = true`
+
+### RevenueCat (Payments)
+
+1. Create products and offerings in the [RevenueCat dashboard](https://app.revenuecat.com)
+2. Paste your public API key in `Secrets.revenueCatAPIKey`
+3. The paywall UI and subscription management work automatically
+
+### AI Backend (Flask)
+
+```bash
+cd Backend/Python
+python -m venv venv && source venv/bin/activate
+pip install -r requirements.txt
+cp .env.example .env   # Add your OPENAI_API_KEY
+python app.py           # Runs on port 5001
+```
+
+Three endpoints: `/v1/chat` (GPT-4o), `/v1/images` (gpt-image-1.5), `/v1/vision` (GPT-4o multimodal).
+
+See `Backend/Python/README.md` for full API docs and deployment instructions.
+
+---
+
+## Caching System
+
+The Swift Kit includes a modular, actor-based caching layer. It's designed so you can add caching to any new feature in 3 steps:
+
+**Step 1** — Define a cache key:
+```swift
+extension CacheKeys {
+    static func postList(page: Int) -> String { "posts_list_page_\(page)" }
+}
+```
+
+**Step 2** — Set an expiry (optional):
+```swift
+extension CacheConfig {
+    static let postsExpiry: CacheExpiry = .minutes(10)
+}
+```
+
+**Step 3** — Write a cached wrapper:
+```swift
+actor CachedPostsRepository: PostsRepository {
+    private let remote: PostsRepository
+    private let cache: CacheManager
+
+    func fetchPosts(page: Int) async throws -> [Post] {
+        let key = CacheKeys.postList(page: page)
+        if let cached: [Post] = await cache.get(forKey: key) { return cached }
+        let posts = try await remote.fetchPosts(page: page)
+        await cache.set(posts, forKey: key, expiry: CacheConfig.postsExpiry)
+        return posts
+    }
+}
+```
+
+Cache auto-clears on sign-out. Toggle the entire system via `featureFlags.enableCaching`.
+
+---
+
+## Custom Fonts
+
+The default is the system font (SF Pro). To use custom fonts:
+
+1. Drop `.ttf` or `.otf` files into `Resources/Fonts/`
+2. Add filenames to `Info.plist` under `UIAppFonts`
+3. Update `FontRegistry.swift` with your font's PostScript names:
+
+```swift
+public var postScriptName: String {
+    switch self {
+    case .regular:  return "Inter-Regular"
+    case .medium:   return "Inter-Medium"
+    case .semibold: return "Inter-SemiBold"
+    case .bold:     return "Inter-Bold"
+    }
+}
+```
+
+The entire app updates automatically. All views use `.appFont()` instead of `.font()`.
+
+Tip: Call `FontRegistry.logAvailableFonts()` to print every installed PostScript name.
+
+---
+
+## Development
+
+### TestDrive (Debug Only)
+
+`Modules/Demo/TestDriveView.swift` provides shortcuts for:
+- Force onboarding replay
+- Open settings directly
+- Present paywall
+- Test rating prompt
+- View notification debug screen
+
+### Debug Tips
+
+- Set `backend: .local` in AppConfig to develop without Supabase
+- All modules work with local fallbacks (no network required)
+- `Info.plist` includes ATS exceptions for localhost during development
+
+---
+
+## Troubleshooting
+
+| Problem | Solution |
+|---------|----------|
+| Packages fail to resolve | Ensure Xcode 15+. Clean DerivedData (`Cmd+Shift+K`) and retry |
+| Supabase errors | Verify URL/key in Secrets. Check RLS policies. Test queries in SQL Editor |
+| RevenueCat issues | Verify offerings in RC dashboard. Check sandbox account. Relaunch to refresh cache |
+| AI backend errors | Confirm `OPENAI_API_KEY` in `.env`. Check `/health` endpoint. Inspect Flask logs |
+| Sign in with Apple | Follow the setup guide in `AppleSignInService.swift`. Check entitlements and provisioning |
+| Build fails without SDKs | Expected — conditional imports gracefully fall back to no-op implementations |
+
+---
+
+## Production Checklist
+
+- [ ] Run `./setup.sh` with production values
+- [ ] Replace legal URLs with actual Privacy Policy and Terms
+- [ ] Set up Supabase database (`setup.sql`)
+- [ ] Configure RevenueCat products and offerings
+- [ ] Configure Sign in with Apple (if using)
+- [ ] Provide final app icons and optional AppLogo
+- [ ] Deploy the AI Flask backend (if using AI features)
+- [ ] Remove or hide TestDrive from release builds
+- [ ] Review RLS policies and storage permissions
+- [ ] Keep secrets out of git — use CI/CD for environment-specific config
+- [ ] Test the full flow: onboarding → auth → profile → paywall → main app
+
+---
+
+## Changelog
+
+### v1.2.0 — March 27, 2026
+
+**Design System**
+- Centralized 5-layer design system — edit `DesignSystem.swift` to retheme the entire app
+- Five surface styles: Flat, Bordered, Elevated, Glass, Liquid Glass (iOS 26+ with automatic fallback)
+- Brand color tokens, spacing density, corner radius, shadows, and motion tokens
+- New DS building blocks: `DS.primary`, `DS.Spacing.md`, `.appFont()`, `.dsCard()`
+
+**Interactive Setup CLI**
+- New `./setup.sh` script — interactive CLI for project configuration
+- Configures app name, brand colors, surface style, feature selection, backend, and API keys automatically
+- Regenerates Xcode project — no manual file editing needed
+
+**Feature Flags**
+- Every major module gated by a boolean flag
+- Modules: onboarding, authentication, paywall, notifications, AI features, Apple Sign-In
+- Disabled features disappear completely from the app flow
+
+**AI Features**
+- ChatGPT chat with streaming responses via Flask proxy
+- DALL-E image generation (gpt-image-1.5)
+- GPT-4 Vision for image analysis
+- Secure backend proxy — API key never touches the device
+
+**Authentication**
+- Sign in with Apple pre-wired (nonce generation, Supabase backend integration)
+- Profile setup flow after first sign-in
+- Graceful fallback when auth is disabled via feature flag
+
+**Architecture**
+- MVVM with dependency injection container
+- Repository pattern with protocol-based abstractions
+- Conditional SDK imports with no-op fallbacks for missing keys
+- All SwiftUI previews working out of the box
+
+### v1.1.0 — March 2026
+
+- Added offline HTML documentation
+- Updated README with comprehensive module guides
+- Improved Supabase RLS policy templates
+
+### v1.0.0 — February 2026
+
+- Initial release: onboarding, auth, paywalls, analytics, AI wrappers, documentation
+
+---
+
+<p align="center">
+  Built with care for indie iOS developers.<br/>
+  <a href="https://theswiftk.it.com">theswiftk.it.com</a>
+</p>

@@ -12,6 +12,9 @@ public struct DIContainer: Sendable {
     public var subscriptionRepository: SubscriptionRepository
     public var purchasesService: PurchasesService
     public var analytics: AnalyticsService
+    public var appleSignInService: AppleSignInServiceProtocol
+    /// The shared cache manager. Access this to manually get/set/invalidate cache entries.
+    public var cacheManager: CacheManager
 
     public init(config: AppConfig,
                 authRepository: AuthRepository,
@@ -19,7 +22,9 @@ public struct DIContainer: Sendable {
                 profileRepository: ProfileRepository,
                 subscriptionRepository: SubscriptionRepository,
                 purchasesService: PurchasesService,
-                analytics: AnalyticsService) {
+                analytics: AnalyticsService,
+                appleSignInService: AppleSignInServiceProtocol,
+                cacheManager: CacheManager = .shared) {
         self.config = config
         self.authRepository = authRepository
         self.userRepository = userRepository
@@ -27,6 +32,8 @@ public struct DIContainer: Sendable {
         self.subscriptionRepository = subscriptionRepository
         self.purchasesService = purchasesService
         self.analytics = analytics
+        self.appleSignInService = appleSignInService
+        self.cacheManager = cacheManager
     }
 }
 
@@ -46,28 +53,44 @@ public extension DIContainer {
             #endif
         }
         let user = LocalUserRepository(auth: auth)
-        let profile: ProfileRepository
+
+        // Base profile repository (uncached)
+        let baseProfile: ProfileRepository
         switch config.backend {
         case .local:
-            profile = LocalProfileRepository()
+            baseProfile = LocalProfileRepository()
         case .supabase:
             #if canImport(Supabase)
-            profile = SupabaseProfileRepository()
+            baseProfile = SupabaseProfileRepository()
             #else
-            profile = LocalProfileRepository()
+            baseProfile = LocalProfileRepository()
             #endif
         }
-        // Subscription repository and purchases service
-        let subscriptionRepo: SubscriptionRepository
+
+        // Base subscription repository (uncached)
+        let baseSubscriptionRepo: SubscriptionRepository
         switch config.backend {
         case .local:
-            subscriptionRepo = LocalSubscriptionRepository()
+            baseSubscriptionRepo = LocalSubscriptionRepository()
         case .supabase:
             #if canImport(Supabase)
-            subscriptionRepo = SupabaseSubscriptionRepository()
+            baseSubscriptionRepo = SupabaseSubscriptionRepository()
             #else
-            subscriptionRepo = LocalSubscriptionRepository()
+            baseSubscriptionRepo = LocalSubscriptionRepository()
             #endif
+        }
+
+        // Wrap repositories in caching decorators when the feature flag is enabled.
+        // When caching is off the base implementations are used directly -- zero overhead.
+        let cacheManager = CacheManager.shared
+        let profile: ProfileRepository
+        let subscriptionRepo: SubscriptionRepository
+        if config.featureFlags.enableCaching {
+            profile = CachedProfileRepository(remote: baseProfile, cache: cacheManager)
+            subscriptionRepo = CachedSubscriptionRepository(remote: baseSubscriptionRepo, cache: cacheManager)
+        } else {
+            profile = baseProfile
+            subscriptionRepo = baseSubscriptionRepo
         }
         let purchases: PurchasesService
         #if canImport(RevenueCat)
@@ -75,25 +98,45 @@ public extension DIContainer {
             purchases = RevenueCatPurchasesService(apiKey: Secrets.revenueCatAPIKey)
         } else {
             purchases = NoopPurchasesService()
+            AppLogger.log("[Noop] RevenueCat API key is empty — using demo offerings. Set revenueCatAPIKey in Secrets.swift to enable real subscriptions.", level: .warning)
         }
         #else
         purchases = NoopPurchasesService()
+        AppLogger.log("[Noop] RevenueCat SDK not linked — using demo offerings. Add the RevenueCat package to enable real subscriptions.", level: .warning)
         #endif
 
         // Analytics service (TelemetryDeck/TelemetryClient when available)
         let analytics: AnalyticsService
         #if canImport(TelemetryDeck) || canImport(TelemetryClient)
-        analytics = TelemetryDeckAnalyticsService(appID: Secrets.telemetryDeckAppID)
+        if Secrets.telemetryDeckAppID.isEmpty {
+            analytics = NoopAnalyticsService()
+            AppLogger.log("[Noop] TelemetryDeck app ID is empty — analytics events are not being sent. Set telemetryDeckAppID in Secrets.swift.", level: .warning)
+        } else {
+            analytics = TelemetryDeckAnalyticsService(appID: Secrets.telemetryDeckAppID)
+        }
         #else
         analytics = NoopAnalyticsService()
+        AppLogger.log("[Noop] TelemetryDeck SDK not linked — analytics disabled.", level: .warning)
         #endif
+
+        // Apple Sign-In service — use live service for Supabase, mock for local.
+        let appleSignIn: AppleSignInServiceProtocol
+        switch config.backend {
+        case .supabase:
+            appleSignIn = AppleSignInService()
+        case .local:
+            appleSignIn = MockAppleSignInService()
+        }
+
         return DIContainer(config: config,
                            authRepository: auth,
                            userRepository: user,
                            profileRepository: profile,
                            subscriptionRepository: subscriptionRepo,
                            purchasesService: purchases,
-                           analytics: analytics)
+                           analytics: analytics,
+                           appleSignInService: appleSignIn,
+                           cacheManager: cacheManager)
     }
 }
 

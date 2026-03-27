@@ -14,7 +14,7 @@ struct RatingPromptView: View {
     var body: some View {
         VStack(spacing: 16) {
             Text("Liking the app?")
-                .font(.title3.bold())
+                .appFont(.title3)
             Text("Tap a star to rate on the App Store.")
                 .foregroundColor(.secondary)
 
@@ -28,7 +28,7 @@ struct RatingPromptView: View {
                         isPresented = false
                     } label: {
                         Image(systemName: (selected ?? 0) >= i ? "star.fill" : "star")
-                            .font(.system(size: 28))
+                            .font(AppTypography.custom(size: 28, weight: .regular, relativeTo: .title))
                     }
                     .buttonStyle(.plain)
                 }

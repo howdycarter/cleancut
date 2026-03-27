@@ -35,6 +35,17 @@ actor SupabaseAuthRepository: AuthRepository {
         }
     }
 
+    func signInWithApple(idToken: String, nonce: String) async throws -> User {
+        // Exchange the Apple identity token for a Supabase session.
+        // Supabase verifies the token with Apple and either signs in an existing user
+        // or creates a new account automatically.
+        let session = try await client.auth.signInWithIdToken(
+            credentials: .init(provider: .apple, idToken: idToken, nonce: nonce)
+        )
+        let u = session.user
+        return User(id: u.id.uuidString, email: u.email ?? "")
+    }
+
     func signOut() async {
         do { try await client.auth.signOut() } catch { /* no-op for UI */ }
     }
@@ -54,6 +65,9 @@ struct SupabaseAuthRepositoryUnavailable: AuthRepository {
         throw NSError(domain: "AuthRepository", code: 501, userInfo: [NSLocalizedDescriptionKey: "Supabase SDK not available in this build."])
     }
     func signUp(email: String, password: String) async throws -> SignUpOutcome {
+        throw NSError(domain: "AuthRepository", code: 501, userInfo: [NSLocalizedDescriptionKey: "Supabase SDK not available in this build."])
+    }
+    func signInWithApple(idToken: String, nonce: String) async throws -> User {
         throw NSError(domain: "AuthRepository", code: 501, userInfo: [NSLocalizedDescriptionKey: "Supabase SDK not available in this build."])
     }
     func signOut() async {}

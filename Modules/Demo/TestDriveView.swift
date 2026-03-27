@@ -18,13 +18,13 @@ struct TestDriveView: View {
         NavigationStack {
             List {
                 Section("tester.overview") {
-                    VStack(alignment: .leading, spacing: DesignTokens.Spacing.sm) {
+                    VStack(alignment: .leading, spacing: DS.Spacing.sm) {
                         Text(container.config.appName)
-                            .font(.title2.bold())
+                            .appFont(.title2)
                         Text("tester.subtitle")
                             .foregroundColor(.secondary)
                     }
-                    .padding(.vertical, DesignTokens.Spacing.sm)
+                    .padding(.vertical, DS.Spacing.sm)
                 }
 
                 Section("tester.section.flow") {
@@ -62,11 +62,15 @@ struct TestDriveView: View {
                     Button { continueAction(.settings) } label: {
                         Label("tester.opensettings", systemImage: "gearshape.fill")
                     }
-                    Button { continueAction(.notifications) } label: {
-                        Label("tester.opennotifs", systemImage: "bell.badge.fill")
+                    if container.config.featureFlags.notifications {
+                        Button { continueAction(.notifications) } label: {
+                            Label("tester.opennotifs", systemImage: "bell.badge.fill")
+                        }
                     }
-                    Button { continueAction(.paywall) } label: {
-                        Label("Open Paywall", systemImage: "sparkles")
+                    if container.config.featureFlags.paywall {
+                        Button { continueAction(.paywall) } label: {
+                            Label("Open Paywall", systemImage: "sparkles")
+                        }
                     }
                     NavigationLink {
                         LocalDataDemoView()
@@ -79,11 +83,11 @@ struct TestDriveView: View {
 
                 Section("showcase.theme") {
                     HStack {
-                        RoundedRectangle(cornerRadius: DesignTokens.Radius.md)
-                            .fill(DesignTokens.primaryColor)
+                        RoundedRectangle(cornerRadius: DS.Radius.md)
+                            .fill(DS.primary)
                             .frame(width: 44, height: 44)
-                        RoundedRectangle(cornerRadius: DesignTokens.Radius.md)
-                            .fill(DesignTokens.accentColor)
+                        RoundedRectangle(cornerRadius: DS.Radius.md)
+                            .fill(DS.accent)
                             .frame(width: 44, height: 44)
                         Text("showcase.colors")
                     }
@@ -95,8 +99,8 @@ struct TestDriveView: View {
             AuthCoordinator { _ in showAuth = false }
         }
         .sheet(isPresented: $showRating) {
-            // Using TestFlight app id for demo. Replace with your own.
-            RatingPromptView(isPresented: $showRating, appId: "899247664")
+            // Replace __TESTFLIGHT_APP_ID__ via setup.sh or manually with your App Store app ID.
+            RatingPromptView(isPresented: $showRating, appId: "__TESTFLIGHT_APP_ID__")
                 .presentationDetents([.medium])
         }
         .animation(.easeInOut(duration: 0.25), value: showAuth)

@@ -27,11 +27,19 @@ targets:
       - path: Core
       - path: Modules
       - path: Backend
+        excludes:
+          - "**/*.md"
+          - "**/*.txt"
+          - "**/Python/**"
       - path: Resources
         excludes:
           - Info.plist # handled via info block below
     info:
       path: Resources/Info.plist
+      properties:
+        UILaunchStoryboardName: LaunchScreen
+        UISupportedInterfaceOrientations:
+          - UIInterfaceOrientationPortrait
     settings:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: com.agaganorg.theswiftkit

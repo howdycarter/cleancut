@@ -1,6 +1,8 @@
 //
 //  PaywallView.swift
 //
+//  Generic paywall — edit `benefits` to match your app's value proposition.
+//
 
 import SwiftUI
 
@@ -12,6 +14,17 @@ struct PaywallView: View {
     @State private var isPurchasing: Bool = false
     @State private var errorMessage: String? = nil
     @State private var showAllPlans: Bool = false
+
+    // ─────────────────────────────────────────────────────────
+    // EDIT THESE to match your app's subscription benefits.
+    // ─────────────────────────────────────────────────────────
+    static let benefits: [String] = [
+        String(localized: "paywall.benefit.1"),
+        String(localized: "paywall.benefit.2"),
+        String(localized: "paywall.benefit.3"),
+        String(localized: "paywall.benefit.4"),
+        String(localized: "paywall.benefit.5"),
+    ]
 
     var body: some View {
         ZStack {
@@ -29,29 +42,27 @@ struct PaywallView: View {
                             .background(.ultraThinMaterial, in: Circle())
                     }
                 }
-                .padding([.top, .horizontal], DesignTokens.Spacing.lg)
+                .padding([.top, .horizontal], DS.Spacing.lg)
 
                 Spacer(minLength: 0)
 
                 LogoView(size: 84)
-                    .padding(.bottom, DesignTokens.Spacing.lg)
+                    .padding(.bottom, DS.Spacing.lg)
 
-                Text("Pick your plan")
-                    .font(.system(.title, design: .rounded).weight(.bold))
+                Text(String(localized: "paywall.title"))
+                    .font(AppTypography.title)
                     .foregroundStyle(titleColor)
-                    .padding(.bottom, DesignTokens.Spacing.md)
+                    .padding(.bottom, DS.Spacing.md)
 
-                VStack(alignment: .leading, spacing: DesignTokens.Spacing.sm) {
-                    FeatureRow(text: "500 credits per month")
-                    FeatureRow(text: "Latest AI models access")
-                    FeatureRow(text: "Script-to-Video with Voiceover")
-                    FeatureRow(text: "Full HD exports")
-                    FeatureRow(text: "100+ voice styles")
+                VStack(alignment: .leading, spacing: DS.Spacing.sm) {
+                    ForEach(Self.benefits, id: \.self) { text in
+                        FeatureRow(text: text)
+                    }
                 }
-                .padding(.horizontal, DesignTokens.Spacing.xl)
-                .padding(.bottom, DesignTokens.Spacing.xl)
+                .padding(.horizontal, DS.Spacing.xl)
+                .padding(.bottom, DS.Spacing.xl)
 
-                VStack(spacing: DesignTokens.Spacing.md) {
+                VStack(spacing: DS.Spacing.md) {
                     ForEach(options) { opt in
                         PlanOptionRow(
                             title: opt.displayName,
@@ -62,51 +73,53 @@ struct PaywallView: View {
                         ) { selectedId = opt.id }
                     }
                 }
-                .padding(.horizontal, DesignTokens.Spacing.lg)
-                .padding(.bottom, DesignTokens.Spacing.lg)
-                .animation(.easeInOut(duration: 0.25), value: options)
+                .padding(.horizontal, DS.Spacing.lg)
+                .padding(.bottom, DS.Spacing.lg)
+                .animation(.easeInOut(duration: DS.Motion.normal), value: options)
 
                 Button(action: toggleAllPlans) {
                     HStack {
                         Spacer()
-                        Text(showAllPlans ? "Show fewer plans" : "Show all plans")
-                            .font(.subheadline.weight(.semibold))
-                            .foregroundColor(DesignTokens.accentColor)
+                        Text(showAllPlans
+                             ? String(localized: "paywall.fewerplans")
+                             : String(localized: "paywall.allplans"))
+                            .font(AppTypography.custom(size: 15, weight: .semibold, relativeTo: .subheadline))
+                            .foregroundColor(DS.accent)
                         Spacer()
                     }
                 }
-                .padding(.horizontal, DesignTokens.Spacing.lg)
-                .padding(.bottom, DesignTokens.Spacing.md)
+                .padding(.horizontal, DS.Spacing.lg)
+                .padding(.bottom, DS.Spacing.md)
 
                 Button(action: purchase) {
                     HStack {
                         Spacer()
                         Text(ctaTitle)
-                            .font(.headline)
+                            .appFont(.headline)
                         Spacer()
                     }
                     .padding()
-                    .background(DesignTokens.accentColor, in: RoundedRectangle(cornerRadius: DesignTokens.Radius.lg))
-                    .foregroundColor(.black)
+                    .background(DS.accent, in: RoundedRectangle(cornerRadius: DS.Radius.lg))
+                    .foregroundColor(DS.Colors.buttonPrimaryFg)
                 }
-                .padding(.horizontal, DesignTokens.Spacing.lg)
-                .padding(.bottom, DesignTokens.Spacing.md)
+                .padding(.horizontal, DS.Spacing.lg)
+                .padding(.bottom, DS.Spacing.md)
                 .disabled(isPurchasing || selectedId == nil)
                 .opacity((isPurchasing || selectedId == nil) ? 0.6 : 1.0)
 
-                HStack(spacing: DesignTokens.Spacing.md) {
+                HStack(spacing: DS.Spacing.md) {
                     Button(action: restore) {
-                        Text("Restore Purchases")
-                            .foregroundColor(.secondary)
+                        Text(String(localized: "paywall.restore"))
+                            .foregroundColor(DS.Colors.textSecondary)
                     }
                     Spacer()
                     Link("Terms", destination: container.config.legal.termsURL)
-                        .foregroundColor(.secondary)
+                        .foregroundColor(DS.Colors.textSecondary)
                     Link("Privacy", destination: container.config.legal.privacyPolicyURL)
-                        .foregroundColor(.secondary)
+                        .foregroundColor(DS.Colors.textSecondary)
                 }
-                .padding(.horizontal, DesignTokens.Spacing.lg)
-                .padding(.bottom, DesignTokens.Spacing.lg)
+                .padding(.horizontal, DS.Spacing.lg)
+                .padding(.bottom, DS.Spacing.lg)
             }
         }
         .task { await load() }
@@ -119,11 +132,11 @@ struct PaywallView: View {
         if let selected = options.first(where: { $0.id == selectedId }), let text = selected.ctaText, !text.isEmpty {
             return text
         }
-        return "Continue"
+        return String(localized: "paywall.continue")
     }
 
     @Environment(\.colorScheme) private var colorScheme
-    private var titleColor: Color { colorScheme == .dark ? .white : .primary }
+    private var titleColor: Color { colorScheme == .dark ? .white : DS.Colors.textPrimary }
 
     private func load() async {
         let opts = await container.purchasesService.loadOfferings(includeAll: showAllPlans)
@@ -134,7 +147,7 @@ struct PaywallView: View {
     }
 
     private func toggleAllPlans() {
-        withAnimation(.easeInOut(duration: 0.25)) {
+        withAnimation(.easeInOut(duration: DS.Motion.normal)) {
             showAllPlans.toggle()
         }
         Task { await load() }
@@ -167,15 +180,15 @@ struct PaywallView: View {
 private struct FeatureRow: View {
     var text: String
     var body: some View {
-        HStack(alignment: .firstTextBaseline, spacing: DesignTokens.Spacing.md) {
+        HStack(alignment: .firstTextBaseline, spacing: DS.Spacing.md) {
             Image(systemName: "checkmark.circle.fill")
-                .foregroundStyle(DesignTokens.accentColor)
+                .foregroundStyle(DS.accent)
             Text(text)
                 .foregroundColor(featureTextColor)
         }
     }
     @Environment(\.colorScheme) private var colorScheme
-    private var featureTextColor: Color { colorScheme == .dark ? .white : .primary }
+    private var featureTextColor: Color { colorScheme == .dark ? .white : DS.Colors.textPrimary }
 }
 
 private struct PlanOptionRow: View {
@@ -189,31 +202,31 @@ private struct PlanOptionRow: View {
     var body: some View {
         Button(action: tap) {
             ZStack(alignment: .topTrailing) {
-                RoundedRectangle(cornerRadius: DesignTokens.Radius.lg)
+                RoundedRectangle(cornerRadius: DS.Radius.lg)
                     .fill(.ultraThinMaterial)
                     .overlay(
-                        RoundedRectangle(cornerRadius: DesignTokens.Radius.lg)
-                            .stroke(isSelected ? DesignTokens.accentColor : Color.white.opacity(0.15), lineWidth: 2)
+                        RoundedRectangle(cornerRadius: DS.Radius.lg)
+                            .stroke(isSelected ? DS.accent : Color.white.opacity(0.15), lineWidth: 2)
                     )
                 HStack(alignment: .center) {
                     Image(systemName: isSelected ? "largecircle.fill.circle" : "circle")
-                        .foregroundColor(isSelected ? DesignTokens.accentColor : .secondary)
+                        .foregroundColor(isSelected ? DS.accent : DS.Colors.textSecondary)
                     VStack(alignment: .leading, spacing: 4) {
-                        Text(title).font(.headline)
-                        Text(price).font(.title3.bold())
+                        Text(title).appFont(.headline)
+                        Text(price).appFont(.title3)
                     }
                     Spacer()
-                    if let perUnit { Text(perUnit).foregroundColor(.secondary) }
+                    if let perUnit { Text(perUnit).foregroundColor(DS.Colors.textSecondary) }
                 }
                 .padding()
 
                 if let badge {
                     Text(badge)
-                        .font(.caption.bold())
+                        .appFont(.captionBold)
                         .padding(.vertical, 6)
                         .padding(.horizontal, 10)
-                        .background(DesignTokens.accentColor, in: Capsule())
-                        .foregroundColor(.black)
+                        .background(DS.accent, in: Capsule())
+                        .foregroundColor(DS.Colors.buttonPrimaryFg)
                         .offset(x: -12, y: -12)
                 }
             }

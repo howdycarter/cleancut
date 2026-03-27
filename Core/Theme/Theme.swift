@@ -1,43 +1,69 @@
 //
-//  Theme.swift
+//  DSEnvironment.swift (replaces Theme.swift)
+//
+//  Theme environment injection for SwiftUI views.
 //
 
 import SwiftUI
 
-public enum AppThemeStyle: String, Equatable, Sendable {
-    case standard
-    case glass
-}
+// MARK: - DSTheme
 
-public struct AppTheme: Equatable, Sendable {
-    public var primary: Color
-    public var accent: Color
-    public var style: AppThemeStyle
+public struct DSTheme: Equatable, Sendable {
+    public var surfaceStyle: SurfaceStyle
 
-    public init(primary: Color = DesignTokens.primaryColor,
-                accent: Color = DesignTokens.accentColor,
-                style: AppThemeStyle = .standard) {
-        self.primary = primary
-        self.accent = accent
-        self.style = style
+    public init(surfaceStyle: SurfaceStyle = DS.surfaceStyle) {
+        self.surfaceStyle = surfaceStyle
+    }
+
+    /// Backward compatibility: init with `style:` parameter name.
+    public init(style: SurfaceStyle) {
+        self.surfaceStyle = style
+    }
+
+    /// Whether the current surface style uses translucent materials.
+    public var isGlass: Bool {
+        surfaceStyle == .glass || surfaceStyle == .liquidGlass
     }
 }
 
-private struct ThemeKey: EnvironmentKey {
-    static let defaultValue = AppTheme()
+// Backward compatibility typealiases
+public typealias AppTheme = DSTheme
+public typealias AppThemeStyle = SurfaceStyle
+
+// Allow old code that stored "standard" or "glass" in AppStorage to still work.
+extension SurfaceStyle {
+    /// Maps legacy "standard" to the current default surface style.
+    public static var standard: SurfaceStyle { .elevated }
+}
+
+// MARK: - Environment Key
+
+private struct DSThemeKey: EnvironmentKey {
+    static let defaultValue = DSTheme()
 }
 
 public extension EnvironmentValues {
-    var appTheme: AppTheme {
-        get { self[ThemeKey.self] }
-        set { self[ThemeKey.self] = newValue }
+    var dsTheme: DSTheme {
+        get { self[DSThemeKey.self] }
+        set { self[DSThemeKey.self] = newValue }
+    }
+
+    /// Backward compatibility: `appTheme` maps to `dsTheme`.
+    var appTheme: DSTheme {
+        get { self[DSThemeKey.self] }
+        set { self[DSThemeKey.self] = newValue }
     }
 }
 
-public extension View {
-    func appTheme(_ theme: AppTheme) -> some View { environment(\.appTheme, theme) }
-}
+// MARK: - View Extensions
 
-public extension AppTheme {
-    var isGlass: Bool { style == .glass }
+public extension View {
+    func dsTheme(_ theme: DSTheme) -> some View {
+        environment(\.dsTheme, theme)
+    }
+
+    /// Backward compatibility.
+    func appTheme(_ theme: DSTheme) -> some View {
+        environment(\.dsTheme, theme)
+    }
 }

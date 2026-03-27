@@ -14,11 +14,15 @@ public enum Secrets {
     public static let supabaseURL: URL = URL(string: "https://YOUR-PROJECT.supabase.co")!
     public static let supabaseAnonKey: String = "YOUR_SUPABASE_ANON_KEY"
 
-    // Sign in with Apple (for future use; optional)
-    public static let appleServiceId: String = "" // e.g., com.example.web
-    public static let appleTeamId: String = ""
-    public static let appleKeyId: String = ""
-    public static let applePrivateKeyPEM: String = "" // multiline PKCS8
+    // Sign in with Apple
+    // NOTE: The native iOS SIWA flow does NOT require these secrets. Supabase validates
+    // Apple JWTs using Apple's public keys automatically. These values are only needed
+    // if you configure a **web-based** Apple sign-in redirect flow in Supabase.
+    // See AppleSignInService.swift for the full setup guide.
+    public static let appleServiceId: String = "" // e.g., com.example.web (Services ID, not App ID)
+    public static let appleTeamId: String = ""    // Your 10-character Apple Team ID
+    public static let appleKeyId: String = ""     // Key ID from the Apple Developer Portal
+    public static let applePrivateKeyPEM: String = "" // Contents of the .p8 key file (PKCS8 PEM)
 
     // Optional: Account deletion HTTPS endpoint
     public static let accountDeletionURLString: String = ""

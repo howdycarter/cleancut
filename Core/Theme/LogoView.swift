@@ -16,7 +16,7 @@ struct LogoView: View {
     var body: some View {
         ZStack {
             Circle()
-                .fill(DesignTokens.primaryColor.opacity(0.15))
+                .fill(DS.primary.opacity(0.15))
                 .frame(width: size * 1.2, height: size * 1.2)
                 .scaleEffect(glow ? 1.05 : 0.95)
                 .animation(.easeInOut(duration: 1.6).repeatForever(autoreverses: true), value: glow)
@@ -32,12 +32,12 @@ struct LogoView: View {
                     Image(systemName: "app.fill")
                         .resizable()
                         .scaledToFit()
-                        .foregroundStyle(DesignTokens.primaryColor)
+                        .foregroundStyle(DS.primary)
                         .padding(size * 0.2)
                 }
             }
             .frame(width: size, height: size)
-            .shadow(color: DesignTokens.accentColor.opacity(0.4), radius: 12, x: 0, y: 4)
+            .shadow(color: DS.accent.opacity(0.4), radius: 12, x: 0, y: 4)
             .offset(y: animateLogo ? (float ? -6 : 6) : 0)
             .scaleEffect(1.0)
             .animation(animateLogo ? .easeInOut(duration: 2.0).repeatForever(autoreverses: true) : nil, value: float)
