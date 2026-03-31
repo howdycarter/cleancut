@@ -6,7 +6,7 @@ import SwiftUI
 import UserNotifications
 
 @main
-struct TheSwiftKitApp: App {
+struct CleanCutApp: App {
     @StateObject private var router = AppRouter()
     private let container = DIContainer.makeDefault()
     #if DEBUG

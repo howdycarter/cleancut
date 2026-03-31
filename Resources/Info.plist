@@ -18,6 +18,12 @@
 	<string>1.0</string>
 	<key>CFBundleVersion</key>
 	<string>1</string>
+	<key>NSCameraUsageDescription</key>
+	<string>CleanCut uses your camera to capture photos for background removal.</string>
+	<key>NSPhotoLibraryAddUsageDescription</key>
+	<string>CleanCut needs permission to save processed images to your photo library.</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>CleanCut needs access to your photo library to process images.</string>
 	<key>UILaunchStoryboardName</key>
 	<string>LaunchScreen</string>
 	<key>UISupportedInterfaceOrientations</key>

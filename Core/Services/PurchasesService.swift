@@ -32,17 +32,17 @@ public struct NoopPurchasesService: PurchasesService {
         // Lightweight local placeholders for previews/testing without RevenueCat
         var base: [PurchaseOption] = [
             PurchaseOption(
-                id: "com.swiftkit.pro.6m",
-                displayName: "6 Months",
+                id: "com.chriscarterux.cleancut.yearly",
+                displayName: "Yearly",
                 price: "$39.99",
-                pricePerPeriod: "$6.67/mo",
-                badge: "19% OFF",
+                pricePerPeriod: "$3.33/mo",
+                badge: "Best Value",
                 isRecommended: true,
-                ctaText: "Start 1 week free trial"
+                ctaText: "Get CleanCut Pro"
             ),
             PurchaseOption(
-                id: "com.swiftkit.pro.monthly",
-                displayName: "Month",
+                id: "com.chriscarterux.cleancut.monthly",
+                displayName: "Monthly",
                 price: "$9.99",
                 pricePerPeriod: nil,
                 badge: nil,
@@ -53,12 +53,12 @@ public struct NoopPurchasesService: PurchasesService {
         if includeAll {
             base.append(
                 PurchaseOption(
-                    id: "com.swiftkit.premium.yearly",
-                    displayName: "Year",
-                    price: "$79.99",
-                    pricePerPeriod: "$6.67/mo",
-                    badge: "Best Value",
-                    isRecommended: true,
+                    id: "com.chriscarterux.cleancut.weekly",
+                    displayName: "Weekly",
+                    price: "$2.99",
+                    pricePerPeriod: "$11.96/mo",
+                    badge: nil,
+                    isRecommended: false,
                     ctaText: nil
                 )
             )

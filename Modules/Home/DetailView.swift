@@ -1,21 +1,12 @@
 //
 //  DetailView.swift
+//  CleanCut
 //
-
 import SwiftUI
 
 struct DetailView: View {
-    let itemID: String
+    var itemID: String
     var body: some View {
-        VStack(spacing: DS.Spacing.md) {
-            Text("detail.title")
-                .appFont(.title2)
-            Text("\(itemID)")
-                .appFont(.body)
-        }
-        .padding()
-        .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .background(Color(.systemBackground))
-        .accessibilityElement(children: .combine)
+        Text("Detail")
     }
 }

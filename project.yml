@@ -1,17 +1,15 @@
-name: TheSwiftKit
+name: CleanCut
 options:
   deploymentTarget:
     iOS: '16.0'
   createIntermediateGroups: true
-  # Ensure generated pbxproj is compatible with your Xcode
-  # Bump to match your installed Xcode version if needed (e.g., '16.0')
   xcodeVersion: '15.1'
 settings:
   base:
     SWIFT_VERSION: 5.9
     IPHONEOS_DEPLOYMENT_TARGET: 16.0
 targets:
-  TheSwiftKit:
+  CleanCut:
     type: application
     platform: iOS
     dependencies:
@@ -33,29 +31,33 @@ targets:
           - "**/Python/**"
       - path: Resources
         excludes:
-          - Info.plist # handled via info block below
+          - Info.plist
+      - path: Features
     info:
       path: Resources/Info.plist
       properties:
         UILaunchStoryboardName: LaunchScreen
         UISupportedInterfaceOrientations:
           - UIInterfaceOrientationPortrait
+        NSCameraUsageDescription: "CleanCut uses your camera to capture photos for background removal."
+        NSPhotoLibraryUsageDescription: "CleanCut needs access to your photo library to process images."
+        NSPhotoLibraryAddUsageDescription: "CleanCut needs permission to save processed images to your photo library."
     settings:
       base:
-        PRODUCT_BUNDLE_IDENTIFIER: com.agaganorg.theswiftkit
+        PRODUCT_BUNDLE_IDENTIFIER: com.chriscarterux.cleancut
         CURRENT_PROJECT_VERSION: 1
         MARKETING_VERSION: 1.0
     scheme:
       testTargets:
-        - name: TheSwiftKitTests
+        - name: CleanCutTests
 
-  TheSwiftKitTests:
+  CleanCutTests:
     type: bundle.unit-test
     platform: iOS
     sources:
       - path: Tests
     dependencies:
-      - target: TheSwiftKit
+      - target: CleanCut
 
 packages:
   Supabase:

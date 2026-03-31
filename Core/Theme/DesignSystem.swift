@@ -28,8 +28,8 @@ public enum DS {
     // Your app's identity. Change these two to rebrand instantly.
     // =================================================================
 
-    public static let primaryHex: String = "__PRIMARY_COLOR__"
-    public static let accentHex: String  = "__ACCENT_COLOR__"
+    public static let primaryHex: String = "#1A1A2E"
+    public static let accentHex: String  = "#00C896"
 
     // =================================================================
     // NEUTRAL PALETTE

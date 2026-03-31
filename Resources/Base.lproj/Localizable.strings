@@ -1,7 +1,7 @@
 /* Localizable strings */
-"home.title" = "Home";
+"home.title" = "CleanCut";
 "home.tab" = "Home";
-"home.item.access" = "Item";
+"home.item.access" = "Photo";
 "settings.tab" = "Settings";
 "settings.title" = "Settings";
 "settings.appearance" = "Appearance";
@@ -15,67 +15,21 @@
 "detail.title" = "Detail";
 
 /* Onboarding */
-"onb.welcome.title" = "Welcome to __APP_NAME__";
-"onb.welcome.subtitle" = "Generate SwiftUI apps in minutes.";
-"onb.build.title" = "Build Faster";
-"onb.build.subtitle" = "Skip boilerplate with ready modules.";
-"onb.launch.title" = "Launch Confidently";
-"onb.launch.subtitle" = "Compliance-ready defaults baked in.";
+"onb.welcome.title" = "Remove Backgrounds Instantly";
+"onb.welcome.subtitle" = "AI-powered background removal runs entirely on your device. Private, fast, and accurate.";
+"onb.build.title" = "On-Device AI Magic";
+"onb.build.subtitle" = "No internet required. Your photos never leave your phone.";
+"onb.launch.title" = "Start Free Today";
+"onb.launch.subtitle" = "Try CleanCut free for 3 days — no commitment.";
 "onb.next" = "Next";
 "onb.getstarted" = "Get Started";
 "onb.next.access" = "Advance onboarding";
-"onb.highlights.title" = "Why you’ll love it";
-"onb.highlights.subtitle" = "Three quick highlights to get going";
-"onb.minimal.title" = "Ready when you are";
-"onb.minimal.subtitle" = "Let’s create your starter app.";
-/* Showcase */
-"home.showcase" = "Showcase";
-"showcase.title" = "Showcase";
-"showcase.subtitle" = "Preview core navigation, theme, and onboarding.";
-"showcase.overview" = "Overview";
-"showcase.actions" = "Actions";
-"showcase.theme" = "Theme";
-"showcase.pushdetail" = "Push Detail";
-"showcase.showonboarding" = "Show Onboarding";
-"showcase.opensettings" = "Open Settings";
-"showcase.colors" = "Primary & Accent";
-
-/* Test Drive */
-"tester.title" = "Test Drive";
-"tester.overview" = "Overview";
-"tester.subtitle" = "Launch the app, preview onboarding and auth, and jump to screens.";
-"tester.section.flow" = "App Flow";
-"tester.section.shortcuts" = "Shortcuts";
-"tester.launchapp" = "Continue to App";
-"tester.resetonboarding" = "Reset Onboarding Seen";
-"tester.showonboarding" = "Show Onboarding (next)";
-"tester.showauth" = "Show Auth";
-"tester.openhome" = "Open Home";
-"tester.opensettings" = "Open Settings";
-"tester.opennotifs" = "Open Notifications Tester";
-
-/* Notifications */
-"notif.debug.title" = "Notifications";
-"notif.status" = "Status";
-"notif.status.authorized" = "Authorized";
-"notif.status.denied" = "Denied";
-"notif.status.provisional" = "Provisional";
-"notif.status.ephemeral" = "Ephemeral";
-"notif.status.undetermined" = "Not Determined";
-"notif.scheduled.count" = "Pending:";
-"notif.permissions" = "Permissions";
-"notif.request" = "Request Authorization";
-"notif.open.settings" = "Open System Settings";
-"notif.local" = "Local Notifications";
-"notif.schedule.5s" = "Schedule in 5 seconds";
-"notif.schedule.actions" = "Schedule with Actions (5s)";
-"notif.clear.pending" = "Clear Pending";
-"notif.remote" = "Remote (APNs)";
-"notif.register.apns" = "Register for Remote Notifications";
-"notif.sample.title" = "Hello";
-"notif.sample.body" = "This is a sample notification.";
-"notif.sample.actions.title" = "Quick Actions";
-"notif.sample.actions.body" = "Try Like or Reply.";
+"onb.highlights.title" = "Why you'll love CleanCut";
+"onb.highlights.subtitle" = "Professional results in seconds";
+"onb.minimal.title" = "Ready to remove backgrounds";
+"onb.minimal.subtitle" = "Pick any photo to get started.";
+"onb.skip" = "Skip";
+"onb.skip.access" = "Skip onboarding";
 
 /* Auth */
 "auth.nav" = "Sign In";
@@ -106,28 +60,85 @@
 "auth.error.signup" = "Could not sign up. Check your details and try again.";
 "auth.confirm.email" = "Check your email to confirm your account.";
 
-/* Onboarding polish */
-"onb.skip" = "Skip";
-"onb.skip.access" = "Skip onboarding";
-
 /* Account */
 "account.section" = "Account";
 "account.delete" = "Delete Account…";
 "account.delete.confirm" = "Delete Account";
 "account.delete.action" = "Delete";
-"account.delete.message" = "This removes your account data. In local mode, this signs you out.";
+"account.delete.message" = "This removes your account data.";
 "generic.cancel" = "Cancel";
 
 /* Home Screen */
-"home.welcome" = "Welcome";
-"home.welcome.named %@" = "Welcome, %@";
+"home.welcome" = "CleanCut";
+"home.welcome.named %@" = "CleanCut";
 "home.section.ai" = "AI Features";
 "home.ai.chat" = "Text Generation";
 "home.ai.images" = "Image Generation";
 "home.ai.vision" = "Vision Analysis";
-"home.getstarted.title" = "Getting Started";
-"home.getstarted.body" = "This is your app's home screen. Add feature sections by enabling flags in FeatureFlags.swift, or add your own content directly in HomeView.swift.";
+"home.getstarted.title" = "Remove Backgrounds";
+"home.getstarted.body" = "Pick a photo from your library or take one with your camera to remove its background instantly.";
+
+/* Paywall */
+"paywall.title" = "Unlock CleanCut Pro";
+"paywall.benefit.1" = "Unlimited background removals";
+"paywall.benefit.2" = "Full-resolution exports";
+"paywall.benefit.3" = "Custom background colors";
+"paywall.benefit.4" = "100% on-device processing";
+"paywall.benefit.5" = "Instant AI results";
+"paywall.allplans" = "Show all plans";
+"paywall.fewerplans" = "Show fewer plans";
+"paywall.continue" = "Start Free Trial";
+"paywall.restore" = "Restore Purchases";
+
+/* Test Drive */
+"tester.title" = "Test Drive";
+"tester.overview" = "Overview";
+"tester.subtitle" = "Launch the app, preview onboarding and auth, and jump to screens.";
+"tester.section.flow" = "App Flow";
+"tester.section.shortcuts" = "Shortcuts";
+"tester.launchapp" = "Continue to App";
+"tester.resetonboarding" = "Reset Onboarding Seen";
+"tester.showonboarding" = "Show Onboarding (next)";
+"tester.showauth" = "Show Auth";
+"tester.openhome" = "Open Home";
+"tester.opensettings" = "Open Settings";
+"tester.opennotifs" = "Open Notifications Tester";
 "tester.runfullflow" = "Run Full Flow";
+
+/* Notifications */
+"notif.debug.title" = "Notifications";
+"notif.status" = "Status";
+"notif.status.authorized" = "Authorized";
+"notif.status.denied" = "Denied";
+"notif.status.provisional" = "Provisional";
+"notif.status.ephemeral" = "Ephemeral";
+"notif.status.undetermined" = "Not Determined";
+"notif.scheduled.count" = "Pending:";
+"notif.permissions" = "Permissions";
+"notif.request" = "Request Authorization";
+"notif.open.settings" = "Open System Settings";
+"notif.local" = "Local Notifications";
+"notif.schedule.5s" = "Schedule in 5 seconds";
+"notif.schedule.actions" = "Schedule with Actions (5s)";
+"notif.clear.pending" = "Clear Pending";
+"notif.remote" = "Remote (APNs)";
+"notif.register.apns" = "Register for Remote Notifications";
+"notif.sample.title" = "Hello";
+"notif.sample.body" = "This is a sample notification.";
+"notif.sample.actions.title" = "Quick Actions";
+"notif.sample.actions.body" = "Try Like or Reply.";
+
+/* Showcase */
+"home.showcase" = "Showcase";
+"showcase.title" = "Showcase";
+"showcase.subtitle" = "Preview core navigation, theme, and onboarding.";
+"showcase.overview" = "Overview";
+"showcase.actions" = "Actions";
+"showcase.theme" = "Theme";
+"showcase.pushdetail" = "Push Detail";
+"showcase.showonboarding" = "Show Onboarding";
+"showcase.opensettings" = "Open Settings";
+"showcase.colors" = "Primary & Accent";
 
 /* AI Module */
 "ai.chat.title" = "Text Generation";
@@ -141,15 +152,3 @@
 "ai.vision.camera" = "Take Photo";
 "ai.vision.empty" = "No image selected";
 "ai.vision.analyze" = "Analyze Image";
-
-/* Paywall */
-"paywall.title" = "Pick your plan";
-"paywall.benefit.1" = "Unlimited access to all features";
-"paywall.benefit.2" = "Priority support";
-"paywall.benefit.3" = "Ad-free experience";
-"paywall.benefit.4" = "Cloud sync across devices";
-"paywall.benefit.5" = "Early access to new features";
-"paywall.allplans" = "Show all plans";
-"paywall.fewerplans" = "Show fewer plans";
-"paywall.continue" = "Continue";
-"paywall.restore" = "Restore Purchases";
