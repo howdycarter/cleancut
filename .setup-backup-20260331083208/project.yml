@@ -1,0 +1,71 @@
+name: CleanCut
+options:
+  deploymentTarget:
+    iOS: '16.0'
+  createIntermediateGroups: true
+  xcodeVersion: '15.1'
+settings:
+  base:
+    SWIFT_VERSION: 5.9
+    IPHONEOS_DEPLOYMENT_TARGET: 16.0
+targets:
+  CleanCut:
+    type: application
+    platform: iOS
+    dependencies:
+      - package: Supabase
+      - package: TelemetryDeck
+        product: TelemetryClient
+      - package: RevenueCat
+        product: RevenueCat
+    sources:
+      - path: Config
+        excludes:
+          - Secrets.sample.swift
+      - path: Core
+      - path: Modules
+      - path: Backend
+        excludes:
+          - "**/*.md"
+          - "**/*.txt"
+          - "**/Python/**"
+      - path: Resources
+        excludes:
+          - Info.plist
+      - path: Features
+    info:
+      path: Resources/Info.plist
+      properties:
+        UILaunchStoryboardName: LaunchScreen
+        UISupportedInterfaceOrientations:
+          - UIInterfaceOrientationPortrait
+        NSCameraUsageDescription: "CleanCut uses your camera to capture photos for background removal."
+        NSPhotoLibraryUsageDescription: "CleanCut needs access to your photo library to process images."
+        NSPhotoLibraryAddUsageDescription: "CleanCut needs permission to save processed images to your photo library."
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.cleancut.app
+        CURRENT_PROJECT_VERSION: 1
+        MARKETING_VERSION: 1.0
+    scheme:
+      testTargets:
+        - name: CleanCutTests
+
+  CleanCutTests:
+    type: bundle.unit-test
+    platform: iOS
+    sources:
+      - path: Tests
+    dependencies:
+      - target: CleanCut
+
+packages:
+  Supabase:
+    url: https://github.com/supabase-community/supabase-swift
+    from: 2.0.0
+  TelemetryDeck:
+    url: https://github.com/TelemetryDeck/SwiftSDK
+    from: 1.5.1
+  RevenueCat:
+    url: https://github.com/RevenueCat/purchases-ios
+    from: 5.0.0

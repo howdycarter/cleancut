@@ -68,7 +68,7 @@ public extension AppConfig {
     static var `default`: AppConfig {
         AppConfig(
             appName: "CleanCut",
-            bundleId: "com.chriscarterux.cleancut",
+            bundleId: "com.cleancut.app",
             backend: .local,
             layout: .list,
             onboardingStyle: .carousel,

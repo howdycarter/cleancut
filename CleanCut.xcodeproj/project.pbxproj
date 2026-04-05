@@ -20,7 +20,6 @@
 		2A41B44E19E7C2B13DF1D018 /* PhotoEditorViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1587DE0322D3F461C1A82EF1 /* PhotoEditorViewModel.swift */; };
 		2B7F667D5E7C7781B575B4EF /* CacheManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3080FA76D62C4BF1E9D3CBB5 /* CacheManager.swift */; };
 		304F1FB2024AFD5E8DB23FDA /* AppConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9A76B2501C6B69BFB4F95ADB /* AppConfig.swift */; };
-		32A39A230E35E5945B90AFF4 /* ColorExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = EABC7027E9E12BE370618F4A /* ColorExtension.swift */; };
 		3B09B29D7B73D8989A4BA051 /* UserRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 53728408FDBB6915403829F5 /* UserRepository.swift */; };
 		3DAB92807CF6F6E81EF3DD19 /* SupabaseAuthRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = A586E5459F0410F493B26AF5 /* SupabaseAuthRepository.swift */; };
 		4350FEADEEF240B87E8FDF05 /* OnboardingCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = DED369F298231941F67F7DCD /* OnboardingCoordinator.swift */; };
@@ -36,6 +35,7 @@
 		5AA43D142838108F79EFD4F4 /* SignInView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E145F82727F66F6C72B0A3B8 /* SignInView.swift */; };
 		5E922999E4865820ECF64411 /* CreateAccountView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1940EC358532C3A260CF97F /* CreateAccountView.swift */; };
 		5F944B8D349AB7C5A243DE26 /* RootView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2D2FF7CB3256C7646581009 /* RootView.swift */; };
+		61CD43AB156FEE461D391FF4 /* HexColor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 529A614F083716DCD3C75CCC /* HexColor.swift */; };
 		61D095003247A17DE4803C08 /* TelemetryClient in Frameworks */ = {isa = PBXBuildFile; productRef = 0E591575181A995307CA4DC4 /* TelemetryClient */; };
 		644044C934E5C09E106D9B86 /* Secrets.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3012AF199807B9B8143B14E5 /* Secrets.swift */; };
 		68F7033CE221D3E5839072FB /* CoreDataStack.swift in Sources */ = {isa = PBXBuildFile; fileRef = 614F89F0BA31DBCA801B0C6D /* CoreDataStack.swift */; };
@@ -139,6 +139,7 @@
 		485272BA1C864D62CB5FCC30 /* DesignSystem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DesignSystem.swift; sourceTree = "<group>"; };
 		49480AF7E359F838A26CC247 /* TheSwiftKitApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TheSwiftKitApp.swift; sourceTree = "<group>"; };
 		4E009B4C170DAAB043274C66 /* CachedProfileRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CachedProfileRepository.swift; sourceTree = "<group>"; };
+		529A614F083716DCD3C75CCC /* HexColor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HexColor.swift; sourceTree = "<group>"; };
 		534C5A414DCC29E8208051FA /* HomeViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeViewModel.swift; sourceTree = "<group>"; };
 		53728408FDBB6915403829F5 /* UserRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserRepository.swift; sourceTree = "<group>"; };
 		562021E2E7C3D5E370A2F0E3 /* BackgroundType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackgroundType.swift; sourceTree = "<group>"; };
@@ -188,7 +189,6 @@
 		E5F88A4821CDDD6F5B3B91C8 /* LogoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LogoView.swift; sourceTree = "<group>"; };
 		E674E5F3112B1ABD499E7EF4 /* AIViews.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AIViews.swift; sourceTree = "<group>"; };
 		E702FDAB533F806FC10EA846 /* HomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
-		EABC7027E9E12BE370618F4A /* ColorExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorExtension.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -314,8 +314,8 @@
 				8901D114DB1755E992AF70FD /* BackgroundRemovalService.swift */,
 				562021E2E7C3D5E370A2F0E3 /* BackgroundType.swift */,
 				08FF4749CFA2FFACC0907AE1 /* CameraView.swift */,
-				EABC7027E9E12BE370618F4A /* ColorExtension.swift */,
 				E53854A3A91A19497B26D31E /* EditorView.swift */,
+				529A614F083716DCD3C75CCC /* HexColor.swift */,
 				1587DE0322D3F461C1A82EF1 /* PhotoEditorViewModel.swift */,
 				A004AEF1DB6EBD828148AB3D /* ProcessedImage.swift */,
 			);
@@ -697,7 +697,6 @@
 				437CA89CF01296AC9A9BD5FB /* CachedSubscriptionRepository.swift in Sources */,
 				A99AD73F8A1C5C6CAC6E3C18 /* CameraView.swift in Sources */,
 				4C2A271669CA781D21C43B60 /* CarouselOnboardingView.swift in Sources */,
-				32A39A230E35E5945B90AFF4 /* ColorExtension.swift in Sources */,
 				68F7033CE221D3E5839072FB /* CoreDataStack.swift in Sources */,
 				5E922999E4865820ECF64411 /* CreateAccountView.swift in Sources */,
 				500C933109F142CDC0091CD0 /* DIContainer.swift in Sources */,
@@ -710,6 +709,7 @@
 				DC1492C9EFBD7177668408C2 /* FeatureFlags.swift in Sources */,
 				C5FEEAE54D283A183F6A6C8B /* FontRegistry.swift in Sources */,
 				91895626D19C045708A598F4 /* Glass.swift in Sources */,
+				61CD43AB156FEE461D391FF4 /* HexColor.swift in Sources */,
 				F6E1710BD142D5B736BC6B03 /* HighlightsOnboardingView.swift in Sources */,
 				B99A96802C1661EF5EC48F4E /* HomeView.swift in Sources */,
 				A31C06490E32328B1C783778 /* HomeViewModel.swift in Sources */,
@@ -824,7 +824,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
@@ -929,7 +929,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				PRODUCT_NAME = "$(TARGET_NAME)";
