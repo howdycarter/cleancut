@@ -49,3 +49,11 @@ Release identity clarification: `com.chriscarterux.cleancut` was already the app
 The app links to the [privacy policy](https://howdycarter.com/apps/cleancut/privacy) and [Apple standard terms](https://www.apple.com/legal/internet-services/itunes/dev/stdeula/). The [support page](https://howdycarter.com/apps/cleancut/support) is ready for App Store Connect metadata. The privacy and support routes were checked live on October 13, 2026. These pages describe the default local build; enabling an optional service requires reviewing the policy and App Store declarations again.
 
 Business support and App Review contact: [chris@newtonandcarter.com](mailto:chris@newtonandcarter.com), Newton & Carter LLC.
+
+## Encryption declaration
+
+`project.yml` and the generated `Resources/Info.plist` set `ITSAppUsesNonExemptEncryption` to `false`. This describes the reviewed iOS Release configuration, including linked libraries. Apple permits this value when encryption is absent or exempt; OS-provided encryption such as URLSession HTTPS is generally exempt from documentation upload. [Apple encryption guidance](https://developer.apple.com/documentation/security/complying-with-encryption-export-regulations) · [Info.plist key definition](https://developer.apple.com/documentation/bundleresources/information-property-list/itsappusesnonexemptencryption).
+
+The October 13, 2026 dependency audit covered Supabase 2.55.3, TelemetryDeck 1.5.1, RevenueCat 5.95.0 and their actual iOS Release target graph. Network transport uses Foundation URLSession. Hashing, nonce generation, signature checks and keychain access use Apple CryptoKit, CommonCrypto or Security. Supabase’s Swift Crypto 4.5.2 `Crypto` target re-exports CryptoKit on iOS; its BoringSSL, CryptoExtras and CXKCP implementations are excluded from this build graph. The archive links Apple CryptoKit/Security and has no matching BoringSSL/OpenSSL symbols. No app-defined encryption implementation was found. Empty optional service configuration is not the basis for this declaration: linked code was inspected too.
+
+Reassess this declaration when dependencies, platform flags or cryptography change. It does not settle privacy answers, distribution signing or any separate developer export obligations. Final archive verification must confirm the value is a Boolean `false` in the built app.
