@@ -6,6 +6,18 @@ import XCTest
 @testable import CleanCut
 
 final class ContainerTests: XCTestCase {
+    func testUnknownEntitlementRefreshPreservesPaidAccess() {
+        let failedRefresh = Notification(name: .subscriptionDidChange)
+        XCTAssertTrue(PremiumAccess.resolve(current: true, notification: failedRefresh, paywallEnabled: true))
+        XCTAssertFalse(PremiumAccess.resolve(current: false, notification: failedRefresh, paywallEnabled: true))
+    }
+
+    func testVerifiedRevocationRemovesAccessUnlessPaywallIsDisabled() {
+        let revoked = Notification(name: .subscriptionDidChange, userInfo: ["hasActiveEntitlement": false])
+        XCTAssertFalse(PremiumAccess.resolve(current: true, notification: revoked, paywallEnabled: true))
+        XCTAssertTrue(PremiumAccess.resolve(current: false, notification: revoked, paywallEnabled: false))
+    }
+
     func testUnconfiguredPurchasesDoNotExposeDemoProducts() async {
         let options = await NoopPurchasesService().loadOfferings(includeAll: true)
         XCTAssertTrue(options.isEmpty)

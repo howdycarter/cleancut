@@ -45,6 +45,10 @@ struct LogoView: View {
             .animation(animateLogo && !reduceMotion ? .easeInOut(duration: 2.0).repeatForever(autoreverses: true) : nil, value: float)
         }
         .onAppear { float = animateLogo && !reduceMotion; glow = animateLogo && !reduceMotion }
+        .onChange(of: reduceMotion) { _, reduced in
+            float = animateLogo && !reduced
+            glow = animateLogo && !reduced
+        }
         .accessibilityHidden(true)
     }
 }

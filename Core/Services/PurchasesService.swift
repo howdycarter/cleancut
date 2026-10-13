@@ -33,6 +33,14 @@ public struct NoopPurchasesService: PurchasesService {
     public func showManageSubscriptions() async {}
 }
 
+/// Missing status means refresh failed, not that a purchase was revoked.
+enum PremiumAccess {
+    static func resolve(current: Bool, notification: Notification, paywallEnabled: Bool) -> Bool {
+        guard paywallEnabled else { return true }
+        return notification.userInfo?["hasActiveEntitlement"] as? Bool ?? current
+    }
+}
+
 // MARK: - Models
 
 public struct PurchaseOption: Identifiable, Sendable, Equatable {
@@ -140,6 +148,14 @@ final class StoreKitPurchasesService: PurchasesService {
             if let expires = active.expirationDate { info[SubscriptionEventKey.expiresAt] = expires }
             if let product = try? await Product.products(for: [active.productID]).first {
                 info[SubscriptionEventKey.productName] = product.displayName
+                if let subscription = product.subscription, let statuses = try? await subscription.status {
+                    for status in statuses {
+                        guard case .verified(let transaction) = status.transaction,
+                              transaction.productID == active.productID,
+                              case .verified(let renewal) = status.renewalInfo else { continue }
+                        info["willRenew"] = renewal.willAutoRenew
+                    }
+                }
             }
         }
         NotificationCenter.default.post(name: .subscriptionDidChange, object: nil, userInfo: info)

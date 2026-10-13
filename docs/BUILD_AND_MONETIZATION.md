@@ -34,3 +34,7 @@ The app-specific icon prompt and provenance are in `AppIcon-Prompt.md`.
 - Generated icons are opaque 1024 × 1024 assets; in-app logos use the full-resolution source and respect Reduce Motion.
 
 Local StoreKit success does not verify App Store Connect, Apple’s sandbox, or a production transaction. The RevenueCat path remains optional and needs its own configured-project validation if enabled.
+
+The setup wizard now writes public runtime service values into `Resources/Info.plist`, which `Config/ServiceConfiguration.swift` reads. The legacy ignored `Secrets.swift` is not compiled. Do not enter server secrets or private signing keys. XcodeGen preserves the local StoreKit fixture through `project.yml`.
+
+Release identity clarification: `com.chriscarterux.cleancut` was already the app target bundle identifier in the original Xcode project. The stale `com.cleancut.app` template value in AppConfig was aligned to that existing target; no App Store bundle identity migration is requested.

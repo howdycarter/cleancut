@@ -34,9 +34,13 @@ struct HomeView: View {
             }
         }
         .preferredColorScheme(.dark)
-        .task { await container.purchasesService.refreshSubscriptionStatus() }
+        .task {
+            if !container.config.featureFlags.paywall { viewModel.isPremium = true }
+            await container.purchasesService.refreshSubscriptionStatus()
+        }
         .onReceive(NotificationCenter.default.publisher(for: .subscriptionDidChange)) { notification in
-            viewModel.isPremium = notification.userInfo?["hasActiveEntitlement"] as? Bool ?? false
+            viewModel.isPremium = PremiumAccess.resolve(current: viewModel.isPremium, notification: notification,
+                                                        paywallEnabled: container.config.featureFlags.paywall)
         }
         .sheet(isPresented: $isShowingPaywall) {
             PaywallView()

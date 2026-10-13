@@ -10,6 +10,15 @@ struct EditorView: View {
     @State private var isSaving = false
     @State private var didSave = false
 
+    private var previewBackground: Color {
+        switch processedImage.background {
+        case .transparent: return .clear
+        case .white: return .white
+        case .black: return .black
+        case .custom: return viewModel.isPremium ? Color(uiColor: processedImage.customColor) : .clear
+        }
+    }
+
     var body: some View {
         VStack(spacing: 0) {
             HStack {
@@ -32,15 +41,19 @@ struct EditorView: View {
             .foregroundStyle(.white)
             .padding(.horizontal, 16)
 
-            GeometryReader { _ in
+            GeometryReader { geometry in
+                let available = CGSize(width: max(1, geometry.size.width - 40), height: max(1, geometry.size.height - 40))
+                let imageSize = processedImage.processed.size
+                let scale = min(available.width / max(1, imageSize.width), available.height / max(1, imageSize.height))
+                let displaySize = CGSize(width: imageSize.width * scale, height: imageSize.height * scale)
                 ZStack {
                     CheckeredBackground()
-                    if let image = viewModel.composited() {
-                        Image(uiImage: image)
-                            .resizable()
-                            .scaledToFit()
-                            .accessibilityLabel("Photo with selected background")
-                    }
+                    Image(uiImage: processedImage.processed)
+                        .resizable()
+                        .scaledToFit()
+                        .background(previewBackground)
+                        .frame(width: displaySize.width, height: displaySize.height)
+                        .accessibilityLabel("Photo with selected background")
                 }
                 .clipShape(RoundedRectangle(cornerRadius: 16))
                 .padding(20)

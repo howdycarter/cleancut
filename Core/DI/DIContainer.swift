@@ -128,6 +128,9 @@ public extension DIContainer {
             appleSignIn = MockAppleSignInService()
         }
 
+        // Configure before any child view can request products or refresh access.
+        purchases.configure()
+
         return DIContainer(config: config,
                            authRepository: auth,
                            userRepository: user,

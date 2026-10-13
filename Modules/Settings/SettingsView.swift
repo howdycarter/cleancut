@@ -152,9 +152,9 @@ struct SettingsView: View {
                         do { profile = try await container.profileRepository.fetchProfile(for: user.id) } catch { profile = nil }
                         // Start from Free, then RevenueCat refresh will update if needed
                         subscription = .init(plan: .free, expiresAt: nil)
-                        await container.purchasesService.refreshSubscriptionStatus()
                     }
                 }
+                await container.purchasesService.refreshSubscriptionStatus()
             }
             .onReceive(NotificationCenter.default.publisher(for: .subscriptionDidChange)) { note in
                 if let name = note.userInfo?[SubscriptionEventKey.productName] as? String, !name.isEmpty {
