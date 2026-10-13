@@ -16,6 +16,10 @@ jobs:
     name: CleanCut simulator build and tests
     runs-on: macos-26
     timeout-minutes: 35
+    env:
+      # iOS 26.5 has a StoreKitTest CLI configuration regression (FB22237318).
+      # Use the installed 26.2 toolchain/runtime; keep every StoreKit test enabled.
+      DEVELOPER_DIR: /Applications/Xcode_26.2.app/Contents/Developer
     steps:
       - name: Check out the exact pull request head
         uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
@@ -37,14 +41,14 @@ jobs:
               devices = json.load(file)["devices"]
           candidates = []
           for runtime, rows in devices.items():
-              if ".iOS-" not in runtime:
+              if not runtime.endswith(".iOS-26-2"):
                   continue
               version = tuple(map(int, re.findall(r"\d+", runtime.rsplit(".iOS-", 1)[1])))
               for device in rows:
                   if device.get("isAvailable") and device["name"].startswith("iPhone"):
                       candidates.append((version, device["name"], device["udid"]))
           if not candidates:
-              raise SystemExit("No installed iPhone simulator is available")
+              raise SystemExit("No installed iOS 26.2 iPhone simulator is available")
           _, name, udid = sorted(candidates)[-1]
           print(f"Selected {name}: {udid}")
           with open(os.environ["GITHUB_OUTPUT"], "a") as file:
@@ -71,8 +75,9 @@ jobs:
         if: always()
         shell: bash
         run: |
+          set -euo pipefail
           if [ -d TestResults/CleanCut.xcresult ]; then
-            xcrun xcresulttool get test-results summary --path TestResults/CleanCut.xcresult > TestResults/summary.json
+            xcrun xcresulttool get test-results summary --path TestResults/CleanCut.xcresult | tee TestResults/summary.json
           fi
 
       - name: Retain logs and XCTest result bundle
