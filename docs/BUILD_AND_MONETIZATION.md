@@ -41,3 +41,5 @@ Release identity clarification: `com.chriscarterux.cleancut` was already the app
 ## Published support and privacy
 
 The app links to the [privacy policy](https://howdycarter.com/apps/cleancut/privacy) and [Apple standard terms](https://www.apple.com/legal/internet-services/itunes/dev/stdeula/). The [support page](https://howdycarter.com/apps/cleancut/support) is ready for App Store Connect metadata. The privacy and support routes were checked live on October 13, 2026. These pages describe the default local build; enabling an optional service requires reviewing the policy and App Store declarations again.
+
+Business support and App Review contact: [chris@newtonandcarter.com](mailto:chris@newtonandcarter.com), Newton & Carter LLC.
