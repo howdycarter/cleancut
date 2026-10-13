@@ -1,6 +1,6 @@
 # CleanCut build and monetization preparation
 
-This branch is a local preparation build. No App Store products, prices, subscriptions, business account settings, or releases have been published. The intended seller is **Newton & Carter LLC**; updating the Apple account and signing are deferred at the owner’s request.
+This repository contains the prepared app source. The intended seller is **Newton & Carter LLC**. Store records and products are configured separately in App Store Connect; a local build or fixture does not establish that they are live. Signing, sandbox verification, and submission remain release gates.
 
 ## Building
 
@@ -12,20 +12,26 @@ Set public service identifiers through Info.plist only when the corresponding se
 
 Free: on-device background removal and transparent/white/black PNG exports up to 1024 pixels. Pro: original-resolution PNG exports and custom background colors.
 
-Product identifiers are in `Secrets.storeProductIdentifiers`. Prices come from Apple's localized product data. The fixture `Tests/Fixtures/CleanCut.storekit` contains **unapproved test prices**, copied from pre-existing demo values only for local validation. They are not a pricing recommendation or evidence that any live product exists. The existing CleanCut product identifiers are preserved; their corresponding App Store Connect configuration still needs verification before release.
+Product identifiers are in `Secrets.storeProductIdentifiers` and remain unchanged. The owner approved **US $2.99 per month or $19.99 per year** for continued access to CleanCut Pro tools. The fixture `Tests/Fixtures/CleanCut.storekit` now reflects those approved amounts for local testing. Runtime prices come only from Apple's localized product data; the app has no hardcoded live-price fallback. App Store Connect configuration and actual sandbox transactions still require verification.
 
 The provider verifies transactions, observes updates, restores Apple purchases, and removes access after revocation. Missing products leave the free app usable. The paywall states recurring billing and presents restore and close controls.
 
 ## Release gates still open
 
-- Choose and approve real pricing and create matching products in App Store Connect.
+- Confirm the approved monthly/yearly products, prices, US availability, and subscription group in App Store Connect.
 - Review the final privacy declarations for whichever optional integrations are enabled. The bundled manifest currently declares the app's private UserDefaults use; it does not replace App Store privacy answers.
 - Verify camera capture, background segmentation, and the full edit/save/share flow on a physical iPhone. The iOS simulator photo picker works, but Vision could not create an inference context, including when supported CPU stages were requested. No end-to-end segmentation success is claimed from the simulator.
 - Sign the final build and perform a sandbox/TestFlight purchase and restore rehearsal before submission.
 
 The app-specific icon prompt and provenance are in `AppIcon-Prompt.md`.
 
+## Accessibility
+
+Home text uses semantic Dynamic Type styles and a scrollable layout, keeping import controls reachable at accessibility sizes. Background-selection labels scale with the user’s text setting.
+
 ## Validation
+
+- Accessibility follow-up: native simulator build passed, with normal and largest-text phone/iPad layouts visually inspected. The home screen scrolls to keep controls reachable.
 
 - Xcode 27 / iOS 27 simulator: 15 unit and local StoreKit integration tests passed. Coverage includes PNG transparency, image orientation, original pixel dimensions, custom backgrounds, and the free/Pro export boundary.
 - StoreKit tests exercise localized products, actual test purchases, restoring into a fresh service, asynchronous refund revocation, and unknown-product rejection.

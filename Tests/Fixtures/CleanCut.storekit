@@ -23,14 +23,14 @@
         {
           "adHocOffers": [],
           "codeOffers": [],
-          "displayPrice": "9.99",
+          "displayPrice": "2.99",
           "familyShareable": false,
           "groupNumber": 1,
           "internalID": "10000001",
           "introductoryOffer": null,
           "localizations": [
             {
-              "description": "Local test product. Price is not approved for publication.",
+              "description": "Continued access to CleanCut Pro tools.",
               "displayName": "CleanCut Pro Monthly",
               "locale": "en_US"
             }
@@ -45,14 +45,14 @@
         {
           "adHocOffers": [],
           "codeOffers": [],
-          "displayPrice": "39.99",
+          "displayPrice": "19.99",
           "familyShareable": false,
           "groupNumber": 1,
           "internalID": "10000002",
           "introductoryOffer": null,
           "localizations": [
             {
-              "description": "Local test product. Price is not approved for publication.",
+              "description": "Continued access to CleanCut Pro tools.",
               "displayName": "CleanCut Pro Yearly",
               "locale": "en_US"
             }

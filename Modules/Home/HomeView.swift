@@ -30,6 +30,8 @@ struct HomeView: View {
                     Text("Removing background…").foregroundStyle(.white)
                     Text("Your photo stays on your device.").font(.footnote).foregroundStyle(.secondary)
                 }
+                .multilineTextAlignment(.center)
+                .padding(.horizontal, 24)
                 .accessibilityElement(children: .combine)
             }
         }
@@ -81,17 +83,29 @@ struct HomeView: View {
     }
 
     private var homeContent: some View {
+        GeometryReader { geometry in
+            ScrollView {
+                homeLayout
+                    .frame(maxWidth: 680)
+                    .frame(minHeight: geometry.size.height)
+                    .frame(maxWidth: .infinity)
+            }
+            .scrollBounceBehavior(.basedOnSize)
+        }
+    }
+
+    private var homeLayout: some View {
         VStack(spacing: 0) {
             // Header
             HStack {
                 Text("CleanCut")
-                    .font(.system(size: 28, weight: .bold))
+                    .font(.title.bold())
                     .foregroundColor(.white)
                 Spacer()
                 if container.config.featureFlags.paywall && !viewModel.isPremium {
                 Button(action: { isShowingPaywall = true }) {
                         Text("PRO")
-                            .font(.system(size: 12, weight: .bold))
+                            .font(.caption.bold())
                             .foregroundColor(.black)
                             .padding(.horizontal, 10)
                             .padding(.vertical, 5)
@@ -105,7 +119,7 @@ struct HomeView: View {
             .padding(.horizontal, 24)
             .padding(.top, 16)
 
-            Spacer()
+            Spacer(minLength: 32)
 
             // Hero
             VStack(spacing: 20) {
@@ -120,28 +134,29 @@ struct HomeView: View {
 
                 VStack(spacing: 8) {
                     Text("Remove Backgrounds")
-                        .font(.system(size: 28, weight: .bold))
+                        .font(.title.bold())
                         .foregroundColor(.white)
+                        .multilineTextAlignment(.center)
+                        .fixedSize(horizontal: false, vertical: true)
                     Text("People, pets, and products. Processed on your device.")
-                        .font(.system(size: 16))
+                        .font(.body)
                         .foregroundColor(.gray)
                         .multilineTextAlignment(.center)
+                        .fixedSize(horizontal: false, vertical: true)
                 }
             }
             .padding(.horizontal, 24)
 
-            Spacer()
+            Spacer(minLength: 32)
 
             // CTA Buttons
             VStack(spacing: 12) {
                 PhotosPicker(selection: $selectedItem, matching: .images) {
-                    HStack {
-                        Spacer()
-                        Image(systemName: "photo.on.rectangle")
-                        Text("Choose from Library")
-                            .font(.system(size: 17, weight: .semibold))
-                        Spacer()
-                    }
+                    Label("Choose from Library", systemImage: "photo.on.rectangle")
+                    .font(.headline)
+                    .multilineTextAlignment(.center)
+                    .fixedSize(horizontal: false, vertical: true)
+                    .frame(maxWidth: .infinity)
                     .padding()
                     .background(Color.white)
                     .foregroundColor(.black)
@@ -149,13 +164,11 @@ struct HomeView: View {
                 }
 
                 Button(action: openCamera) {
-                    HStack {
-                        Spacer()
-                        Image(systemName: "camera")
-                        Text("Take a Photo")
-                            .font(.system(size: 17, weight: .semibold))
-                        Spacer()
-                    }
+                    Label("Take a Photo", systemImage: "camera")
+                    .font(.headline)
+                    .multilineTextAlignment(.center)
+                    .fixedSize(horizontal: false, vertical: true)
+                    .frame(maxWidth: .infinity)
                     .padding()
                     .background(Color.white.opacity(0.15))
                     .foregroundColor(.white)
@@ -165,6 +178,5 @@ struct HomeView: View {
             .padding(.horizontal, 24)
             .padding(.bottom, 40)
         }
-        .frame(maxWidth: 680)
     }
 }

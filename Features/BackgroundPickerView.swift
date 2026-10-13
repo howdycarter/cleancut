@@ -35,11 +35,13 @@ private struct BackgroundChip: View {
                     .frame(width: 16, height: 16)
                     .overlay(Circle().stroke(Color.white.opacity(0.3), lineWidth: 1))
                 Text(type.rawValue)
-                    .font(.system(size: 14, weight: .medium))
+                    .font(.subheadline.weight(.medium))
                     .foregroundColor(.white)
             }
+            .fixedSize()
             .padding(.horizontal, 14)
             .padding(.vertical, 8)
+            .frame(minHeight: 44)
             .background(
                 RoundedRectangle(cornerRadius: 20)
                     .fill(isSelected ? Color(cleanCutHex: "#2C7BE5").opacity(0.4) : Color.white.opacity(0.1))
@@ -50,6 +52,7 @@ private struct BackgroundChip: View {
             )
         }
         .buttonStyle(.plain)
+        .accessibilityAddTraits(isSelected ? .isSelected : [])
     }
 
     private var chipColor: Color {
