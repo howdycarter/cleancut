@@ -21,7 +21,7 @@ The optional `./setup.sh --config setup-config.json` workflow writes public runt
 
 ## Purchases and release
 
-Native StoreKit 2 supplies localized monthly/yearly plans, verified purchases, restore, and revocation handling. Configuring a RevenueCat public client key selects the optional RevenueCat provider. The local fixture prices are unapproved test data, and live App Store products still require verification.
+Native StoreKit 2 supplies localized monthly/yearly plans, verified purchases, restore, and revocation handling. Configuring a RevenueCat public client key selects the optional RevenueCat provider. The owner-approved US prices are $2.99 per month or $19.99 per year. The local StoreKit fixture reflects those amounts; the live Apple catalog and sandbox transactions still require verification. Runtime prices always come from Apple’s localized product data.
 
 See [build and monetization preparation](docs/BUILD_AND_MONETIZATION.md) for feature boundaries, validation evidence, and remaining physical-device and App Store release gates. The intended seller is Newton & Carter LLC; Apple account changes and signing are deferred.
 
