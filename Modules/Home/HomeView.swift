@@ -128,6 +128,7 @@ struct HomeView: View {
                         .multilineTextAlignment(.center)
                 }
             }
+            .padding(.horizontal, 24)
 
             Spacer()
 
@@ -164,5 +165,6 @@ struct HomeView: View {
             .padding(.horizontal, 24)
             .padding(.bottom, 40)
         }
+        .frame(maxWidth: 680)
     }
 }
