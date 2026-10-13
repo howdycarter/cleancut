@@ -20,7 +20,7 @@
 "onb.build.title" = "On-Device AI Magic";
 "onb.build.subtitle" = "No internet required. Your photos never leave your phone.";
 "onb.launch.title" = "Start Free Today";
-"onb.launch.subtitle" = "Try CleanCut free for 3 days — no commitment.";
+"onb.launch.subtitle" = "Remove backgrounds and export PNGs for free. Upgrade for original-resolution exports and custom colors.";
 "onb.next" = "Next";
 "onb.getstarted" = "Get Started";
 "onb.next.access" = "Advance onboarding";
@@ -80,9 +80,9 @@
 
 /* Paywall */
 "paywall.title" = "Unlock CleanCut Pro";
-"paywall.benefit.1" = "Unlimited background removals";
-"paywall.benefit.2" = "Full-resolution exports";
-"paywall.benefit.3" = "Custom background colors";
+"paywall.benefit.1" = "Original-resolution PNG exports";
+"paywall.benefit.2" = "Custom background colors";
+"paywall.benefit.3" = "More control over every cutout";
 "paywall.benefit.4" = "100% on-device processing";
 "paywall.benefit.5" = "Instant AI results";
 "paywall.allplans" = "Show all plans";

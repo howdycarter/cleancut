@@ -10,6 +10,7 @@ import UIKit
 struct LogoView: View {
     var size: CGFloat = 96
     var animateLogo: Bool = true
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @State private var float: Bool = false
     @State private var glow: Bool = false
 
@@ -19,7 +20,7 @@ struct LogoView: View {
                 .fill(DS.primary.opacity(0.15))
                 .frame(width: size * 1.2, height: size * 1.2)
                 .scaleEffect(glow ? 1.05 : 0.95)
-                .animation(.easeInOut(duration: 1.6).repeatForever(autoreverses: true), value: glow)
+                .animation(animateLogo && !reduceMotion ? .easeInOut(duration: 1.6).repeatForever(autoreverses: true) : nil, value: glow)
 
             // Prefer explicit AppLogo asset if provided; otherwise use the compiled App Icon if available,
             // and finally fall back to a friendly SF Symbol.
@@ -37,12 +38,17 @@ struct LogoView: View {
                 }
             }
             .frame(width: size, height: size)
+            .clipShape(RoundedRectangle(cornerRadius: size * 0.22, style: .continuous))
             .shadow(color: DS.accent.opacity(0.4), radius: 12, x: 0, y: 4)
-            .offset(y: animateLogo ? (float ? -6 : 6) : 0)
+            .offset(y: animateLogo && !reduceMotion ? (float ? -6 : 6) : 0)
             .scaleEffect(1.0)
-            .animation(animateLogo ? .easeInOut(duration: 2.0).repeatForever(autoreverses: true) : nil, value: float)
+            .animation(animateLogo && !reduceMotion ? .easeInOut(duration: 2.0).repeatForever(autoreverses: true) : nil, value: float)
         }
-        .onAppear { float = true; glow = true }
+        .onAppear { float = animateLogo && !reduceMotion; glow = animateLogo && !reduceMotion }
+        .onChange(of: reduceMotion) { _, reduced in
+            float = animateLogo && !reduced
+            glow = animateLogo && !reduced
+        }
         .accessibilityHidden(true)
     }
 }

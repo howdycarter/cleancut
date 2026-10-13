@@ -19,6 +19,6 @@
   "telemetrydeck_app_id": "",
   "ai_backend_url": "http://127.0.0.1:5001",
   "testflight_app_id": "",
-  "privacy_url": "https://example.com/privacy",
-  "terms_url": "https://example.com/terms"
+  "privacy_url": "https://howdycarter.com/apps/cleancut/privacy",
+  "terms_url": "https://www.apple.com/legal/internet-services/itunes/dev/stdeula/"
 }

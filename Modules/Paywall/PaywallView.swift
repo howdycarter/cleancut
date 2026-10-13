@@ -1,243 +1,148 @@
-//
-//  PaywallView.swift
-//
-//  Generic paywall — edit `benefits` to match your app's value proposition.
-//
-
 import SwiftUI
 
 struct PaywallView: View {
     @Environment(\.container) private var container
     @Environment(\.dismiss) private var dismiss
     @State private var options: [PurchaseOption] = []
-    @State private var selectedId: String? = nil
-    @State private var isPurchasing: Bool = false
-    @State private var errorMessage: String? = nil
-    @State private var showAllPlans: Bool = false
+    @State private var selectedId: String?
+    @State private var isLoading = true
+    @State private var isBusy = false
+    @State private var errorMessage: String?
 
-    // ─────────────────────────────────────────────────────────
-    // EDIT THESE to match your app's subscription benefits.
-    // ─────────────────────────────────────────────────────────
-    static let benefits: [String] = [
-        String(localized: "paywall.benefit.1"),
-        String(localized: "paywall.benefit.2"),
-        String(localized: "paywall.benefit.3"),
-        String(localized: "paywall.benefit.4"),
-        String(localized: "paywall.benefit.5"),
-    ]
+    private var selected: PurchaseOption? { options.first { $0.id == selectedId } }
 
     var body: some View {
-        ZStack {
-            AnimatedBackground()
-                .ignoresSafeArea()
-
-            VStack(spacing: 0) {
-                // Close button
-                HStack {
-                    Spacer()
-                    Button(action: { dismiss() }) {
-                        Image(systemName: "xmark")
-                            .font(.system(size: 14, weight: .bold))
-                            .padding(10)
-                            .background(.ultraThinMaterial, in: Circle())
+        NavigationStack {
+            ScrollView {
+                VStack(spacing: 24) {
+                    LogoView(size: 76, animateLogo: false)
+                        .padding(.top, 20)
+                    VStack(spacing: 8) {
+                        Text("\(container.config.appName) Pro").font(.largeTitle.bold())
+                        Text("Full-resolution exports. Your colors.").foregroundStyle(.secondary)
                     }
-                }
-                .padding([.top, .horizontal], DS.Spacing.lg)
-
-                Spacer(minLength: 0)
-
-                LogoView(size: 84)
-                    .padding(.bottom, DS.Spacing.lg)
-
-                Text(String(localized: "paywall.title"))
-                    .font(AppTypography.title)
-                    .foregroundStyle(titleColor)
-                    .padding(.bottom, DS.Spacing.md)
-
-                VStack(alignment: .leading, spacing: DS.Spacing.sm) {
-                    ForEach(Self.benefits, id: \.self) { text in
-                        FeatureRow(text: text)
+                    VStack(alignment: .leading, spacing: 14) {
+                        ForEach(["paywall.benefit.1", "paywall.benefit.2"], id: \.self) { key in
+                            Label(String(localized: String.LocalizationValue(key)), systemImage: "checkmark.circle.fill")
+                                .symbolRenderingMode(.hierarchical)
+                                .foregroundStyle(.primary)
+                                .frame(maxWidth: .infinity, alignment: .leading)
+                        }
                     }
-                }
-                .padding(.horizontal, DS.Spacing.xl)
-                .padding(.bottom, DS.Spacing.xl)
+                    .padding(20)
+                    .background(.white.opacity(0.06), in: RoundedRectangle(cornerRadius: 20))
 
-                VStack(spacing: DS.Spacing.md) {
-                    ForEach(options) { opt in
-                        PlanOptionRow(
-                            title: opt.displayName,
-                            price: opt.price,
-                            perUnit: opt.pricePerPeriod,
-                            isSelected: selectedId == opt.id,
-                            badge: opt.badge
-                        ) { selectedId = opt.id }
-                    }
-                }
-                .padding(.horizontal, DS.Spacing.lg)
-                .padding(.bottom, DS.Spacing.lg)
-                .animation(.easeInOut(duration: DS.Motion.normal), value: options)
+                    if isLoading {
+                        ProgressView("Loading plans…").padding()
+                    } else if options.isEmpty {
+                        VStack(spacing: 12) {
+                            Text("Plans are temporarily unavailable").font(.headline)
+                            Text("You can keep using the free features and try again later.")
+                                .foregroundStyle(.secondary)
+                                .multilineTextAlignment(.center)
+                            Button("Try Again") { Task { await load() } }
+                        }.padding(.vertical)
+                    } else {
+                        VStack(spacing: 12) {
+                            ForEach(options) { option in
+                                Button { selectedId = option.id } label: {
+                                    HStack(spacing: 12) {
+                                        Image(systemName: selectedId == option.id ? "checkmark.circle.fill" : "circle")
+                                            .foregroundStyle(selectedId == option.id ? DS.accent : .secondary)
+                                        VStack(alignment: .leading, spacing: 4) {
+                                            Text(option.displayName).font(.headline)
+                                            if let cadence = option.pricePerPeriod { Text(cadence).font(.subheadline).foregroundStyle(.secondary) }
+                                        }
+                                        Spacer()
+                                        Text(option.price).font(.title3.bold())
+                                    }
+                                    .foregroundStyle(.primary)
+                                    .padding(18)
+                                    .background(.white.opacity(0.05), in: RoundedRectangle(cornerRadius: 16))
+                                    .overlay(RoundedRectangle(cornerRadius: 16).stroke(selectedId == option.id ? DS.accent : .white.opacity(0.15), lineWidth: selectedId == option.id ? 2 : 1))
+                                }
+                                .buttonStyle(.plain)
+                                .accessibilityAddTraits(selectedId == option.id ? .isSelected : [])
+                            }
+                        }
 
-                Button(action: toggleAllPlans) {
-                    HStack {
-                        Spacer()
-                        Text(showAllPlans
-                             ? String(localized: "paywall.fewerplans")
-                             : String(localized: "paywall.allplans"))
-                            .font(AppTypography.custom(size: 15, weight: .semibold, relativeTo: .subheadline))
-                            .foregroundColor(DS.accent)
-                        Spacer()
-                    }
-                }
-                .padding(.horizontal, DS.Spacing.lg)
-                .padding(.bottom, DS.Spacing.md)
+                        Button(action: purchase) {
+                            HStack {
+                                if isBusy { ProgressView().tint(.black) }
+                                Text(selected.map { "Subscribe for \($0.price)" } ?? "Select a plan").fontWeight(.semibold)
+                            }
+                            .frame(maxWidth: .infinity, minHeight: 54)
+                            .foregroundStyle(.black)
+                            .background(.white, in: RoundedRectangle(cornerRadius: 16))
+                        }
+                        .disabled(isBusy || selected == nil)
 
-                Button(action: purchase) {
-                    HStack {
-                        Spacer()
-                        Text(ctaTitle)
-                            .appFont(.headline)
-                        Spacer()
+                        Text("Payment is charged to your Apple Account. Subscriptions renew automatically unless canceled at least 24 hours before the current period ends. Manage or cancel in App Store settings.")
+                            .font(.footnote)
+                            .foregroundStyle(.secondary)
+                            .multilineTextAlignment(.center)
                     }
-                    .padding()
-                    .background(DS.accent, in: RoundedRectangle(cornerRadius: DS.Radius.lg))
-                    .foregroundColor(DS.Colors.buttonPrimaryFg)
-                }
-                .padding(.horizontal, DS.Spacing.lg)
-                .padding(.bottom, DS.Spacing.md)
-                .disabled(isPurchasing || selectedId == nil)
-                .opacity((isPurchasing || selectedId == nil) ? 0.6 : 1.0)
 
-                HStack(spacing: DS.Spacing.md) {
-                    Button(action: restore) {
-                        Text(String(localized: "paywall.restore"))
-                            .foregroundColor(DS.Colors.textSecondary)
-                    }
-                    Spacer()
-                    Link("Terms", destination: container.config.legal.termsURL)
-                        .foregroundColor(DS.Colors.textSecondary)
-                    Link("Privacy", destination: container.config.legal.privacyPolicyURL)
-                        .foregroundColor(DS.Colors.textSecondary)
+                    Button("Restore Purchases", action: restore).disabled(isBusy)
+                    HStack(spacing: 24) {
+                        Link("Terms", destination: container.config.legal.termsURL)
+                        Link("Privacy", destination: container.config.legal.privacyPolicyURL)
+                    }.font(.footnote)
                 }
-                .padding(.horizontal, DS.Spacing.lg)
-                .padding(.bottom, DS.Spacing.lg)
+                .padding(.horizontal, 24)
+                .padding(.bottom, 32)
             }
+            .background(Color.black)
+            .toolbar {
+                ToolbarItem(placement: .topBarTrailing) {
+                    Button { dismiss() } label: { Image(systemName: "xmark").frame(width: 44, height: 44) }
+                        .accessibilityLabel("Close Pro plans")
+                }
+            }
+            .toolbarTitleDisplayMode(.inline)
         }
+        .preferredColorScheme(.dark)
+        .tint(DS.accent)
+        .presentationDetents([.large])
         .task { await load() }
-        .alert("Purchase Error", isPresented: .constant(errorMessage != nil)) {
-            Button("OK") { errorMessage = nil }
+        .alert("Purchases", isPresented: Binding(get: { errorMessage != nil }, set: { if !$0 { errorMessage = nil } })) {
+            Button("OK", role: .cancel) {}
         } message: { Text(errorMessage ?? "") }
-    }
-
-    private var ctaTitle: String {
-        if let selected = options.first(where: { $0.id == selectedId }), let text = selected.ctaText, !text.isEmpty {
-            return text
+        .onReceive(NotificationCenter.default.publisher(for: .subscriptionDidChange)) { notification in
+            if notification.userInfo?["hasActiveEntitlement"] as? Bool == true { dismiss() }
         }
-        return String(localized: "paywall.continue")
     }
-
-    @Environment(\.colorScheme) private var colorScheme
-    private var titleColor: Color { colorScheme == .dark ? .white : DS.Colors.textPrimary }
 
     private func load() async {
-        let opts = await container.purchasesService.loadOfferings(includeAll: showAllPlans)
-        await MainActor.run {
-            self.options = opts
-            self.selectedId = opts.first?.id
-        }
-    }
-
-    private func toggleAllPlans() {
-        withAnimation(.easeInOut(duration: DS.Motion.normal)) {
-            showAllPlans.toggle()
-        }
-        Task { await load() }
+        isLoading = true
+        options = await container.purchasesService.loadOfferings(includeAll: false)
+        selectedId = options.first?.id
+        isLoading = false
     }
 
     private func purchase() {
-        guard let id = selectedId else { return }
-        isPurchasing = true
+        guard let selectedId, !isBusy else { return }
+        isBusy = true
         Task { @MainActor in
+            defer { isBusy = false }
             do {
-                try await container.purchasesService.purchase(packageIdentifier: id)
-                isPurchasing = false
+                try await container.purchasesService.purchase(packageIdentifier: selectedId)
                 dismiss()
-            } catch {
-                isPurchasing = false
-                errorMessage = error.localizedDescription
-            }
+            } catch PurchaseFriendlyError.cancelled {
+                // The system purchase sheet already acknowledges cancellation.
+            } catch { errorMessage = error.localizedDescription }
         }
     }
 
     private func restore() {
-        Task {
-            do { try await container.purchasesService.restorePurchases() }
-            catch let e as PurchaseFriendlyError { await MainActor.run { errorMessage = e.localizedDescription } }
-            catch { await MainActor.run { errorMessage = error.localizedDescription } }
+        guard !isBusy else { return }
+        isBusy = true
+        Task { @MainActor in
+            defer { isBusy = false }
+            do {
+                try await container.purchasesService.restorePurchases()
+                dismiss()
+            } catch { errorMessage = error.localizedDescription }
         }
-    }
-}
-
-private struct FeatureRow: View {
-    var text: String
-    var body: some View {
-        HStack(alignment: .firstTextBaseline, spacing: DS.Spacing.md) {
-            Image(systemName: "checkmark.circle.fill")
-                .foregroundStyle(DS.accent)
-            Text(text)
-                .foregroundColor(featureTextColor)
-        }
-    }
-    @Environment(\.colorScheme) private var colorScheme
-    private var featureTextColor: Color { colorScheme == .dark ? .white : DS.Colors.textPrimary }
-}
-
-private struct PlanOptionRow: View {
-    var title: String
-    var price: String
-    var perUnit: String?
-    var isSelected: Bool
-    var badge: String?
-    var tap: () -> Void
-
-    var body: some View {
-        Button(action: tap) {
-            ZStack(alignment: .topTrailing) {
-                RoundedRectangle(cornerRadius: DS.Radius.lg)
-                    .fill(.ultraThinMaterial)
-                    .overlay(
-                        RoundedRectangle(cornerRadius: DS.Radius.lg)
-                            .stroke(isSelected ? DS.accent : Color.white.opacity(0.15), lineWidth: 2)
-                    )
-                HStack(alignment: .center) {
-                    Image(systemName: isSelected ? "largecircle.fill.circle" : "circle")
-                        .foregroundColor(isSelected ? DS.accent : DS.Colors.textSecondary)
-                    VStack(alignment: .leading, spacing: 4) {
-                        Text(title).appFont(.headline)
-                        Text(price).appFont(.title3)
-                    }
-                    Spacer()
-                    if let perUnit { Text(perUnit).foregroundColor(DS.Colors.textSecondary) }
-                }
-                .padding()
-
-                if let badge {
-                    Text(badge)
-                        .appFont(.captionBold)
-                        .padding(.vertical, 6)
-                        .padding(.horizontal, 10)
-                        .background(DS.accent, in: Capsule())
-                        .foregroundColor(DS.Colors.buttonPrimaryFg)
-                        .offset(x: -12, y: -12)
-                }
-            }
-        }
-        .buttonStyle(.plain)
-    }
-}
-
-struct PaywallView_Previews: PreviewProvider {
-    static var previews: some View {
-        PaywallView()
-            .preferredColorScheme(.dark)
     }
 }

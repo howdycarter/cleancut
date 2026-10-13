@@ -19,7 +19,7 @@ struct RootView: View {
         TabView {
             NavigationStack(path: $router.path) {
                 HomeView()
-                    .navigationTitle(Text("home.title"))
+                    .toolbar(.hidden, for: .navigationBar)
                     .navigationDestination(for: AppRoute.self) { route in
                         switch route {
                         case .detail(let id):
@@ -57,13 +57,13 @@ struct RootView: View {
             Group {
                 if #available(iOS 16.4, *) {
                     PaywallView()
-                        .presentationDetents([.medium, .large])
+                        .presentationDetents([.large])
                         .presentationDragIndicator(.visible)
                         .presentationCornerRadius(24)
                         .transition(.move(edge: .bottom).combined(with: .opacity))
                 } else {
                     PaywallView()
-                        .presentationDetents([.medium, .large])
+                        .presentationDetents([.large])
                         .presentationDragIndicator(.visible)
                         .transition(.move(edge: .bottom).combined(with: .opacity))
                 }
@@ -137,6 +137,7 @@ struct RootView: View {
         .onChange(of: scenePhase) { newPhase in
             if newPhase == .active {
                 Task {
+                    await container.purchasesService.refreshSubscriptionStatus()
                     if let u = await container.authRepository.currentUser() {
                         await container.purchasesService.logIn(u.id)
                         await container.purchasesService.refreshSubscriptionStatus()

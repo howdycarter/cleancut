@@ -68,7 +68,7 @@ public extension AppConfig {
     static var `default`: AppConfig {
         AppConfig(
             appName: "CleanCut",
-            bundleId: "com.cleancut.app",
+            bundleId: "com.chriscarterux.cleancut",
             backend: .local,
             layout: .list,
             onboardingStyle: .carousel,
@@ -86,8 +86,8 @@ public extension AppConfig {
                 enableCaching: false
             ),
             legal: LegalLinks(
-                privacyPolicyURL: URL(string: "https://example.com/privacy")!,
-                termsURL: URL(string: "https://example.com/terms")!
+                privacyPolicyURL: URL(string: "https://howdycarter.com/apps/cleancut/privacy")!,
+                termsURL: URL(string: "https://www.apple.com/legal/internet-services/itunes/dev/stdeula/")!
             )
         )
     }

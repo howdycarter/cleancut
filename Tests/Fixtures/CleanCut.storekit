@@ -1,0 +1,74 @@
+{
+  "identifier": "1d56a859-9736-454b-9110-0bb2b9192f03",
+  "nonRenewingSubscriptions": [],
+  "products": [],
+  "settings": {
+    "_failTransactionsEnabled": false,
+    "_locale": "en_US",
+    "_storefront": "USA",
+    "_storeKitErrors": []
+  },
+  "subscriptionGroups": [
+    {
+      "id": "10000000",
+      "localizations": [
+        {
+          "description": "Local test subscription group",
+          "displayName": "CleanCut Pro",
+          "locale": "en_US"
+        }
+      ],
+      "name": "CleanCut Pro",
+      "subscriptions": [
+        {
+          "adHocOffers": [],
+          "codeOffers": [],
+          "displayPrice": "9.99",
+          "familyShareable": false,
+          "groupNumber": 1,
+          "internalID": "10000001",
+          "introductoryOffer": null,
+          "localizations": [
+            {
+              "description": "Local test product. Price is not approved for publication.",
+              "displayName": "CleanCut Pro Monthly",
+              "locale": "en_US"
+            }
+          ],
+          "productID": "com.chriscarterux.cleancut.monthly",
+          "recurringSubscriptionPeriod": "P1M",
+          "referenceName": "CleanCut Pro Monthly (Test)",
+          "subscriptionGroupID": "10000000",
+          "type": "RecurringSubscription",
+          "winBackOffers": []
+        },
+        {
+          "adHocOffers": [],
+          "codeOffers": [],
+          "displayPrice": "39.99",
+          "familyShareable": false,
+          "groupNumber": 1,
+          "internalID": "10000002",
+          "introductoryOffer": null,
+          "localizations": [
+            {
+              "description": "Local test product. Price is not approved for publication.",
+              "displayName": "CleanCut Pro Yearly",
+              "locale": "en_US"
+            }
+          ],
+          "productID": "com.chriscarterux.cleancut.yearly",
+          "recurringSubscriptionPeriod": "P1Y",
+          "referenceName": "CleanCut Pro Yearly (Test)",
+          "subscriptionGroupID": "10000000",
+          "type": "RecurringSubscription",
+          "winBackOffers": []
+        }
+      ]
+    }
+  ],
+  "version": {
+    "major": 3,
+    "minor": 0
+  }
+}

@@ -22,6 +22,7 @@ targets:
       - path: Config
         excludes:
           - Secrets.sample.swift
+          - Secrets.swift
       - path: Core
       - path: Modules
       - path: Backend
@@ -29,6 +30,8 @@ targets:
           - "**/*.md"
           - "**/*.txt"
           - "**/Python/**"
+          - "**/*.sql"
+          - "**/*.ts"
       - path: Resources
         excludes:
           - Info.plist
@@ -48,14 +51,23 @@ targets:
         CURRENT_PROJECT_VERSION: 1
         MARKETING_VERSION: 1.0
     scheme:
+      storeKitConfiguration: Tests/Fixtures/CleanCut.storekit
       testTargets:
         - name: CleanCutTests
 
   CleanCutTests:
+    settings:
+      base:
+        GENERATE_INFOPLIST_FILE: YES
+        PRODUCT_BUNDLE_IDENTIFIER: com.chriscarterux.cleancut.tests
     type: bundle.unit-test
     platform: iOS
     sources:
       - path: Tests
+        excludes:
+          - Fixtures
+      - path: Tests/Fixtures
+        buildPhase: resources
     dependencies:
       - target: CleanCut
 

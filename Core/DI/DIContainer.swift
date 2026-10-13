@@ -97,12 +97,12 @@ public extension DIContainer {
         if !Secrets.revenueCatAPIKey.isEmpty {
             purchases = RevenueCatPurchasesService(apiKey: Secrets.revenueCatAPIKey)
         } else {
-            purchases = NoopPurchasesService()
-            AppLogger.log("[Noop] RevenueCat API key is empty — using demo offerings. Set revenueCatAPIKey in Secrets.swift to enable real subscriptions.", level: .warning)
+            purchases = StoreKitPurchasesService(productIdentifiers: Secrets.storeProductIdentifiers)
+            AppLogger.log("Using native StoreKit purchases.", level: .info)
         }
         #else
-        purchases = NoopPurchasesService()
-        AppLogger.log("[Noop] RevenueCat SDK not linked — using demo offerings. Add the RevenueCat package to enable real subscriptions.", level: .warning)
+        purchases = StoreKitPurchasesService(productIdentifiers: Secrets.storeProductIdentifiers)
+        AppLogger.log("Using native StoreKit purchases.", level: .info)
         #endif
 
         // Analytics service (TelemetryDeck/TelemetryClient when available)
@@ -110,7 +110,7 @@ public extension DIContainer {
         #if canImport(TelemetryDeck) || canImport(TelemetryClient)
         if Secrets.telemetryDeckAppID.isEmpty {
             analytics = NoopAnalyticsService()
-            AppLogger.log("[Noop] TelemetryDeck app ID is empty — analytics events are not being sent. Set telemetryDeckAppID in Secrets.swift.", level: .warning)
+            AppLogger.log("[Noop] TelemetryDeck app ID is empty — analytics events are not being sent. Set telemetryDeckAppID in the app configuration.", level: .warning)
         } else {
             analytics = TelemetryDeckAnalyticsService(appID: Secrets.telemetryDeckAppID)
         }
@@ -127,6 +127,9 @@ public extension DIContainer {
         case .local:
             appleSignIn = MockAppleSignInService()
         }
+
+        // Configure before any child view can request products or refresh access.
+        purchases.configure()
 
         return DIContainer(config: config,
                            authRepository: auth,

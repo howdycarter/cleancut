@@ -13,7 +13,7 @@ struct RevenueCatPurchasesService: PurchasesService {
     init(apiKey: String) { self.apiKey = apiKey }
 
     func configure() {
-        guard !apiKey.isEmpty else { return }
+        guard !apiKey.isEmpty, !Purchases.isConfigured else { return }
         let config = Configuration
             .builder(withAPIKey: apiKey)
             .with(usesStoreKit2IfAvailable: true)
@@ -35,7 +35,10 @@ struct RevenueCatPurchasesService: PurchasesService {
 
     func restorePurchases() async throws {
         do {
-            _ = try await Purchases.shared.restorePurchases()
+            let restored = try await Purchases.shared.restorePurchases()
+            guard !restored.entitlements.active.isEmpty else {
+                throw PurchaseFriendlyError.unknown("No active Pro purchase was found for this Apple Account.")
+            }
             await broadcastSubscriptionChange(source: "restore")
         }
         catch { throw map(error) }
@@ -169,7 +172,11 @@ struct RevenueCatPurchasesService: PurchasesService {
             throw NSError(domain: "Purchases", code: -1, userInfo: [NSLocalizedDescriptionKey: "Package not found"])
         }
         do {
-            _ = try await Purchases.shared.purchase(package: pkg)
+            let result = try await Purchases.shared.purchase(package: pkg)
+            guard !result.userCancelled else { throw PurchaseFriendlyError.cancelled }
+            guard !result.customerInfo.entitlements.active.isEmpty else {
+                throw PurchaseFriendlyError.unknown("Your purchase is awaiting confirmation. Please restore purchases or try again.")
+            }
             await broadcastSubscriptionChange(source: "purchase")
         }
         catch { throw map(error) }
