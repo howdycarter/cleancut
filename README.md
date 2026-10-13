@@ -15,7 +15,7 @@ No app account is required in the default build. Optional service integrations a
 
 Open `CleanCut.xcodeproj` and choose the `CleanCut` scheme. Dependencies resolve through Swift Package Manager. The default build does not require a credentials file.
 
-The checked-in scheme includes a local StoreKit fixture. Use normal simulator signing (an ad hoc identity is sufficient) when running the tests; local StoreKit products do not load in an unsigned app on the tested Xcode runtime. The current suite has 15 passing unit and local StoreKit integration tests.
+The checked-in scheme includes a local StoreKit fixture. Use normal simulator signing (an ad hoc identity is sufficient) when running the tests; local StoreKit products do not load in an unsigned app on the tested Xcode runtime. The last recorded Apple-runtime run passed 15 unit and local StoreKit integration tests. The additional photo-flow regression tests have not yet been run on an Apple runtime; see [flow verification](docs/FLOW_VERIFICATION.md) for coverage and required checks.
 
 The optional `./setup.sh --config setup-config.json` workflow writes public runtime service values to `Resources/Info.plist` and `project.yml`, then regenerates the project with XcodeGen. `Config/ServiceConfiguration.swift` reads those values. The legacy ignored `Config/Secrets.swift` is not compiled. Never put server secrets or private signing keys in the app.
 
@@ -30,3 +30,4 @@ The app-specific icon is documented in [icon provenance](docs/AppIcon-Prompt.md)
 ## Support
 
 For CleanCut support, contact [chris@newtonandcarter.com](mailto:chris@newtonandcarter.com) or visit the [support page](https://howdycarter.com/apps/cleancut/support). App Review contact: chris@newtonandcarter.com.
+

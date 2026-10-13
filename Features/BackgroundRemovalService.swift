@@ -25,17 +25,25 @@ actor BackgroundRemovalService {
     private init() {}
 
     func removeBackground(from image: UIImage) async throws -> UIImage {
+        try Task.checkCancellation()
         let normalized = Self.normalizedImage(image)
         guard let cgImage = normalized.cgImage else { throw BackgroundRemovalError.invalidImage }
         let request = VNGenerateForegroundInstanceMaskRequest()
         let handler = VNImageRequestHandler(cgImage: cgImage, options: [:])
         do {
+            try Task.checkCancellation()
             try handler.perform([request])
+            try Task.checkCancellation()
             guard let observation = request.results?.first, !observation.allInstances.isEmpty else {
                 throw BackgroundRemovalError.segmentationFailed
             }
             let mask = try observation.generateScaledMaskForImage(forInstances: observation.allInstances, from: handler)
-            return try applyMask(to: cgImage, maskBuffer: mask)
+            try Task.checkCancellation()
+            let result = try applyMask(to: cgImage, maskBuffer: mask)
+            try Task.checkCancellation()
+            return result
+        } catch is CancellationError {
+            throw CancellationError()
         } catch let error as BackgroundRemovalError {
             throw error
         } catch {

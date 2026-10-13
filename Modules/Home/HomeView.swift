@@ -27,12 +27,16 @@ struct HomeView: View {
                 Color.black.opacity(0.8).ignoresSafeArea()
                 VStack(spacing: 16) {
                     ProgressView().tint(.white).controlSize(.large)
-                    Text("Removing background…").foregroundStyle(.white)
+                    Text(viewModel.processingMessage).foregroundStyle(.white)
                     Text("Your photo stays on your device.").font(.footnote).foregroundStyle(.secondary)
+                    Button("Cancel", role: .cancel) { viewModel.cancelProcessing() }
+                        .buttonStyle(.bordered)
+                        .frame(minHeight: 44)
+                        .accessibilityLabel("Cancel photo processing")
                 }
                 .multilineTextAlignment(.center)
                 .padding(.horizontal, 24)
-                .accessibilityElement(children: .combine)
+                .accessibilityElement(children: .contain)
             }
         }
         .preferredColorScheme(.dark)
@@ -52,10 +56,10 @@ struct HomeView: View {
         .photosPicker(isPresented: $viewModel.showingPhotoPicker, selection: $selectedItem, matching: .images)
         .onChange(of: selectedItem) { item in
             if let item {
-                Task {
-                    await viewModel.loadImage(from: item)
-                    selectedItem = nil
-                }
+                // Clear this selection synchronously; an older load must never
+                // clear a newer selection when it eventually finishes.
+                selectedItem = nil
+                viewModel.loadImage(from: item)
             }
         }
         .fullScreenCover(isPresented: $showCamera) {
