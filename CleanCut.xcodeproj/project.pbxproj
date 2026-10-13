@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		AB0123456789012345678911 /* CleanCut.storekit in Resources */ = {isa = PBXBuildFile; fileRef = AB0123456789012345678912 /* CleanCut.storekit */; };
+		AB0123456789012345678901 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = AB0123456789012345678902 /* PrivacyInfo.xcprivacy */; };
 		04029CD75E451F94BC877B85 /* TestDriveView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3096D4052F49B359F7A6F26B /* TestDriveView.swift */; };
 		042087C5866354BD4179C7A8 /* 001_user_subscriptions.sql in Resources */ = {isa = PBXBuildFile; fileRef = B59ADF6EC3AC6EE4EA20F962 /* 001_user_subscriptions.sql */; };
 		0561B0DEA4FA050956DC66A5 /* OnboardingModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06E27687F460AC2BAC8929D3 /* OnboardingModels.swift */; };
@@ -37,7 +39,7 @@
 		5F944B8D349AB7C5A243DE26 /* RootView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2D2FF7CB3256C7646581009 /* RootView.swift */; };
 		61CD43AB156FEE461D391FF4 /* HexColor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 529A614F083716DCD3C75CCC /* HexColor.swift */; };
 		61D095003247A17DE4803C08 /* TelemetryClient in Frameworks */ = {isa = PBXBuildFile; productRef = 0E591575181A995307CA4DC4 /* TelemetryClient */; };
-		644044C934E5C09E106D9B86 /* Secrets.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3012AF199807B9B8143B14E5 /* Secrets.swift */; };
+		644044C934E5C09E106D9B86 /* ServiceConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3012AF199807B9B8143B14E5 /* ServiceConfiguration.swift */; };
 		68F7033CE221D3E5839072FB /* CoreDataStack.swift in Sources */ = {isa = PBXBuildFile; fileRef = 614F89F0BA31DBCA801B0C6D /* CoreDataStack.swift */; };
 		6D13CEB03ECAA3A8C23CDA5F /* ContainerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 019547CE24F93A2ABB59AF49 /* ContainerTests.swift */; };
 		6D455920325F9B02251598FC /* Typography.swift in Sources */ = {isa = PBXBuildFile; fileRef = C342FCD634935D3C51D18AF2 /* Typography.swift */; };
@@ -105,6 +107,8 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		AB0123456789012345678912 /* CleanCut.storekit */ = {isa = PBXFileReference; lastKnownFileType = text; name = CleanCut.storekit; path = Tests/Fixtures/CleanCut.storekit; sourceTree = SOURCE_ROOT; };
+		AB0123456789012345678902 /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
 		019547CE24F93A2ABB59AF49 /* ContainerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContainerTests.swift; sourceTree = "<group>"; };
 		0342A5856DC0767864CF1E38 /* BackgroundPickerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackgroundPickerView.swift; sourceTree = "<group>"; };
 		044DF7D431AAC3199664748F /* LaunchScreen.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = LaunchScreen.storyboard; sourceTree = "<group>"; };
@@ -130,7 +134,7 @@
 		29BCFE67A60A014DEF311CCF /* LocalDataDemoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalDataDemoView.swift; sourceTree = "<group>"; };
 		2CF95E18B241E9844E651BF4 /* SupabaseSubscriptionRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SupabaseSubscriptionRepository.swift; sourceTree = "<group>"; };
 		2D0C75661A5F1ECD6D182E00 /* NotificationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationService.swift; sourceTree = "<group>"; };
-		3012AF199807B9B8143B14E5 /* Secrets.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Secrets.swift; sourceTree = "<group>"; };
+		3012AF199807B9B8143B14E5 /* ServiceConfiguration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServiceConfiguration.swift; sourceTree = "<group>"; };
 		3080FA76D62C4BF1E9D3CBB5 /* CacheManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CacheManager.swift; sourceTree = "<group>"; };
 		3096D4052F49B359F7A6F26B /* TestDriveView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestDriveView.swift; sourceTree = "<group>"; };
 		39BF45AA6EB855D2554C785A /* AppRouter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppRouter.swift; sourceTree = "<group>"; };
@@ -385,6 +389,7 @@
 		68BDA380BF7290EEC27430ED /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				AB0123456789012345678902 /* PrivacyInfo.xcprivacy */,
 				429DA6B122BE56EF24D8613E /* Assets.xcassets */,
 				044DF7D431AAC3199664748F /* LaunchScreen.storyboard */,
 				D9CECDD96EF690948E030BD9 /* Localizable.strings */,
@@ -508,7 +513,7 @@
 			children = (
 				9A76B2501C6B69BFB4F95ADB /* AppConfig.swift */,
 				AE0B31EF3E4A4846E0BD3BD6 /* FeatureFlags.swift */,
-				3012AF199807B9B8143B14E5 /* Secrets.swift */,
+				3012AF199807B9B8143B14E5 /* ServiceConfiguration.swift */,
 			);
 			path = Config;
 			sourceTree = "<group>";
@@ -596,6 +601,7 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 61AB91DE3BEF1639C5F9A486 /* Build configuration list for PBXNativeTarget "CleanCutTests" */;
 			buildPhases = (
+				AB0123456789012345678913 /* Test Resources */,
 				D82DE362CBCC1619A8C8A779 /* Sources */,
 			);
 			buildRules = (
@@ -645,18 +651,15 @@
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
+		AB0123456789012345678913 /* Test Resources */ = {isa = PBXResourcesBuildPhase; buildActionMask = 2147483647; files = (AB0123456789012345678911 /* CleanCut.storekit in Resources */); runOnlyForDeploymentPostprocessing = 0; };
 		11CC1BB30CC73CB8ECA5073F /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				042087C5866354BD4179C7A8 /* 001_user_subscriptions.sql in Resources */,
-				7E44A0DFC890407D5C38EF7A /* 002_user_subscriptions_enhancements.sql in Resources */,
 				7BC50E50567545154AF5800F /* Assets.xcassets in Resources */,
 				51876B5D042C4BD41C379CE0 /* LaunchScreen.storyboard in Resources */,
+				AB0123456789012345678901 /* PrivacyInfo.xcprivacy in Resources */,
 				D248F2CEC05493A45986E8FE /* Localizable.strings in Resources */,
-				6E5C3E62B50BB627898C1671 /* README.md in Resources */,
-				86600AD8BD9A50EE01BD03D8 /* setup.sql in Resources */,
-				BD2A34CCC7B033011AB59ECC /* user_subscriptions_webhook.ts in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -735,7 +738,7 @@
 				F9927F8929EB9F5DD207C77A /* RatingService.swift in Sources */,
 				B89876E4815986D4C81C4287 /* RevenueCatPurchasesService.swift in Sources */,
 				5F944B8D349AB7C5A243DE26 /* RootView.swift in Sources */,
-				644044C934E5C09E106D9B86 /* Secrets.swift in Sources */,
+				644044C934E5C09E106D9B86 /* ServiceConfiguration.swift in Sources */,
 				A58A9A2E474521B2C29CB963 /* SettingsView.swift in Sources */,
 				B2A386B241EBD849177B868B /* SettingsViewModel.swift in Sources */,
 				5AA43D142838108F79EFD4F4 /* SignInView.swift in Sources */,
@@ -840,6 +843,8 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
+				GENERATE_INFOPLIST_FILE = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = com.chriscarterux.cleancut.tests;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -873,6 +878,8 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
+				GENERATE_INFOPLIST_FILE = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = com.chriscarterux.cleancut.tests;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",

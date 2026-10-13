@@ -2,14 +2,12 @@
 //  HexColor.swift
 //  CleanCut
 //
-//  Non-failable Color(hex:) initializer.
-//  Coexists with the Swift Kit's failable Color.init?(hex:) in DSColors.swift —
-//  Swift prefers the non-failable overload in non-optional contexts.
+//  App-specific color initializer, distinct from the shared failable parser.
 //
 import SwiftUI
 
 extension Color {
-    init(hex: String) {
+    init(cleanCutHex hex: String) {
         let hex = hex.trimmingCharacters(in: CharacterSet.alphanumerics.inverted)
         var int: UInt64 = 0
         Scanner(string: hex).scanHexInt64(&int)

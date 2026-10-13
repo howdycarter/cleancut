@@ -1,16 +1,11 @@
-//
-//  PhotoEditorViewModel.swift
-//  CleanCut
-//
 import SwiftUI
 import PhotosUI
 import Photos
 
 @MainActor
-class PhotoEditorViewModel: ObservableObject {
+final class PhotoEditorViewModel: ObservableObject {
     @Published var processedImage: ProcessedImage?
     @Published var isProcessing = false
-    @Published var processingProgress: Double = 0
     @Published var errorMessage: String?
     @Published var showingPhotoPicker = false
     @Published var isPremium = false
@@ -18,64 +13,75 @@ class PhotoEditorViewModel: ObservableObject {
     private let bgService = BackgroundRemovalService.shared
 
     func loadImage(from item: PhotosPickerItem) async {
-        guard let data = try? await item.loadTransferable(type: Data.self),
-              let uiImage = UIImage(data: data) else {
-            errorMessage = "Could not load the selected image."
-            return
+        guard !isProcessing else { return }
+        do {
+            guard let data = try await item.loadTransferable(type: Data.self), let image = UIImage(data: data) else {
+                errorMessage = "Could not load this photo. Please choose another image."
+                return
+            }
+            await process(image: image)
+        } catch {
+            errorMessage = "Could not download this photo. Check your connection and try again."
         }
-        await process(image: uiImage)
     }
 
     func process(image: UIImage) async {
+        guard !isProcessing else { return }
         isProcessing = true
-        processingProgress = 0
-        processedImage = nil
-
-        // Animate progress
-        let progressTask = Task {
-            for i in 0...85 {
-                try? await Task.sleep(nanoseconds: 20_000_000)
-                processingProgress = Double(i) / 100.0
-            }
-        }
-
+        errorMessage = nil
+        defer { isProcessing = false }
         do {
             let result = try await bgService.removeBackground(from: image)
-            progressTask.cancel()
-            processingProgress = 1.0
-            try? await Task.sleep(nanoseconds: 200_000_000)
             processedImage = ProcessedImage(original: image, processed: result)
         } catch {
-            progressTask.cancel()
             errorMessage = error.localizedDescription
         }
-        isProcessing = false
     }
 
-    func updateBackground(_ bg: BackgroundType) {
-        guard var current = processedImage else { return }
-        current.background = bg
-        processedImage = current
+    func updateBackground(_ background: BackgroundType) {
+        guard background != .custom || isPremium else { return }
+        processedImage?.background = background
     }
 
-    func composited() async -> UIImage? {
-        guard let img = processedImage else { return nil }
-        return await bgService.compositeOnBackground(img.processed, background: img.background, color: img.customColor)
+    func updateCustomColor(_ color: UIColor) {
+        processedImage?.customColor = color
     }
 
-    func saveToPhotos() async {
-        guard let img = await composited() else { return }
-        do {
-            try await PHPhotoLibrary.shared().performChanges {
-                PHAssetChangeRequest.creationRequestForAsset(from: img)
-            }
-        } catch {
-            errorMessage = "Could not save image: \(error.localizedDescription)"
+    func composited() -> UIImage? {
+        guard let image = processedImage else { return nil }
+        let background: BackgroundType = !isPremium && image.background == .custom ? .transparent : image.background
+        let output = bgService.compositeOnBackground(image.processed, background: background, color: image.customColor)
+        guard !isPremium, max(output.size.width * output.scale, output.size.height * output.scale) > 1_024 else { return output }
+        let ratio = 1_024 / max(output.size.width, output.size.height)
+        let size = CGSize(width: output.size.width * ratio, height: output.size.height * ratio)
+        let format = UIGraphicsImageRendererFormat()
+        format.scale = 1
+        return UIGraphicsImageRenderer(size: size, format: format).image { _ in
+            output.draw(in: CGRect(origin: .zero, size: size))
         }
     }
 
-    func reset() {
-        processedImage = nil
-        processingProgress = 0
+    @discardableResult
+    func saveToPhotos() async -> Bool {
+        guard let image = composited(), let data = image.pngData() else { return false }
+        let authorization = await PHPhotoLibrary.requestAuthorization(for: .addOnly)
+        guard authorization == .authorized || authorization == .limited else {
+            errorMessage = "Allow CleanCut to add photos in Settings, or use Share to export your image."
+            return false
+        }
+        do {
+            try await PHPhotoLibrary.shared().performChanges {
+                let request = PHAssetCreationRequest.forAsset()
+                let options = PHAssetResourceCreationOptions()
+                options.uniformTypeIdentifier = "public.png"
+                request.addResource(with: .photo, data: data, options: options)
+            }
+            return true
+        } catch {
+            errorMessage = "Could not save your image. Please try again or use Share."
+            return false
+        }
     }
+
+    func reset() { processedImage = nil }
 }

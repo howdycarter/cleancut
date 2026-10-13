@@ -10,9 +10,10 @@ struct SettingsView: View {
     @Environment(\.colorScheme) private var scheme
     @AppStorage("appearanceDark") private var appearanceDark: Bool = false
     @AppStorage("appearanceLocked") private var appearanceLocked: Bool = false
+    @State private var showUpgrade = false
     @State private var currentUser: User?
     @State private var profile: Profile?
-    @State private var subscription: SubscriptionStatus?
+    @State private var subscription: SubscriptionStatus? = .init(plan: .free, expiresAt: nil)
     @State private var purchasedNameOverride: String? = nil
     @State private var purchasedExpiresOverride: Date? = nil
     @State private var hasActiveEntitlement: Bool = false
@@ -62,7 +63,7 @@ struct SettingsView: View {
                         }
                         if currentSub.plan == .free && !hasActiveEntitlement {
                             Button {
-                                router.push(.paywall)
+                                showUpgrade = true
                             } label: {
                                 Label("Upgrade", systemImage: "sparkles")
                             }
@@ -104,18 +105,6 @@ struct SettingsView: View {
                         }
                     }
                 }
-                Section("settings.appearance") {
-                    Toggle(isOn: Binding(
-                        get: { appearanceLocked ? appearanceDark : (scheme == .dark) },
-                        set: { newValue in
-                            appearanceDark = newValue
-                            appearanceLocked = true
-                        }
-                    )) {
-                        Label("settings.darkmode", systemImage: "moon.fill")
-                    }
-                }
-
                 Section("settings.legal") {
                     Link(destination: container.config.legal.privacyPolicyURL) {
                         Label("settings.privacy", systemImage: "hand.raised")
@@ -227,8 +216,8 @@ struct SettingsView: View {
                 Text("account.delete.message")
             }
         }
-        // No local color scheme override here; persistence handled via AppStorage
-        .alert("Subscription", isPresented: .constant(purchaseErrorMessage != nil)) {
+        .sheet(isPresented: $showUpgrade) { PaywallView() }
+        .alert("Subscription", isPresented: Binding(get: { purchaseErrorMessage != nil }, set: { if !$0 { purchaseErrorMessage = nil } })) {
             Button("OK") { purchaseErrorMessage = nil }
         } message: {
             Text(purchaseErrorMessage ?? "")

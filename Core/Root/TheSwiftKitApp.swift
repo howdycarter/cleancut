@@ -10,7 +10,7 @@ struct CleanCutApp: App {
     @StateObject private var router = AppRouter()
     private let container = DIContainer.makeDefault()
     #if DEBUG
-    @State private var showTester: Bool = true
+    @State private var showTester = ProcessInfo.processInfo.arguments.contains("--show-test-drive")
     #endif
 
     @UIApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
@@ -54,7 +54,7 @@ struct CleanCutApp: App {
             .inject(container)
             .environmentObject(router)
             .dsTheme(DSTheme(surfaceStyle: SurfaceStyle(rawValue: themeStyleRaw) ?? DS.surfaceStyle))
-            .preferredColorScheme(appearanceLocked ? (appearanceDark ? .dark : .light) : nil)
+            .preferredColorScheme(.dark)
             .task {
                 // Configure RevenueCat early and refresh entitlements on launch
                 container.purchasesService.configure()
@@ -65,7 +65,7 @@ struct CleanCutApp: App {
                 .inject(container)
                 .environmentObject(router)
                 .dsTheme(DSTheme(surfaceStyle: SurfaceStyle(rawValue: themeStyleRaw) ?? DS.surfaceStyle))
-                .preferredColorScheme(appearanceLocked ? (appearanceDark ? .dark : .light) : nil)
+                .preferredColorScheme(.dark)
                 .task {
                     // Configure RevenueCat early and refresh entitlements on launch
                     container.purchasesService.configure()

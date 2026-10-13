@@ -42,10 +42,10 @@ private struct BackgroundChip: View {
             .padding(.vertical, 8)
             .background(
                 RoundedRectangle(cornerRadius: 20)
-                    .fill(isSelected ? Color(hex: "#2C7BE5").opacity(0.4) : Color.white.opacity(0.1))
+                    .fill(isSelected ? Color(cleanCutHex: "#2C7BE5").opacity(0.4) : Color.white.opacity(0.1))
                     .overlay(
                         RoundedRectangle(cornerRadius: 20)
-                            .stroke(isSelected ? Color(hex: "#2C7BE5") : Color.clear, lineWidth: 2)
+                            .stroke(isSelected ? Color(cleanCutHex: "#2C7BE5") : Color.clear, lineWidth: 2)
                     )
             )
         }

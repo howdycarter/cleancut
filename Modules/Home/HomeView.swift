@@ -5,6 +5,7 @@
 
 import SwiftUI
 import PhotosUI
+import AVFoundation
 
 struct HomeView: View {
     @Environment(\.container) private var container
@@ -18,29 +19,60 @@ struct HomeView: View {
             Color.black.ignoresSafeArea()
 
             if let result = viewModel.processedImage {
-                EditorView(processedImage: result, viewModel: viewModel)
+                EditorView(processedImage: result, onUpgrade: { isShowingPaywall = true }, viewModel: viewModel)
             } else {
-                homeContent
+                homeContent.disabled(viewModel.isProcessing)
             }
+            if viewModel.isProcessing {
+                Color.black.opacity(0.8).ignoresSafeArea()
+                VStack(spacing: 16) {
+                    ProgressView().tint(.white).controlSize(.large)
+                    Text("Removing background…").foregroundStyle(.white)
+                    Text("Your photo stays on your device.").font(.footnote).foregroundStyle(.secondary)
+                }
+                .accessibilityElement(children: .combine)
+            }
+        }
+        .preferredColorScheme(.dark)
+        .task { await container.purchasesService.refreshSubscriptionStatus() }
+        .onReceive(NotificationCenter.default.publisher(for: .subscriptionDidChange)) { notification in
+            viewModel.isPremium = notification.userInfo?["hasActiveEntitlement"] as? Bool ?? false
         }
         .sheet(isPresented: $isShowingPaywall) {
             PaywallView()
-                .presentationDetents([.medium, .large])
+                .presentationDetents([.large])
                 .presentationDragIndicator(.visible)
         }
         .photosPicker(isPresented: $viewModel.showingPhotoPicker, selection: $selectedItem, matching: .images)
         .onChange(of: selectedItem) { item in
             if let item {
-                Task { await viewModel.loadImage(from: item) }
+                Task {
+                    await viewModel.loadImage(from: item)
+                    selectedItem = nil
+                }
             }
         }
         .fullScreenCover(isPresented: $showCamera) {
             CameraView(viewModel: viewModel)
         }
-        .alert("Error", isPresented: .constant(viewModel.errorMessage != nil)) {
+        .alert("Unable to complete", isPresented: Binding(get: { viewModel.errorMessage != nil }, set: { if !$0 { viewModel.errorMessage = nil } })) {
             Button("OK") { viewModel.errorMessage = nil }
         } message: {
             Text(viewModel.errorMessage ?? "")
+        }
+    }
+
+    private func openCamera() {
+        guard UIImagePickerController.isSourceTypeAvailable(.camera) else {
+            viewModel.errorMessage = "A camera is not available on this device. Choose a photo from your library instead."
+            return
+        }
+        Task {
+            let status = AVCaptureDevice.authorizationStatus(for: .video)
+            var granted = status == .authorized
+            if status == .notDetermined { granted = await AVCaptureDevice.requestAccess(for: .video) }
+            if granted { showCamera = true }
+            else { viewModel.errorMessage = "Allow camera access for CleanCut in Settings, or choose a photo from your library." }
         }
     }
 
@@ -52,15 +84,18 @@ struct HomeView: View {
                     .font(.system(size: 28, weight: .bold))
                     .foregroundColor(.white)
                 Spacer()
+                if container.config.featureFlags.paywall && !viewModel.isPremium {
                 Button(action: { isShowingPaywall = true }) {
-                    if !viewModel.isPremium {
                         Text("PRO")
                             .font(.system(size: 12, weight: .bold))
                             .foregroundColor(.black)
                             .padding(.horizontal, 10)
                             .padding(.vertical, 5)
-                            .background(Color(hex: "#2C7BE5"), in: Capsule())
-                    }
+                            .background(Color(cleanCutHex: "#2C7BE5"), in: Capsule())
+                            .frame(minWidth: 44, minHeight: 44)
+                            .contentShape(Rectangle())
+                }
+                .accessibilityLabel("CleanCut Pro")
                 }
             }
             .padding(.horizontal, 24)
@@ -72,20 +107,21 @@ struct HomeView: View {
             VStack(spacing: 20) {
                 ZStack {
                     Circle()
-                        .fill(Color(hex: "#2C7BE5").opacity(0.15))
+                        .fill(Color(cleanCutHex: "#2C7BE5").opacity(0.15))
                         .frame(width: 140, height: 140)
                     Image(systemName: "scissors")
                         .font(.system(size: 60, weight: .light))
-                        .foregroundColor(Color(hex: "#2C7BE5"))
+                        .foregroundColor(Color(cleanCutHex: "#2C7BE5"))
                 }
 
                 VStack(spacing: 8) {
                     Text("Remove Backgrounds")
                         .font(.system(size: 28, weight: .bold))
                         .foregroundColor(.white)
-                    Text("AI-powered • On-device • Instant")
+                    Text("People, pets, and products. Processed on your device.")
                         .font(.system(size: 16))
                         .foregroundColor(.gray)
+                        .multilineTextAlignment(.center)
                 }
             }
 
@@ -107,7 +143,7 @@ struct HomeView: View {
                     .cornerRadius(14)
                 }
 
-                Button(action: { showCamera = true }) {
+                Button(action: openCamera) {
                     HStack {
                         Spacer()
                         Image(systemName: "camera")
