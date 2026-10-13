@@ -26,3 +26,7 @@ Native StoreKit 2 supplies localized monthly/yearly plans, verified purchases, r
 See [build and monetization preparation](docs/BUILD_AND_MONETIZATION.md) for feature boundaries, validation evidence, and remaining physical-device and App Store release gates. The intended seller is Newton & Carter LLC; Apple account changes and signing are deferred.
 
 The app-specific icon is documented in [icon provenance](docs/AppIcon-Prompt.md).
+
+## Support
+
+For CleanCut support, contact [chris@newtonandcarter.com](mailto:chris@newtonandcarter.com) or visit the [support page](https://howdycarter.com/apps/cleancut/support). App Review contact: chris@newtonandcarter.com.
