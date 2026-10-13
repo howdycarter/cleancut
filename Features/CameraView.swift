@@ -23,6 +23,7 @@ struct CameraView: UIViewControllerRepresentable {
         Coordinator(viewModel: viewModel, dismiss: dismiss)
     }
 
+    @MainActor
     class Coordinator: NSObject, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
         var viewModel: PhotoEditorViewModel
         var dismiss: DismissAction
@@ -33,12 +34,12 @@ struct CameraView: UIViewControllerRepresentable {
         }
 
         func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey: Any]) {
-            if let image = info[.originalImage] as? UIImage {
-                dismiss()
-                Task { @MainActor in
-                    await viewModel.process(image: image)
-                }
+            dismiss()
+            guard let image = info[.originalImage] as? UIImage else {
+                viewModel.errorMessage = "Could not load this photo. Please try taking it again."
+                return
             }
+            viewModel.process(image: image)
         }
 
         func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {

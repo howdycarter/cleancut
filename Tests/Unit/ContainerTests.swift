@@ -181,3 +181,353 @@ final class StoreKitPurchaseTests: XCTestCase {
         }
     }
 }
+
+import Photos
+
+/// These tests exercise the real view-model transitions with controllable async
+/// boundaries. They deliberately do not claim to validate Vision or Photos UI.
+@MainActor
+final class PhotoFlowTests: XCTestCase {
+    private func image(width: CGFloat = 16) -> UIImage {
+        let format = UIGraphicsImageRendererFormat()
+        format.scale = 1
+        return UIGraphicsImageRenderer(size: CGSize(width: width, height: 12), format: format).image { context in
+            UIColor.red.setFill()
+            context.fill(CGRect(x: 0, y: 0, width: width / 2, height: 12))
+        }
+    }
+
+    private func setImage(on model: PhotoEditorViewModel, width: CGFloat = 16) {
+        let source = image(width: width)
+        model.processedImage = ProcessedImage(original: source, processed: source)
+    }
+
+    func testLoadingIsBusyBeforeTheLoaderStartsAndNewerImportWins() async throws {
+        let oldLoad = SuspendedPhotoOperation<Data?>()
+        let model = PhotoEditorViewModel(removeBackground: { $0 })
+        let oldTask = model.loadImage { try await oldLoad.run() }
+        XCTAssertTrue(model.isProcessing, "Busy state must include the photo download, not just segmentation")
+        XCTAssertEqual(model.processingMessage, "Loading photo…")
+        await fulfillment(of: [oldLoad.entered], timeout: 2)
+
+        let newerData = try XCTUnwrap(image(width: 32).pngData())
+        let newTask = model.loadImage { newerData }
+        await newTask.value
+        XCTAssertEqual(model.processedImage?.original.size.width, 32)
+        XCTAssertFalse(model.isProcessing)
+
+        oldLoad.succeed(try XCTUnwrap(image().pngData()))
+        await oldTask.value
+        XCTAssertEqual(model.processedImage?.original.size.width, 32)
+        XCTAssertNil(model.errorMessage)
+    }
+
+    func testOlderDownloadFailureCannotClearNewImportStateOrShowAnAlert() async throws {
+        let oldLoad = SuspendedPhotoOperation<Data?>()
+        let newLoad = SuspendedPhotoOperation<Data?>()
+        let model = PhotoEditorViewModel(removeBackground: { $0 })
+        let oldTask = model.loadImage { try await oldLoad.run() }
+        await fulfillment(of: [oldLoad.entered], timeout: 2)
+        let newTask = model.loadImage { try await newLoad.run() }
+        await fulfillment(of: [newLoad.entered], timeout: 2)
+
+        oldLoad.fail(PhotoFlowTestError.failed)
+        await oldTask.value
+        XCTAssertTrue(model.isProcessing)
+        XCTAssertEqual(model.processingMessage, "Loading photo…")
+        XCTAssertNil(model.errorMessage)
+
+        newLoad.succeed(try XCTUnwrap(image(width: 32).pngData()))
+        await newTask.value
+        XCTAssertFalse(model.isProcessing)
+        XCTAssertEqual(model.processedImage?.original.size.width, 32)
+    }
+
+    func testCancelLoadingNeverStartsSegmentationAndAllowsRetry() async throws {
+        let load = SuspendedPhotoOperation<Data?>()
+        var removalCount = 0
+        let model = PhotoEditorViewModel(removeBackground: { image in
+            removalCount += 1
+            return image
+        })
+        let task = model.loadImage { try await load.run() }
+        await fulfillment(of: [load.entered], timeout: 2)
+        model.cancelProcessing()
+        XCTAssertFalse(model.isProcessing)
+        load.succeed(try XCTUnwrap(image().pngData()))
+        await task.value
+        XCTAssertEqual(removalCount, 0)
+        XCTAssertNil(model.processedImage)
+        XCTAssertNil(model.errorMessage)
+
+        await model.process(image: image()).value
+        XCTAssertEqual(removalCount, 1)
+        XCTAssertNotNil(model.processedImage)
+    }
+
+    func testResetDuringSegmentationIgnoresNonCooperativeCompletion() async {
+        let removal = SuspendedPhotoOperation<UIImage>()
+        let model = PhotoEditorViewModel(removeBackground: { _ in try await removal.run() })
+        let task = model.process(image: image())
+        await fulfillment(of: [removal.entered], timeout: 2)
+        model.reset()
+        XCTAssertFalse(model.isProcessing)
+        removal.succeed(image())
+        await task.value
+        XCTAssertNil(model.processedImage)
+        XCTAssertNil(model.errorMessage)
+        XCTAssertEqual(model.processingMessage, "")
+    }
+
+    func testCancelSegmentationSuppressesLateFailure() async {
+        let removal = SuspendedPhotoOperation<UIImage>()
+        let model = PhotoEditorViewModel(removeBackground: { _ in try await removal.run() })
+        let task = model.process(image: image())
+        await fulfillment(of: [removal.entered], timeout: 2)
+        model.cancelProcessing()
+        removal.fail(BackgroundRemovalError.processingUnavailable)
+        await task.value
+        XCTAssertFalse(model.isProcessing)
+        XCTAssertNil(model.processedImage)
+        XCTAssertNil(model.errorMessage)
+    }
+
+    func testNewCameraPhotoCannotBeReplacedByOlderSegmentation() async {
+        let removal = SuspendedPhotoOperation<UIImage>()
+        var removalCount = 0
+        let model = PhotoEditorViewModel(removeBackground: { source in
+            removalCount += 1
+            if removalCount == 1 { return try await removal.run() }
+            return source
+        })
+        let oldTask = model.process(image: image())
+        await fulfillment(of: [removal.entered], timeout: 2)
+        await model.process(image: image(width: 32)).value
+        removal.succeed(image())
+        await oldTask.value
+        XCTAssertEqual(model.processedImage?.original.size.width, 32)
+        XCTAssertFalse(model.isProcessing)
+    }
+
+    func testInvalidAndMissingDataDoNotStartSegmentation() async {
+        var removalCount = 0
+        let model = PhotoEditorViewModel(removeBackground: { image in
+            removalCount += 1
+            return image
+        })
+        let inputs: [Data?] = [nil, Data("not an image".utf8)]
+        for data in inputs {
+            await model.loadImage { data }.value
+            XCTAssertEqual(model.errorMessage, "Could not load this photo. Please choose another image.")
+            XCTAssertFalse(model.isProcessing)
+        }
+        XCTAssertEqual(removalCount, 0)
+    }
+
+    func testDownloadFailureAndRetryClearTheError() async throws {
+        let model = PhotoEditorViewModel(removeBackground: { $0 })
+        await model.loadImage { throw PhotoFlowTestError.failed }.value
+        XCTAssertEqual(model.errorMessage, "Could not download this photo. Check your connection and try again.")
+        XCTAssertFalse(model.isProcessing)
+        let data = try XCTUnwrap(image().pngData())
+        await model.loadImage { data }.value
+        XCTAssertNil(model.errorMessage)
+        XCTAssertNotNil(model.processedImage)
+    }
+
+    func testSegmentationErrorIsShownAndDoesNotLeaveTheOverlayUp() async {
+        let model = PhotoEditorViewModel(removeBackground: { _ in throw BackgroundRemovalError.segmentationFailed })
+        await model.process(image: image()).value
+        XCTAssertEqual(model.errorMessage, BackgroundRemovalError.segmentationFailed.localizedDescription)
+        XCTAssertFalse(model.isProcessing)
+        XCTAssertNil(model.processedImage)
+    }
+
+    func testCancellationErrorIsNotReportedAsDownloadFailure() async {
+        let model = PhotoEditorViewModel(removeBackground: { $0 })
+        await model.loadImage { throw CancellationError() }.value
+        XCTAssertFalse(model.isProcessing)
+        XCTAssertNil(model.errorMessage)
+    }
+
+    func testSaveDeniedOrRestrictedDoesNotWriteAndOffersShare() async {
+        for status in [PHAuthorizationStatus.denied, .restricted] {
+            var writes = 0
+            let model = PhotoEditorViewModel(requestPhotoAuthorization: { status }, savePNG: { _ in writes += 1 })
+            setImage(on: model)
+            let saved = await model.saveToPhotos()
+            XCTAssertFalse(saved)
+            XCTAssertEqual(writes, 0)
+            XCTAssertFalse(model.isSaving)
+            XCTAssertEqual(model.errorMessage, "Allow CleanCut to add photos in Settings, or use Share to export your image.")
+        }
+    }
+
+    func testAuthorizedAndLimitedSaveWriteThePreparedPNG() async throws {
+        for status in [PHAuthorizationStatus.authorized, .limited] {
+            var savedData: Data?
+            let model = PhotoEditorViewModel(requestPhotoAuthorization: { status }, savePNG: { savedData = $0 })
+            setImage(on: model)
+            let expected = try XCTUnwrap(model.prepareExport()?.data)
+            let saved = await model.saveToPhotos()
+            XCTAssertTrue(saved)
+            XCTAssertEqual(savedData, expected)
+            XCTAssertEqual(savedData?.prefix(8), Data([137, 80, 78, 71, 13, 10, 26, 10]))
+            XCTAssertFalse(model.isSaving)
+            XCTAssertNil(model.errorMessage)
+        }
+    }
+
+    func testSaveFailureCanBeRetriedWithoutStaleError() async {
+        var writes = 0
+        let model = PhotoEditorViewModel(requestPhotoAuthorization: { .authorized }, savePNG: { _ in
+            writes += 1
+            if writes == 1 { throw PhotoFlowTestError.failed }
+        })
+        setImage(on: model)
+        let firstSave = await model.saveToPhotos()
+        XCTAssertFalse(firstSave)
+        XCTAssertFalse(model.isSaving)
+        XCTAssertEqual(model.errorMessage, "Could not save your image. Please try again or use Share.")
+        let retry = await model.saveToPhotos()
+        XCTAssertTrue(retry)
+        XCTAssertEqual(writes, 2)
+        XCTAssertNil(model.errorMessage)
+    }
+
+    func testRepeatedSaveCannotCreateDuplicateWrites() async {
+        let write = SuspendedPhotoOperation<Void>()
+        var writes = 0
+        var authorizations = 0
+        let model = PhotoEditorViewModel(requestPhotoAuthorization: {
+            authorizations += 1
+            return .authorized
+        }, savePNG: { _ in
+            writes += 1
+            try await write.run()
+        })
+        setImage(on: model)
+        let firstSave = Task { await model.saveToPhotos() }
+        await fulfillment(of: [write.entered], timeout: 2)
+        XCTAssertTrue(model.isSaving)
+        let duplicate = await model.saveToPhotos()
+        XCTAssertFalse(duplicate)
+        XCTAssertEqual(writes, 1)
+        XCTAssertEqual(authorizations, 1)
+        write.succeed(())
+        let saved = await firstSave.value
+        XCTAssertTrue(saved)
+        XCTAssertFalse(model.isSaving)
+    }
+
+    func testResetWhileAuthorizingPreventsSavingAnOldPhoto() async {
+        let authorization = SuspendedPhotoOperation<PHAuthorizationStatus>()
+        var writes = 0
+        let model = PhotoEditorViewModel(requestPhotoAuthorization: {
+            (try? await authorization.run()) ?? .denied
+        }, savePNG: { _ in writes += 1 })
+        setImage(on: model)
+        let task = Task { await model.saveToPhotos() }
+        await fulfillment(of: [authorization.entered], timeout: 2)
+        model.reset()
+        setImage(on: model, width: 32)
+        authorization.succeed(.authorized)
+        let saved = await task.value
+        XCTAssertFalse(saved)
+        XCTAssertEqual(writes, 0)
+        XCTAssertNil(model.errorMessage)
+        XCTAssertFalse(model.isSaving)
+    }
+
+    func testCancelledSaveWhileAuthorizingDoesNotWrite() async {
+        let authorization = SuspendedPhotoOperation<PHAuthorizationStatus>()
+        var writes = 0
+        let model = PhotoEditorViewModel(requestPhotoAuthorization: {
+            (try? await authorization.run()) ?? .denied
+        }, savePNG: { _ in writes += 1 })
+        setImage(on: model)
+        let task = Task { await model.saveToPhotos() }
+        await fulfillment(of: [authorization.entered], timeout: 2)
+        task.cancel()
+        authorization.succeed(.authorized)
+        let saved = await task.value
+        XCTAssertFalse(saved)
+        XCTAssertEqual(writes, 0)
+        XCTAssertFalse(model.isSaving)
+        XCTAssertNil(model.errorMessage)
+    }
+
+    func testLateSaveFailureCannotShowAnErrorForANewerPhoto() async {
+        let write = SuspendedPhotoOperation<Void>()
+        let model = PhotoEditorViewModel(requestPhotoAuthorization: { .authorized }, savePNG: { _ in
+            try await write.run()
+        })
+        setImage(on: model)
+        let task = Task { await model.saveToPhotos() }
+        await fulfillment(of: [write.entered], timeout: 2)
+        model.reset()
+        setImage(on: model, width: 32)
+        write.fail(PhotoFlowTestError.failed)
+        let saved = await task.value
+        XCTAssertFalse(saved)
+        XCTAssertNil(model.errorMessage)
+        XCTAssertFalse(model.isSaving)
+    }
+
+    func testMissingImageAndEncodingFailureAreActionableAndNeverAskPermission() async {
+        var authorizations = 0
+        let model = PhotoEditorViewModel(requestPhotoAuthorization: {
+            authorizations += 1
+            return .authorized
+        }, encodePNG: { _ in nil })
+        let missingImage = await model.saveToPhotos()
+        XCTAssertFalse(missingImage)
+        XCTAssertEqual(model.errorMessage, "Choose a photo before exporting.")
+        setImage(on: model)
+        XCTAssertNil(model.prepareExport())
+        let encodingFailed = await model.saveToPhotos()
+        XCTAssertFalse(encodingFailed)
+        XCTAssertEqual(model.errorMessage, "Could not prepare your PNG. Please try again or choose another photo.")
+        XCTAssertEqual(authorizations, 0)
+    }
+
+    func testPreparedPNGUsesFreePixelLimitAndProOriginalResolution() throws {
+        let model = PhotoEditorViewModel()
+        setImage(on: model, width: 2_048)
+        let freePNG = try XCTUnwrap(model.prepareExport())
+        XCTAssertEqual(UIImage(data: freePNG.data)?.cgImage?.width, 1_024)
+        model.isPremium = true
+        let proPNG = try XCTUnwrap(model.prepareExport())
+        XCTAssertEqual(UIImage(data: proPNG.data)?.cgImage?.width, 2_048)
+    }
+}
+
+private enum PhotoFlowTestError: Error { case failed }
+
+/// A deliberately non-cooperative dependency: cancelling the caller does not
+/// finish this continuation. This reproduces late system-library completions.
+@MainActor
+private final class SuspendedPhotoOperation<Value> {
+    let entered = XCTestExpectation(description: "Async dependency entered")
+    private var continuation: CheckedContinuation<Value, Error>?
+    private var result: Result<Value, Error>?
+
+    func run() async throws -> Value {
+        entered.fulfill()
+        if let result { return try result.get() }
+        return try await withCheckedThrowingContinuation { continuation in
+            self.continuation = continuation
+        }
+    }
+
+    func succeed(_ value: Value) { finish(.success(value)) }
+    func fail(_ error: Error) { finish(.failure(error)) }
+
+    private func finish(_ result: Result<Value, Error>) {
+        // Buffer an early response so an expectation timeout cannot strand a task.
+        self.result = result
+        let pending = continuation
+        continuation = nil
+        pending?.resume(with: result)
+    }
+}

@@ -1,0 +1,90 @@
+name: iOS native tests
+
+on:
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ios-tests-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+jobs:
+  native-tests:
+    name: CleanCut simulator build and tests
+    runs-on: macos-26
+    timeout-minutes: 35
+    env:
+      # iOS 26.5 has a StoreKitTest CLI configuration regression (FB22237318).
+      # Use the installed 26.2 toolchain/runtime; keep every StoreKit test enabled.
+      DEVELOPER_DIR: /Applications/Xcode_26.2.app/Contents/Developer
+    steps:
+      - name: Check out the exact pull request head
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          persist-credentials: false
+
+      - name: Record Apple tooling and choose an installed iPhone simulator
+        id: simulator
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p TestResults
+          xcodebuild -version | tee TestResults/xcode-version.txt
+          xcrun simctl list devices available --json > TestResults/simulators.json
+          python3 - <<'PY'
+          import json, os, re
+          with open("TestResults/simulators.json") as file:
+              devices = json.load(file)["devices"]
+          candidates = []
+          for runtime, rows in devices.items():
+              if not runtime.endswith(".iOS-26-2"):
+                  continue
+              version = tuple(map(int, re.findall(r"\d+", runtime.rsplit(".iOS-", 1)[1])))
+              for device in rows:
+                  if device.get("isAvailable") and device["name"].startswith("iPhone"):
+                      candidates.append((version, device["name"], device["udid"]))
+          if not candidates:
+              raise SystemExit("No installed iOS 26.2 iPhone simulator is available")
+          _, name, udid = sorted(candidates)[-1]
+          print(f"Selected {name}: {udid}")
+          with open(os.environ["GITHUB_OUTPUT"], "a") as file:
+              file.write(f"udid={udid}\n")
+          PY
+
+      - name: Build and run all native tests with local StoreKit
+        shell: bash
+        run: |
+          set -euo pipefail
+          xcodebuild test \
+            -project CleanCut.xcodeproj \
+            -scheme CleanCut \
+            -destination 'platform=iOS Simulator,id=${{ steps.simulator.outputs.udid }}' \
+            -derivedDataPath .build/DerivedData \
+            -resultBundlePath TestResults/CleanCut.xcresult \
+            -parallel-testing-enabled NO \
+            CODE_SIGN_IDENTITY=- \
+            CODE_SIGNING_ALLOWED=YES \
+            DEVELOPMENT_TEAM= \
+            2>&1 | tee TestResults/xcodebuild.log
+
+      - name: Export structured test receipt
+        if: always()
+        shell: bash
+        run: |
+          set -euo pipefail
+          if [ -d TestResults/CleanCut.xcresult ]; then
+            xcrun xcresulttool get test-results summary --path TestResults/CleanCut.xcresult | tee TestResults/summary.json
+          fi
+
+      - name: Retain logs and XCTest result bundle
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: CleanCut-native-tests-${{ github.event.pull_request.head.sha }}
+          path: TestResults
+          if-no-files-found: error
+          retention-days: 7

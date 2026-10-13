@@ -5,9 +5,7 @@ struct EditorView: View {
     var processedImage: ProcessedImage
     var onUpgrade: () -> Void
     @ObservedObject var viewModel: PhotoEditorViewModel
-    @State private var showShareSheet = false
-    @State private var shareImage: UIImage?
-    @State private var isSaving = false
+    @State private var shareExport: PNGExport?
     @State private var didSave = false
 
     private var previewBackground: Color {
@@ -31,8 +29,7 @@ struct EditorView: View {
                 Text("Editor").font(.headline)
                 Spacer()
                 Button {
-                    shareImage = viewModel.composited()
-                    showShareSheet = shareImage != nil
+                    shareExport = viewModel.prepareExport()
                 } label: {
                     Image(systemName: "square.and.arrow.up").frame(width: 44, height: 44)
                 }
@@ -87,27 +84,24 @@ struct EditorView: View {
             }
 
             Button {
-                isSaving = true
-                Task {
-                    didSave = await viewModel.saveToPhotos()
-                    isSaving = false
-                }
+                Task { didSave = await viewModel.saveToPhotos() }
             } label: {
                 HStack {
-                    if isSaving { ProgressView().tint(.black) }
+                    if viewModel.isSaving { ProgressView().tint(.black) }
                     else { Image(systemName: "square.and.arrow.down") }
-                    Text(isSaving ? "Saving…" : "Save to Photos").fontWeight(.semibold)
+                    Text(viewModel.isSaving ? "Saving…" : "Save to Photos").fontWeight(.semibold)
                 }
                 .frame(maxWidth: .infinity, minHeight: 52)
                 .foregroundStyle(.black)
                 .background(.white, in: RoundedRectangle(cornerRadius: 14))
             }
-            .disabled(isSaving)
+            .disabled(viewModel.isSaving)
             .padding(.horizontal, 24)
             .padding(.bottom, 24)
         }
-        .sheet(isPresented: $showShareSheet) {
-            if let shareImage { ActivityView(image: shareImage) }
+        .disabled(viewModel.isSaving)
+        .sheet(item: $shareExport) { export in
+            ActivityView(export: export)
         }
         .alert("Saved to Photos", isPresented: $didSave) {
             Button("Done", role: .cancel) {}
@@ -135,17 +129,17 @@ struct CheckeredBackground: View {
 }
 
 struct ActivityView: UIViewControllerRepresentable {
-    var image: UIImage
+    var export: PNGExport
     func makeUIViewController(context: Context) -> UIActivityViewController {
-        UIActivityViewController(activityItems: [PNGShareItem(image: image)], applicationActivities: nil)
+        UIActivityViewController(activityItems: [PNGShareItem(export: export)], applicationActivities: nil)
     }
     func updateUIViewController(_ controller: UIActivityViewController, context: Context) {}
 }
 
 private final class PNGShareItem: NSObject, UIActivityItemSource {
-    let image: UIImage
-    init(image: UIImage) { self.image = image }
-    func activityViewControllerPlaceholderItem(_ activityViewController: UIActivityViewController) -> Any { image }
-    func activityViewController(_ activityViewController: UIActivityViewController, itemForActivityType activityType: UIActivity.ActivityType?) -> Any? { image.pngData() }
+    let export: PNGExport
+    init(export: PNGExport) { self.export = export }
+    func activityViewControllerPlaceholderItem(_ activityViewController: UIActivityViewController) -> Any { export.image }
+    func activityViewController(_ activityViewController: UIActivityViewController, itemForActivityType activityType: UIActivity.ActivityType?) -> Any? { export.data }
     func activityViewController(_ activityViewController: UIActivityViewController, dataTypeIdentifierForActivityType activityType: UIActivity.ActivityType?) -> String { UTType.png.identifier }
 }
