@@ -1,0 +1,2 @@
+CLEANCUT_CPU_PROBE: Error Domain=com.apple.Vision Code=9 "Could not create inference context" UserInfo={NSLocalizedDescription=Could not create inference context}
+/Users/howdycarter/Documents/Codex/2026-10-29/task-10/cleancut/Tests/Unit/RuntimeAcceptanceTests.swift:83: error: -[CleanCutTests.RuntimeAcceptanceTests testRealVisionForegroundMaskAndOrientation] : failed - Real Vision inference unavailable: Error Domain=com.apple.Vision Code=9 "Could not create inference context" UserInfo={NSLocalizedDescription=Could not create inference context}
