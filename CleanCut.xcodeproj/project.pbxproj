@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		CF0100000000000000000001 /* RuntimeAcceptanceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF0100000000000000000002 /* RuntimeAcceptanceTests.swift */; };
 		AB0123456789012345678911 /* CleanCut.storekit in Resources */ = {isa = PBXBuildFile; fileRef = AB0123456789012345678912 /* CleanCut.storekit */; };
 		AB0123456789012345678901 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = AB0123456789012345678902 /* PrivacyInfo.xcprivacy */; };
 		04029CD75E451F94BC877B85 /* TestDriveView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3096D4052F49B359F7A6F26B /* TestDriveView.swift */; };
@@ -107,6 +108,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		CF0100000000000000000002 /* RuntimeAcceptanceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RuntimeAcceptanceTests.swift; sourceTree = "<group>"; };
 		AB0123456789012345678912 /* CleanCut.storekit */ = {isa = PBXFileReference; lastKnownFileType = text; name = CleanCut.storekit; path = Tests/Fixtures/CleanCut.storekit; sourceTree = SOURCE_ROOT; };
 		AB0123456789012345678902 /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
 		019547CE24F93A2ABB59AF49 /* ContainerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContainerTests.swift; sourceTree = "<group>"; };
@@ -568,6 +570,7 @@
 			isa = PBXGroup;
 			children = (
 				019547CE24F93A2ABB59AF49 /* ContainerTests.swift */,
+				CF0100000000000000000002 /* RuntimeAcceptanceTests.swift */,
 			);
 			path = Unit;
 			sourceTree = "<group>";
@@ -671,6 +674,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				6D13CEB03ECAA3A8C23CDA5F /* ContainerTests.swift in Sources */,
+				CF0100000000000000000001 /* RuntimeAcceptanceTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

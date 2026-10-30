@@ -1,0 +1,52 @@
+{
+  "devicesAndConfigurations" : [
+    {
+      "device" : {
+        "architecture" : "arm64",
+        "deviceId" : "16057086-82C5-4617-855D-94B17152B816",
+        "deviceName" : "CleanCut Runtime Acceptance 20261029",
+        "modelName" : "iPhone 17e",
+        "osBuildNumber" : "24A434",
+        "osVersion" : "27.0",
+        "platform" : "iOS Simulator"
+      },
+      "expectedFailures" : 0,
+      "failedTests" : 1,
+      "passedTests" : 1,
+      "skippedTests" : 0,
+      "testPlanConfiguration" : {
+        "configurationId" : "1",
+        "configurationName" : "Test Scheme Action"
+      }
+    }
+  ],
+  "environmentDescription" : "CleanCut · Built with macOS 27.0.1",
+  "expectedFailures" : 0,
+  "failedTests" : 1,
+  "finishTime" : 1793318712.334,
+  "passedTests" : 1,
+  "result" : "Failed",
+  "runtimeWarnings" : [
+
+  ],
+  "skippedTests" : 0,
+  "startTime" : 1793318544.856,
+  "statistics" : [
+
+  ],
+  "testFailures" : [
+    {
+      "failureText" : "failed - Real Vision inference unavailable: Error Domain=com.apple.Vision Code=9 \"Could not create inference context\" UserInfo={NSLocalizedDescription=Could not create inference context}",
+      "targetName" : "CleanCutTests",
+      "testIdentifier" : 2,
+      "testIdentifierString" : "RuntimeAcceptanceTests/testRealVisionForegroundMaskAndOrientation()",
+      "testIdentifierURL" : "test://com.apple.xcode/CleanCut/CleanCutTests/RuntimeAcceptanceTests/testRealVisionForegroundMaskAndOrientation",
+      "testName" : "testRealVisionForegroundMaskAndOrientation()"
+    }
+  ],
+  "title" : "Test - CleanCut",
+  "topInsights" : [
+
+  ],
+  "totalTestCount" : 2
+}

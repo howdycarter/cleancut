@@ -7,6 +7,7 @@ struct EditorView: View {
     @ObservedObject var viewModel: PhotoEditorViewModel
     @State private var shareExport: PNGExport?
     @State private var didSave = false
+    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
 
     private var previewBackground: Color {
         switch processedImage.background {
@@ -56,6 +57,27 @@ struct EditorView: View {
                 .padding(20)
             }
 
+            if dynamicTypeSize.isAccessibilitySize {
+                ScrollView {
+                    exportControls
+                }
+            } else {
+                exportControls
+            }
+        }
+        .disabled(viewModel.isSaving)
+        .sheet(item: $shareExport) { export in
+            ActivityView(export: export)
+        }
+        .alert("Saved to Photos", isPresented: $didSave) {
+            Button("Done", role: .cancel) {}
+        } message: {
+            Text("Your image was saved as a PNG. Transparent backgrounds stay transparent.")
+        }
+    }
+
+    private var exportControls: some View {
+        VStack(spacing: 0) {
             BackgroundPickerView(selected: processedImage.background) { background in
                 if background == .custom && !viewModel.isPremium { onUpgrade() }
                 else { viewModel.updateBackground(background) }
@@ -75,6 +97,8 @@ struct EditorView: View {
             if !viewModel.isPremium {
                 Button("Unlock original resolution and custom colors with Pro", action: onUpgrade)
                     .font(.footnote)
+                    .fixedSize(horizontal: false, vertical: true)
+                    .multilineTextAlignment(.center)
                     .padding(.horizontal, 24)
                     .padding(.bottom, 12)
                 Text("Free PNG exports up to 1024 pixels")
@@ -98,15 +122,6 @@ struct EditorView: View {
             .disabled(viewModel.isSaving)
             .padding(.horizontal, 24)
             .padding(.bottom, 24)
-        }
-        .disabled(viewModel.isSaving)
-        .sheet(item: $shareExport) { export in
-            ActivityView(export: export)
-        }
-        .alert("Saved to Photos", isPresented: $didSave) {
-            Button("Done", role: .cancel) {}
-        } message: {
-            Text("Your image was saved as a PNG. Transparent backgrounds stay transparent.")
         }
     }
 }

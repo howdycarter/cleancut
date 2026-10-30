@@ -1,0 +1,121 @@
+Test Suite 'All tests' started at 2026-10-29 17:06:59.050.
+Test Suite 'CleanCutTests.xctest' started at 2026-10-29 17:06:59.053.
+Test Suite 'ContainerTests' started at 2026-10-29 17:06:59.053.
+Test Case '-[CleanCutTests.ContainerTests testContainerBuilds]' started.
+[INFO] DIContainer.swift:101 - Using native StoreKit purchases.
+[WARNING] DIContainer.swift:113 - [Noop] TelemetryDeck app ID is empty — analytics events are not being sent. Set telemetryDeckAppID in the app configuration.
+Test Case '-[CleanCutTests.ContainerTests testContainerBuilds]' passed (0.020 seconds).
+Test Case '-[CleanCutTests.ContainerTests testUnconfiguredPurchaseCannotSucceed]' started.
+Test Case '-[CleanCutTests.ContainerTests testUnconfiguredPurchaseCannotSucceed]' passed (0.010 seconds).
+Test Case '-[CleanCutTests.ContainerTests testUnconfiguredPurchasesDoNotExposeDemoProducts]' started.
+Test Case '-[CleanCutTests.ContainerTests testUnconfiguredPurchasesDoNotExposeDemoProducts]' passed (0.001 seconds).
+Test Case '-[CleanCutTests.ContainerTests testUnconfiguredRestoreCannotSucceed]' started.
+Test Case '-[CleanCutTests.ContainerTests testUnconfiguredRestoreCannotSucceed]' passed (0.001 seconds).
+Test Case '-[CleanCutTests.ContainerTests testUnknownEntitlementRefreshPreservesPaidAccess]' started.
+Test Case '-[CleanCutTests.ContainerTests testUnknownEntitlementRefreshPreservesPaidAccess]' passed (0.001 seconds).
+Test Case '-[CleanCutTests.ContainerTests testVerifiedRevocationRemovesAccessUnlessPaywallIsDisabled]' started.
+Test Case '-[CleanCutTests.ContainerTests testVerifiedRevocationRemovesAccessUnlessPaywallIsDisabled]' passed (0.000 seconds).
+Test Suite 'ContainerTests' passed at 2026-10-29 17:06:59.367.
+	 Executed 6 tests, with 0 failures (0 unexpected) in 0.032 (0.313) seconds
+Test Suite 'ImageEditingTests' started at 2026-10-29 17:06:59.367.
+Test Case '-[CleanCutTests.ImageEditingTests testBackgroundCompositionKeepsOriginalResolution]' started.
+Test Case '-[CleanCutTests.ImageEditingTests testBackgroundCompositionKeepsOriginalResolution]' passed (0.026 seconds).
+Test Case '-[CleanCutTests.ImageEditingTests testCameraOrientationIsRenderedIntoPixels]' started.
+Test Case '-[CleanCutTests.ImageEditingTests testCameraOrientationIsRenderedIntoPixels]' passed (0.005 seconds).
+Test Case '-[CleanCutTests.ImageEditingTests testCustomColorUpdatesExportAndResetClearsResult]' started.
+Test Case '-[CleanCutTests.ImageEditingTests testCustomColorUpdatesExportAndResetClearsResult]' passed (0.005 seconds).
+Test Case '-[CleanCutTests.ImageEditingTests testFullResolutionAndCustomColorsRequirePro]' started.
+Test Case '-[CleanCutTests.ImageEditingTests testFullResolutionAndCustomColorsRequirePro]' passed (0.020 seconds).
+Test Case '-[CleanCutTests.ImageEditingTests testTransparentExportPreservesPNGAndPixelDimensions]' started.
+Test Case '-[CleanCutTests.ImageEditingTests testTransparentExportPreservesPNGAndPixelDimensions]' passed (0.002 seconds).
+Test Suite 'ImageEditingTests' passed at 2026-10-29 17:06:59.608.
+	 Executed 5 tests, with 0 failures (0 unexpected) in 0.059 (0.241) seconds
+Test Suite 'PhotoFlowTests' started at 2026-10-29 17:06:59.608.
+Test Case '-[CleanCutTests.PhotoFlowTests testAuthorizedAndLimitedSaveWriteThePreparedPNG]' started.
+Test Case '-[CleanCutTests.PhotoFlowTests testAuthorizedAndLimitedSaveWriteThePreparedPNG]' passed (0.002 seconds).
+Test Case '-[CleanCutTests.PhotoFlowTests testCancellationErrorIsNotReportedAsDownloadFailure]' started.
+Test Case '-[CleanCutTests.PhotoFlowTests testCancellationErrorIsNotReportedAsDownloadFailure]' passed (0.004 seconds).
+Test Case '-[CleanCutTests.PhotoFlowTests testCancelledSaveWhileAuthorizingDoesNotWrite]' started.
+Test Case '-[CleanCutTests.PhotoFlowTests testCancelledSaveWhileAuthorizingDoesNotWrite]' passed (0.006 seconds).
+Test Case '-[CleanCutTests.PhotoFlowTests testCancelLoadingNeverStartsSegmentationAndAllowsRetry]' started.
+Test Case '-[CleanCutTests.PhotoFlowTests testCancelLoadingNeverStartsSegmentationAndAllowsRetry]' passed (0.015 seconds).
+Test Case '-[CleanCutTests.PhotoFlowTests testCancelSegmentationSuppressesLateFailure]' started.
+Test Case '-[CleanCutTests.PhotoFlowTests testCancelSegmentationSuppressesLateFailure]' passed (0.011 seconds).
+Test Case '-[CleanCutTests.PhotoFlowTests testDownloadFailureAndRetryClearTheError]' started.
+Test Case '-[CleanCutTests.PhotoFlowTests testDownloadFailureAndRetryClearTheError]' passed (0.103 seconds).
+Test Case '-[CleanCutTests.PhotoFlowTests testInvalidAndMissingDataDoNotStartSegmentation]' started.
+Test Case '-[CleanCutTests.PhotoFlowTests testInvalidAndMissingDataDoNotStartSegmentation]' passed (0.007 seconds).
+Test Case '-[CleanCutTests.PhotoFlowTests testLateSaveFailureCannotShowAnErrorForANewerPhoto]' started.
+Test Case '-[CleanCutTests.PhotoFlowTests testLateSaveFailureCannotShowAnErrorForANewerPhoto]' passed (0.015 seconds).
+Test Case '-[CleanCutTests.PhotoFlowTests testLoadingIsBusyBeforeTheLoaderStartsAndNewerImportWins]' started.
+Test Case '-[CleanCutTests.PhotoFlowTests testLoadingIsBusyBeforeTheLoaderStartsAndNewerImportWins]' passed (0.009 seconds).
+Test Case '-[CleanCutTests.PhotoFlowTests testMissingImageAndEncodingFailureAreActionableAndNeverAskPermission]' started.
+Test Case '-[CleanCutTests.PhotoFlowTests testMissingImageAndEncodingFailureAreActionableAndNeverAskPermission]' passed (0.001 seconds).
+Test Case '-[CleanCutTests.PhotoFlowTests testNewCameraPhotoCannotBeReplacedByOlderSegmentation]' started.
+Test Case '-[CleanCutTests.PhotoFlowTests testNewCameraPhotoCannotBeReplacedByOlderSegmentation]' passed (0.066 seconds).
+Test Case '-[CleanCutTests.PhotoFlowTests testOlderDownloadFailureCannotClearNewImportStateOrShowAnAlert]' started.
+Test Case '-[CleanCutTests.PhotoFlowTests testOlderDownloadFailureCannotClearNewImportStateOrShowAnAlert]' passed (0.150 seconds).
+Test Case '-[CleanCutTests.PhotoFlowTests testPreparedPNGUsesFreePixelLimitAndProOriginalResolution]' started.
+Test Case '-[CleanCutTests.PhotoFlowTests testPreparedPNGUsesFreePixelLimitAndProOriginalResolution]' passed (0.002 seconds).
+Test Case '-[CleanCutTests.PhotoFlowTests testRepeatedSaveCannotCreateDuplicateWrites]' started.
+Test Case '-[CleanCutTests.PhotoFlowTests testRepeatedSaveCannotCreateDuplicateWrites]' passed (0.005 seconds).
+Test Case '-[CleanCutTests.PhotoFlowTests testResetDuringSegmentationIgnoresNonCooperativeCompletion]' started.
+Test Case '-[CleanCutTests.PhotoFlowTests testResetDuringSegmentationIgnoresNonCooperativeCompletion]' passed (0.064 seconds).
+Test Case '-[CleanCutTests.PhotoFlowTests testResetWhileAuthorizingPreventsSavingAnOldPhoto]' started.
+Test Case '-[CleanCutTests.PhotoFlowTests testResetWhileAuthorizingPreventsSavingAnOldPhoto]' passed (0.023 seconds).
+Test Case '-[CleanCutTests.PhotoFlowTests testSaveDeniedOrRestrictedDoesNotWriteAndOffersShare]' started.
+Test Case '-[CleanCutTests.PhotoFlowTests testSaveDeniedOrRestrictedDoesNotWriteAndOffersShare]' passed (0.001 seconds).
+Test Case '-[CleanCutTests.PhotoFlowTests testSaveFailureCanBeRetriedWithoutStaleError]' started.
+Test Case '-[CleanCutTests.PhotoFlowTests testSaveFailureCanBeRetriedWithoutStaleError]' passed (0.001 seconds).
+Test Case '-[CleanCutTests.PhotoFlowTests testSegmentationErrorIsShownAndDoesNotLeaveTheOverlayUp]' started.
+Test Case '-[CleanCutTests.PhotoFlowTests testSegmentationErrorIsShownAndDoesNotLeaveTheOverlayUp]' passed (0.007 seconds).
+Test Suite 'PhotoFlowTests' passed at 2026-10-29 17:07:00.206.
+	 Executed 19 tests, with 0 failures (0 unexpected) in 0.494 (0.598) seconds
+Test Suite 'RuntimeAcceptanceTests' started at 2026-10-29 17:07:00.206.
+Test Case '-[CleanCutTests.RuntimeAcceptanceTests testEditorAtLargestDynamicType]' started.
+IOSurfaceClientSetSurfaceNotify failed e00002c7
+Test Case '-[CleanCutTests.RuntimeAcceptanceTests testEditorAtLargestDynamicType]' passed (1.534 seconds).
+Test Case '-[CleanCutTests.RuntimeAcceptanceTests testNativeShareSheetPresentation]' started.
+2026-10-29 17:07:01.766332-0500 CleanCut[12607:10059099] [Invalid Configuration] Update NavigationRequestObserver tried to update multiple times per frame.
+2026-10-29 17:07:02.321514-0500 CleanCut[12607:10059099] [API] cannot add handler to 0 from 0 - dropping
+2026-10-29 17:07:02.321700-0500 CleanCut[12607:10059099] [API] cannot add handler to 0 from 0 - dropping
+2026-10-29 17:07:02.321756-0500 CleanCut[12607:10059099] [API] cannot add handler to 0 from 0 - dropping
+2026-10-29 17:07:02.321820-0500 CleanCut[12607:10059099] [API] cannot add handler to 0 from 0 - dropping
+2026-10-29 17:07:02.321845-0500 CleanCut[12607:10059099] [API] cannot add handler to 0 from 0 - dropping
+2026-10-29 17:07:02.321875-0500 CleanCut[12607:10059099] [API] cannot add handler to 0 from 0 - dropping
+2026-10-29 17:07:02.337031-0500 CleanCut[12607:10059099] Unbalanced calls to begin/end appearance transitions for <_TtGC7SwiftUI19UIHostingControllerGVS_15ModifiedContentGVS_8LazyViewGS1_GS1_GS1_GS1_GS1_GVS_5GroupGVS_19_ConditionalContentV8CleanCut13TestDriveViewVS5_8RootView__GVS_30_EnvironmentKeyWritingModifierVS5_11DIContainer__GS8_GSqCS5_9AppRouter___GS8_VS5_7DSTheme__GVS_26_PreferenceWritingModifierVS_23PreferredColorSchemeKey__VS_14_TaskModifier2__VS_12RootModifier__: 0x106ed4000>.
+2026-10-29 17:07:03.340061-0500 CleanCut[12607:10059099] [API] cannot add handler to 0 from 0 - dropping
+Test Case '-[CleanCutTests.RuntimeAcceptanceTests testNativeShareSheetPresentation]' passed (3.548 seconds).
+Test Case '-[CleanCutTests.RuntimeAcceptanceTests testRealPhotosPNGWriteAndImportRoundTrip]' started.
+2026-10-29 17:07:05.322095-0500 CleanCut[12607:10059099] [API] cannot add handler to 0 from 0 - dropping
+2026-10-29 17:07:05.322264-0500 CleanCut[12607:10059099] [API] cannot add handler to 0 from 0 - dropping
+2026-10-29 17:07:05.322299-0500 CleanCut[12607:10059099] [API] cannot add handler to 0 from 0 - dropping
+2026-10-29 17:07:05.340427-0500 CleanCut[12607:10059099] [API] cannot add handler to 0 from 0 - dropping
+2026-10-29 17:07:05.340512-0500 CleanCut[12607:10059099] [API] cannot add handler to 0 from 0 - dropping
+2026-10-29 17:07:05.359993-0500 CleanCut[12607:10059099] [general] NSPredicate: -[NSPredicate copy] called on a predicate that has _evaluationBlocked set. The resulting copy will drop _evaluationBlocked.
+2026-10-29 17:07:05.566962-0500 CleanCut[12607:10059099] [PhotoKit] Missing prefetched properties for PHAssetOriginalMetadataProperties on <PHAsset: 0x106ee1900> 2ECBE74F-9EBC-402E-B2B6-CE47E27D5163/L0/001 mediaType=1/0, sourceType=1, (64x48), creationDate=2026-10-29 22:07:05 +0000, location=0, hidden=0, favorite=0, adjusted=0 . Fetching on demand on the main queue, which may degrade performance.
+CLEANCUT_SYNTHETIC_PHOTO_ASSET=2ECBE74F-9EBC-402E-B2B6-CE47E27D5163/L0/001
+Test Case '-[CleanCutTests.RuntimeAcceptanceTests testRealPhotosPNGWriteAndImportRoundTrip]' passed (0.293 seconds).
+Test Case '-[CleanCutTests.RuntimeAcceptanceTests testRealVisionForegroundMaskAndOrientation]' started.
+/Users/howdycarter/Documents/Codex/2026-10-29/task-10/cleancut/Tests/Unit/RuntimeAcceptanceTests.swift:72: error: -[CleanCutTests.RuntimeAcceptanceTests testRealVisionForegroundMaskAndOrientation] : failed - Real Vision inference unavailable: Error Domain=com.apple.Vision Code=9 "Could not create inference context" UserInfo={NSLocalizedDescription=Could not create inference context}
+Test Case '-[CleanCutTests.RuntimeAcceptanceTests testRealVisionForegroundMaskAndOrientation]' failed (0.350 seconds).
+Test Suite 'RuntimeAcceptanceTests' failed at 2026-10-29 17:07:05.932.
+	 Executed 4 tests, with 1 failure (0 unexpected) in 5.725 (5.726) seconds
+Test Suite 'StoreKitPurchaseTests' started at 2026-10-29 17:07:05.933.
+Test Case '-[CleanCutTests.StoreKitPurchaseTests testRefundRevokesPro]' started.
+Test Case '-[CleanCutTests.StoreKitPurchaseTests testRefundRevokesPro]' passed (0.292 seconds).
+Test Case '-[CleanCutTests.StoreKitPurchaseTests testStoreKitLoadsLocalizedPlans]' started.
+Test Case '-[CleanCutTests.StoreKitPurchaseTests testStoreKitLoadsLocalizedPlans]' passed (0.014 seconds).
+Test Case '-[CleanCutTests.StoreKitPurchaseTests testUnknownProductCannotUnlockPro]' started.
+Test Case '-[CleanCutTests.StoreKitPurchaseTests testUnknownProductCannotUnlockPro]' passed (0.010 seconds).
+Test Case '-[CleanCutTests.StoreKitPurchaseTests testVerifiedPurchaseAndRestoreUnlockPro]' started.
+Test Case '-[CleanCutTests.StoreKitPurchaseTests testVerifiedPurchaseAndRestoreUnlockPro]' passed (0.136 seconds).
+Test Suite 'StoreKitPurchaseTests' passed at 2026-10-29 17:07:06.387.
+	 Executed 4 tests, with 0 failures (0 unexpected) in 0.453 (0.455) seconds
+Test Suite 'CleanCutTests.xctest' failed at 2026-10-29 17:07:06.387.
+	 Executed 38 tests, with 1 failure (0 unexpected) in 6.763 (7.334) seconds
+Test Suite 'All tests' failed at 2026-10-29 17:07:06.388.
+	 Executed 38 tests, with 1 failure (0 unexpected) in 6.763 (7.337) seconds
+2026-10-29 17:07:06.460 xcodebuild[11363:10050838] [MT] IDESchemeActionSDKRecord: operatingSystemBuild = <DVTBuildVersion 24A94232>, error = invalidDigitCount(94232).
+2026-10-29 17:07:06.462 xcodebuild[11363:10050838] [MT] IDESchemeActionSDKRecord: operatingSystemBuild = <DVTBuildVersion 24A94232>, error = invalidDigitCount(94232).
+2026-10-29 17:07:06.465 xcodebuild[11363:10050838] [MT] IDESchemeActionSDKRecord: operatingSystemBuild = <DVTBuildVersion 24A94232>, error = invalidDigitCount(94232).
