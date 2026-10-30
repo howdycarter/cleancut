@@ -240,3 +240,44 @@ The publication payload was checked for credentials and private data. It contain
 app source, synthetic test fixtures, simulator-only QA screenshots and summaries,
 and reproduction documentation; no personal photo, credential file, full
 xcresult, DerivedData, or private account artifact is included.
+
+## Restored-runtime acceptance — October 30, 2026 UTC
+
+This follow-up rebuilt and ran source/test head
+`70d285209942cc06dea1587d3d2d2d284f09cb7f` after the restart, using installed
+cached packages and the existing dedicated iPhone 17e / iOS 27.0 simulator.
+The [fresh focused result](restored-runtime-summary.json) records two tests:
+largest-type editor passed; real Vision failed. Default and CPU-only direct
+requests both still returned Code 9. No production or test code changed in this
+follow-up; this evidence update changes documentation only.
+
+**The earlier iPhone Save-reachability uncertainty is now resolved for this
+simulator.** The restored Xcode automation surface captured the editor's actual
+scroll-view reference, swiped upward within it, and then returned Save to Photos
+as a visible actionable button. The [actual screen](iphone-accessibility5-save-reachable.png)
+shows the entire button at `.accessibility5`. Tap events were delivered but the
+bounded host ended before a saved-confirmation dialog was observed. UI save
+completion and physical VoiceOver remain distinct unaccepted checks; the
+production Photos writer's exact PNG round trip was verified separately.
+
+The primary computer-use tool could not start its Node runtime after the move;
+no machine configuration was changed. Existing XcodeBuildMCP UI controls supplied
+the successful scroll interaction. An attempted dedicated iPhone 17e / iOS 27.1
+simulator was rejected by CoreSimulator as an incompatible device/runtime pair;
+no alternative app target or unsupported configuration was invented. This says
+nothing about every other device type on that runtime.
+
+PR #6 CI was inspected at exact head 70d2852: the native-test job was still
+running. CodeRabbit's success context explicitly said draft review was skipped;
+there were no substantive reviews or findings to fix. That context is not code
+review approval. The current workflow selects iOS 26.2 and ordinary unit tests;
+opt-in Vision acceptance is not established by a green ordinary CI run.
+
+Remaining essential user-device check: on a physical iPhone running this build,
+import the public synthetic bottle fixture (or a licensed clear-subject photo),
+verify real subject removal and portrait/rotated orientation, then export a
+transparent PNG and save it to Photos. Inspect retained subject pixels and
+transparent background corners. If inference fails, capture the displayed error
+and device/iOS version. This requires no paid transaction or App Store submission.
+Simulator Code 9 remains an internal framework failure of unidentified cause;
+no code change or claim of physical-device readiness is justified by it.
